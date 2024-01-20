@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BestPhonebookDesktopApp.Model;
-using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
+using System.Data.SqlClient;
 
 namespace BestPhonebookDesktopApp.DAL
 {
@@ -24,10 +26,10 @@ namespace BestPhonebookDesktopApp.DAL
         public static List<PhonebookEntry> GetAllEntries()
         {
             List<PhonebookEntry> entries = new List<PhonebookEntry>();
-            using var connection = new MySqlConnection(Connection.ConnectionString);
+            using var connection = new SqlConnection(Connection.ConnectionString);
             connection.Open();
             const string query = "select * from PhonebookEntry";
-            using var command = new MySqlCommand(query, connection);
+            using var command = new SqlCommand(query, connection);
 
             using var reader = command.ExecuteReader();
             var nameOrdinal = reader.GetOrdinal("name");
@@ -52,11 +54,11 @@ namespace BestPhonebookDesktopApp.DAL
         public static PhonebookEntry GetEntryByName(string name)
         {
             PhonebookEntry entry = null;
-            using var connection = new MySqlConnection(Connection.ConnectionString);
+            using var connection = new SqlConnection(Connection.ConnectionString);
             connection.Open();
-            const string query = "select * from PhonebookEntry where name contains @name";
-            using var command = new MySqlCommand(query, connection);
-            command.Parameters.Add("@name", MySqlDbType.String).Value = name;
+            const string query = "select * from PhonebookEntry where name like @name";
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.Add("@name", SqlDbType.VarChar).Value = "%" + name + "%";
 
             using var reader = command.ExecuteReader();
             var nameOrdinal = reader.GetOrdinal("name");

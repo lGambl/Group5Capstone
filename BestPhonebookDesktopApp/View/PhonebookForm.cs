@@ -26,7 +26,7 @@ namespace BestPhonebookDesktopApp
         public PhonebookForm()
         {
             InitializeComponent();
-            //this.addPhonebookEntriesToListView();
+            this.addPhonebookEntriesToListView();
         }
 
         private void addPhonebookEntriesToListView()
@@ -39,8 +39,17 @@ namespace BestPhonebookDesktopApp
 
         private void searchButton_Click(object sender, EventArgs e)
         {
-            this.nameLabel.Text = PhonebookViewModel.GetEntryByName(this.SearchTextBox.Text).Name;
-            this.phoneNumberLabel.Text = PhonebookViewModel.GetEntryByName(this.SearchTextBox.Text).PhoneNumber;
+            if (PhonebookViewModel.GetEntryByName(this.SearchTextBox.Text) != null && PhonebookViewModel.GetEntryByName(this.SearchTextBox.Text) != null)
+            {
+                this.nameLabel.Text = PhonebookViewModel.GetEntryByName(this.SearchTextBox.Text).Name;
+                this.phoneNumberLabel.Text = PhonebookViewModel.GetEntryByName(this.SearchTextBox.Text).PhoneNumber;
+            }
+            else
+            {
+                this.nameLabel.Text = String.Empty;
+                this.phoneNumberLabel.Text = string.Empty;
+            }
+
         }
     }
 }
