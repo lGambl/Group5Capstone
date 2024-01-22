@@ -1,0 +1,39 @@
+﻿@model IEnumerable<StudyWeb.Models.Source>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Link
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Actions
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Link)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeString)
+            </td>
+            <td>
+                <a asp-action="View" asp-route-id="@item.Id">View</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
