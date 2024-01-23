@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyWeb", "StudyWeb.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyDesk", "..\StudyDesk\StudyDesk.csproj", "{5BDA336D-64C5-4808-9D04-C792C99FC6C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyHallTests", "..\StudyHallTests\StudyHallTests.csproj", "{FE62D976-C5A6-4917-A51B-417C855FB75B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5BDA336D-64C5-4808-9D04-C792C99FC6C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BDA336D-64C5-4808-9D04-C792C99FC6C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BDA336D-64C5-4808-9D04-C792C99FC6C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE62D976-C5A6-4917-A51B-417C855FB75B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE62D976-C5A6-4917-A51B-417C855FB75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE62D976-C5A6-4917-A51B-417C855FB75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE62D976-C5A6-4917-A51B-417C855FB75B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
