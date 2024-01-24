@@ -1,0 +1,71 @@
+﻿@model StudyWeb.Models.Source
+
+@{
+    ViewData["Title"] = "Add Source";
+}
+
+<h1>Add Source</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <label asp-for="Title"> Title</label>
+    <input asp-for="Title" />
+    
+    <label asp-for="Type" id="typeSelect"> Type</label>
+    <select asp-for="Type">
+        <option value="2">Video Link</option>
+        <option value="4">Pdf Link</option>
+        <option value="1">Video</option>
+        <option value="3">Pdf</option>
+    </select>
+    
+    
+    <div id="linkInput" style="display:none;">
+        <label asp-for="Link"> Link</label>
+        <input asp-for="Link"/>
+    </div>
+    
+    <div id="videoInput" style="display:none;">
+        <label for="videoUpload">Video</label>
+        <input type="file" name="videoUpload" accept=".mp4" />
+    </div>
+
+    <div id="pdfInput" style="display:none;">
+        <label for="pdfUpload">PDF</label>
+        <input type="file" name="pdfUpload" accept=".pdf"/>
+    </div>
+
+    
+    <input type="submit" value="Add Source" class="btn btn-primary"/>
+
+</form>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var typeSelect = document.getElementById('Type'); // The ID might be generated based on the model property name
+            var linkInput = document.getElementById('linkInput');
+            var fileInput = document.getElementById('pdfInput');
+            var videoInput = document.getElementById('videoInput')
+
+            typeSelect.addEventListener('change', function () {
+                var selectedType = this.value;
+
+                if (selectedType === "2" || selectedType === "4") {
+                    videoInput.style.display = 'none';
+                    linkInput.style.display = 'block';
+                    pdfInput.style.display = 'none';
+                }
+                else if (selectedType === "3") {
+                    videoInput.style.display = 'none';
+                    fileInput.style.display = 'block';
+                    linkInput.style.display = 'none';
+                }else if (selectedType === "1"){
+                    videoInput.style.display = 'block';
+                    fileInput.style.display = 'none';
+                    linkInput.style.display = 'none';
+                }
+            });
+
+            // Trigger the change event on page load
+            typeSelect.dispatchEvent(new Event('change'));
+        });
+</script>

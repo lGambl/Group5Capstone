@@ -4,8 +4,34 @@
     ViewData["Title"] = "View";
 }
 
-<h1>@Html.DisplayFor(Model => Model.Title)</h1>
+<h1>@Html.DisplayFor(model => model.Title)</h1>
 
-<div>
-    <iframe src="@Html.DisplayFor(Model => Model.Link)" ></iframe>
-</div>
+@if (Model.Type == StudyWeb.Models.SourceTypes.VideoLink)
+{
+    <div>
+        <iframe width="1000" height="700" src="@Html.DisplayFor(model => model.Link)"></iframe>
+    </div>
+    
+}else if (Model.Type == StudyWeb.Models.SourceTypes.PdfLink)
+{ 
+    <div>
+        <iframe width="1000" height="700" controls  src="@Html.DisplayFor(model => model.Link)"></iframe>
+    </div>
+
+
+}
+else if (Model.Type == StudyWeb.Models.SourceTypes.Video)
+{
+    <div>
+        <video width="1000" height="700" controls>
+            <source src="@Url.Content("~/" + Model.Link)" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+}
+else if (Model.Type == StudyWeb.Models.SourceTypes.Pdf)
+{
+    <div>
+        <iframe width="1000" height="700" src="@Url.Content("~/" + Model.Link)"></iframe>
+    </div>
+}
