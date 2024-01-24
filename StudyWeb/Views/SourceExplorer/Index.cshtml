@@ -6,11 +6,12 @@
 
 <h1>Index</h1>
 
+<a asp-action="Create">Add</a>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Link
+                Title
             </th>
             <th>
                 Type
@@ -25,7 +26,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Link)
+                @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TypeString)
