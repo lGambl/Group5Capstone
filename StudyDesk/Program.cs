@@ -1,3 +1,5 @@
+using StudyDesk.View;
+
 namespace StudyDesk
 {
     internal static class Program
