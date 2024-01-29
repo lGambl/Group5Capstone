@@ -54,6 +54,7 @@ namespace StudyWeb.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         [Route("Source/{id?}")]
         public Source? GetSource(int? id)
         {
@@ -217,113 +218,7 @@ namespace StudyWeb.Controllers
                 // For debugging: throw; or return false;
                 return false;
             }
-
-            return false;
         }
-
-
-
-        /*/// <summary>
-        ///   Shows the search results.
-        /// </summary>
-        /// <param name="SearchName">Name of the search.</param>
-        /// <returns>
-        ///   Task
-        /// </returns>
-        [Authorize]
-        [HttpPost]
-        [Route("Search")]
-        public async Task<IActionResult> ShowSearchResults(String SearchName)
-        {
-            return View("Index", await _context.PhonebookEntry.Where(n => n.Name.Contains(SearchName)).ToListAsync());
-        }*/
-
-
-        /*/// <summary>
-        ///   Creates this instance.
-        /// </summary>
-        /// <returns>
-        ///   Result
-        /// </returns>
-        [Authorize]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-
-        /// <summary>
-        ///   reates the specified phonebook entry.
-        /// </summary>
-        /// <param name="phonebookEntry">The phonebook entry.</param>
-        /// <returns>
-        ///   Task
-        /// </returns>
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,PhoneNumber")] PhonebookEntry phonebookEntry)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(phonebookEntry);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(phonebookEntry);
-        }
-
-        /// <summary>
-        ///   Deletes the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>
-        ///   Task
-        /// </returns>
-        [Authorize]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var phonebookEntry = await _context.PhonebookEntry
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (phonebookEntry == null)
-            {
-                return NotFound();
-            }
-
-            return View(phonebookEntry);
-        }
-
-
-        /// <summary>
-        ///   Deletes the confirmed.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>
-        ///   Task
-        /// </returns>
-        [Authorize]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var phonebookEntry = await _context.PhonebookEntry.FindAsync(id);
-            if (phonebookEntry != null)
-            {
-                _context.PhonebookEntry.Remove(phonebookEntry);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool PhonebookEntryExists(int id)
-        {
-            return _context.PhonebookEntry.Any(e => e.Id == id);
-        }*/
+        
     }
 }
