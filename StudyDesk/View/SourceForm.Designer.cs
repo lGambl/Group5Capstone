@@ -1,6 +1,6 @@
 ﻿namespace StudyDesk.View
 {
-    partial class MainPageForm
+    partial class SourceForm
     {
         /// <summary>
         /// Required designer variable.
@@ -40,16 +40,16 @@
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Size = new Size(800, 450);
             splitContainer1.SplitterDistance = 372;
-            splitContainer1.TabIndex = 0;
+            splitContainer1.TabIndex = 1;
             // 
-            // MainPageForm
+            // SourceForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer1);
-            Name = "MainPageForm";
-            Text = "MainPageForm";
+            Name = "SourceForm";
+            Text = "SourceForm";
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
