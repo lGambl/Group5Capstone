@@ -221,7 +221,7 @@ namespace StudyWeb.Controllers
 
         public async Task<IActionResult> AddNote(string Note)
         {
-
+            return BadRequest();
         }
     }
 }
