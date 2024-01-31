@@ -14,7 +14,12 @@ namespace StudyDesk.View
     {
         public MainPageForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+        }
+
+        private void MainPageForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

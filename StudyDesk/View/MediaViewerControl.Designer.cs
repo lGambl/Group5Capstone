@@ -28,31 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MediaViewerControl));
-            tabControl1 = new TabControl();
+            sourceViewerTabs = new TabControl();
             documentTabPage = new TabPage();
-            multiMediaTabPage = new TabPage();
             imageTabPage = new TabPage();
-            axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
-            tabControl1.SuspendLayout();
-            multiMediaTabPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)axWindowsMediaPlayer1).BeginInit();
+            pictureBox = new PictureBox();
+            multiMediaTabPage = new TabPage();
+            pdfViewer1 = new Patagames.Pdf.Net.Controls.WinForms.PdfViewer();
+            sourceViewerTabs.SuspendLayout();
+            documentTabPage.SuspendLayout();
+            imageTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox).BeginInit();
             SuspendLayout();
             // 
-            // tabControl1
+            // sourceViewerTabs
             // 
-            tabControl1.Controls.Add(documentTabPage);
-            tabControl1.Controls.Add(multiMediaTabPage);
-            tabControl1.Controls.Add(imageTabPage);
-            tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(0, 0);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(464, 394);
-            tabControl1.TabIndex = 0;
+            sourceViewerTabs.Controls.Add(documentTabPage);
+            sourceViewerTabs.Controls.Add(imageTabPage);
+            sourceViewerTabs.Controls.Add(multiMediaTabPage);
+            sourceViewerTabs.Dock = DockStyle.Fill;
+            sourceViewerTabs.Location = new Point(0, 0);
+            sourceViewerTabs.Name = "sourceViewerTabs";
+            sourceViewerTabs.SelectedIndex = 0;
+            sourceViewerTabs.Size = new Size(464, 394);
+            sourceViewerTabs.TabIndex = 0;
             // 
             // documentTabPage
             // 
+            documentTabPage.Controls.Add(pdfViewer1);
             documentTabPage.Location = new Point(4, 29);
             documentTabPage.Name = "documentTabPage";
             documentTabPage.Padding = new Padding(3);
@@ -61,19 +63,9 @@
             documentTabPage.Text = "Documents";
             documentTabPage.UseVisualStyleBackColor = true;
             // 
-            // multiMediaTabPage
-            // 
-            multiMediaTabPage.Controls.Add(axWindowsMediaPlayer1);
-            multiMediaTabPage.Location = new Point(4, 29);
-            multiMediaTabPage.Name = "multiMediaTabPage";
-            multiMediaTabPage.Padding = new Padding(3);
-            multiMediaTabPage.Size = new Size(456, 361);
-            multiMediaTabPage.TabIndex = 1;
-            multiMediaTabPage.Text = "Audio/Video";
-            multiMediaTabPage.UseVisualStyleBackColor = true;
-            // 
             // imageTabPage
             // 
+            imageTabPage.Controls.Add(pictureBox);
             imageTabPage.Location = new Point(4, 29);
             imageTabPage.Name = "imageTabPage";
             imageTabPage.Padding = new Padding(3);
@@ -82,34 +74,79 @@
             imageTabPage.Text = "Images";
             imageTabPage.UseVisualStyleBackColor = true;
             // 
-            // axWindowsMediaPlayer1
+            // pictureBox
             // 
-            axWindowsMediaPlayer1.Enabled = true;
-            axWindowsMediaPlayer1.Location = new Point(6, 6);
-            axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
-            axWindowsMediaPlayer1.OcxState = (AxHost.State)resources.GetObject("axWindowsMediaPlayer1.OcxState");
-            axWindowsMediaPlayer1.Size = new Size(444, 349);
-            axWindowsMediaPlayer1.TabIndex = 0;
+            pictureBox.Location = new Point(6, 6);
+            pictureBox.Name = "pictureBox";
+            pictureBox.Size = new Size(447, 349);
+            pictureBox.TabIndex = 0;
+            pictureBox.TabStop = false;
+            // 
+            // multiMediaTabPage
+            // 
+            multiMediaTabPage.Location = new Point(4, 29);
+            multiMediaTabPage.Name = "multiMediaTabPage";
+            multiMediaTabPage.Padding = new Padding(3);
+            multiMediaTabPage.Size = new Size(456, 361);
+            multiMediaTabPage.TabIndex = 1;
+            multiMediaTabPage.Text = "Audio/Video";
+            multiMediaTabPage.UseVisualStyleBackColor = true;
+            // 
+            // pdfViewer1
+            // 
+            pdfViewer1.BackColor = SystemColors.ControlDark;
+            pdfViewer1.CurrentIndex = -1;
+            pdfViewer1.CurrentPageHighlightColor = Color.FromArgb(170, 70, 130, 180);
+            pdfViewer1.Document = null;
+            pdfViewer1.FormHighlightColor = Color.Transparent;
+            pdfViewer1.FormsBlendMode = Patagames.Pdf.Enums.BlendTypes.FXDIB_BLEND_MULTIPLY;
+            pdfViewer1.LoadingIconText = "Loading...";
+            pdfViewer1.Location = new Point(0, 0);
+            pdfViewer1.Margin = new Padding(4, 5, 4, 5);
+            pdfViewer1.MouseMode = Patagames.Pdf.Net.Controls.WinForms.MouseModes.Default;
+            pdfViewer1.Name = "pdfViewer1";
+            pdfViewer1.OptimizedLoadThreshold = 1000;
+            pdfViewer1.Padding = new Padding(13, 15, 13, 15);
+            pdfViewer1.PageAlign = ContentAlignment.MiddleCenter;
+            pdfViewer1.PageAutoDispose = true;
+            pdfViewer1.PageBackColor = Color.White;
+            pdfViewer1.PageBorderColor = Color.Black;
+            pdfViewer1.PageMargin = new Padding(10);
+            pdfViewer1.PageSeparatorColor = Color.Gray;
+            pdfViewer1.RenderFlags = Patagames.Pdf.Enums.RenderFlags.FPDF_LCD_TEXT | Patagames.Pdf.Enums.RenderFlags.FPDF_NO_CATCH;
+            pdfViewer1.ShowCurrentPageHighlight = true;
+            pdfViewer1.ShowLoadingIcon = true;
+            pdfViewer1.ShowPageSeparator = true;
+            pdfViewer1.Size = new Size(456, 360);
+            pdfViewer1.SizeMode = Patagames.Pdf.Net.Controls.WinForms.SizeModes.FitToWidth;
+            pdfViewer1.TabIndex = 0;
+            pdfViewer1.TextSelectColor = Color.FromArgb(70, 70, 130, 180);
+            pdfViewer1.TilesCount = 2;
+            pdfViewer1.UseProgressiveRender = true;
+            pdfViewer1.ViewMode = Patagames.Pdf.Net.Controls.WinForms.ViewModes.Vertical;
+            pdfViewer1.Zoom = 1F;
             // 
             // MediaViewerControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(tabControl1);
+            Controls.Add(sourceViewerTabs);
             Name = "MediaViewerControl";
             Size = new Size(464, 394);
-            tabControl1.ResumeLayout(false);
-            multiMediaTabPage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)axWindowsMediaPlayer1).EndInit();
+            sourceViewerTabs.ResumeLayout(false);
+            documentTabPage.ResumeLayout(false);
+            imageTabPage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private TabControl tabControl1;
+        private TabControl sourceViewerTabs;
         private TabPage documentTabPage;
         private TabPage multiMediaTabPage;
         private TabPage imageTabPage;
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
+        private PictureBox pictureBox;
+        private Patagames.Pdf.Net.Controls.WinForms.PdfViewer pdfViewer1;
     }
 }
