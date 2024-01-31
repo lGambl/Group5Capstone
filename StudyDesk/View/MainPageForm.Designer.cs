@@ -36,7 +36,6 @@
             imageTabPage = new TabPage();
             pictureBox = new PictureBox();
             multiMediaTabPage = new TabPage();
-            axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
@@ -45,7 +44,6 @@
             imageTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox).BeginInit();
             multiMediaTabPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)axWindowsMediaPlayer1).BeginInit();
             SuspendLayout();
             // 
             // splitContainer1
@@ -139,7 +137,6 @@
             // 
             // multiMediaTabPage
             // 
-            multiMediaTabPage.Controls.Add(axWindowsMediaPlayer1);
             multiMediaTabPage.Location = new Point(4, 29);
             multiMediaTabPage.Name = "multiMediaTabPage";
             multiMediaTabPage.Padding = new Padding(3);
@@ -147,15 +144,6 @@
             multiMediaTabPage.TabIndex = 1;
             multiMediaTabPage.Text = "Audio/Video";
             multiMediaTabPage.UseVisualStyleBackColor = true;
-            // 
-            // axWindowsMediaPlayer1
-            // 
-            axWindowsMediaPlayer1.Enabled = true;
-            axWindowsMediaPlayer1.Location = new Point(6, 6);
-            axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
-            axWindowsMediaPlayer1.OcxState = (AxHost.State)resources.GetObject("axWindowsMediaPlayer1.OcxState");
-            axWindowsMediaPlayer1.Size = new Size(402, 403);
-            axWindowsMediaPlayer1.TabIndex = 0;
             // 
             // MainPageForm
             // 
@@ -174,20 +162,17 @@
             imageTabPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox).EndInit();
             multiMediaTabPage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)axWindowsMediaPlayer1).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
         private SplitContainer splitContainer1;
-        private MediaViewerControl mediaViewerControl1;
         private TabControl sourceViewerTabs;
         private TabPage documentTabPage;
         private Patagames.Pdf.Net.Controls.WinForms.PdfViewer pdfViewer1;
         private TabPage imageTabPage;
         private PictureBox pictureBox;
         private TabPage multiMediaTabPage;
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
     }
 }

@@ -15,6 +15,15 @@ namespace StudyDesk.View
         public MainPageForm()
         {
             this.InitializeComponent();
+            this.preloadDummyInfo();
+        }
+
+        private void preloadDummyInfo()
+        {
+            //this.pdfViewer1.LoadDocument("../../../Resources/dummyTextFile.txt");
+            this.pdfViewer1.LoadDocument("../../../Resources/dummyPdf.pdf");
+            this.pictureBox.Image = Image.FromFile("../../../Resources/dummyImage.jpg");
+            this.pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
         private void MainPageForm_Load(object sender, EventArgs e)
