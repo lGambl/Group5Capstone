@@ -195,7 +195,6 @@ namespace StudyWeb.Controllers
             return true;
         }
 
-
         private async Task<bool> AddLink(string title, string owner, string link, SourceTypes type)
         {
             try
@@ -219,6 +218,10 @@ namespace StudyWeb.Controllers
                 return false;
             }
         }
-        
+
+        public async Task<IActionResult> AddNote(string Note)
+        {
+
+        }
     }
 }
