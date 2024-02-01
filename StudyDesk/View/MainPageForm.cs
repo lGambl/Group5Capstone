@@ -15,30 +15,11 @@ namespace StudyDesk.View
         public MainPageForm()
         {
             this.InitializeComponent();
-            this.preloadDummyInfo();
         }
 
-        private void preloadDummyInfo()
+        private void viewButton_Click(object sender, EventArgs e)
         {
-            //this.pdfViewer1.LoadDocument("../../../Resources/dummyTextFile.txt");
-            this.pdfViewer1.LoadDocument("../../../Resources/dummyPdf.pdf");
-            this.pictureBox.Image = Image.FromFile("../../../Resources/dummyImage.jpg");
-            this.pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-        }
-
-        private void MainPageForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void playButton_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void pdfViewer1_Load(object sender, EventArgs e)
-        {
-
+            var sourceForm = new SourceForm();
         }
     }
 }

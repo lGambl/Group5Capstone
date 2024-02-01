@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             videoView1 = new LibVLCSharp.WinForms.VideoView();
+            playButton = new Button();
+            pauseButton = new Button();
             ((System.ComponentModel.ISupportInitialize)videoView1).BeginInit();
             SuspendLayout();
             // 
@@ -42,10 +44,30 @@
             videoView1.TabIndex = 0;
             videoView1.Text = "videoView1";
             // 
+            // playButton
+            // 
+            playButton.Location = new Point(3, 337);
+            playButton.Name = "playButton";
+            playButton.Size = new Size(94, 29);
+            playButton.TabIndex = 1;
+            playButton.Text = "Play";
+            playButton.UseVisualStyleBackColor = true;
+            // 
+            // pauseButton
+            // 
+            pauseButton.Location = new Point(448, 337);
+            pauseButton.Name = "pauseButton";
+            pauseButton.Size = new Size(94, 29);
+            pauseButton.TabIndex = 2;
+            pauseButton.Text = "Pause";
+            pauseButton.UseVisualStyleBackColor = true;
+            // 
             // VideoControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(pauseButton);
+            Controls.Add(playButton);
             Controls.Add(videoView1);
             Name = "VideoControl";
             Size = new Size(545, 395);
@@ -56,5 +78,7 @@
         #endregion
 
         private LibVLCSharp.WinForms.VideoView videoView1;
+        private Button playButton;
+        private Button pauseButton;
     }
 }
