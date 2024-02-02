@@ -10,8 +10,11 @@
 
   <ItemGroup>
     <Folder Include="Controller\" />
-    <Folder Include="Model\" />
     <Folder Include="DAL\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>
