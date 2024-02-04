@@ -107,6 +107,7 @@ namespace StudyDesk.View
             Controls.Add(LoginButton);
             Controls.Add(PasswordTextBox);
             Controls.Add(UsernameTextBox);
+            ForeColor = Color.Black;
             Name = "LoginForm";
             Text = "LoginScreen";
             ResumeLayout(false);
