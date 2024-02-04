@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MessageBox = System.Windows.Forms.MessageBox;
-
-namespace StudyDesk.View
+﻿namespace StudyDesk.View
 {
     /// <summary>
     /// The main page form.
@@ -23,8 +12,9 @@ namespace StudyDesk.View
         public MainPageForm()
         {
             this.InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterScreen;
         }
+
         private void addButton_Click(object sender, EventArgs e)
         {
 
@@ -45,7 +35,8 @@ namespace StudyDesk.View
 
         private void indexListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            
+            var sourceForm = new SourceForm();
+            sourceForm.ShowDialog();
         }
     }
 }
