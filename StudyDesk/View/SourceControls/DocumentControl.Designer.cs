@@ -51,15 +51,18 @@
             // documentViewer1
             // 
             documentViewer1.AllowInteractivity = false;
+            documentViewer1.AutoSize = true;
+            documentViewer1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             documentViewer1.BackColor = SystemColors.ControlDark;
             documentViewer1.BorderWidth = 0F;
+            documentViewer1.Dock = DockStyle.Fill;
             documentViewer1.HScrollBar.Enabled = false;
             documentViewer1.HScrollBar.LargeChange = 40F;
             documentViewer1.HScrollBar.Maximum = 0F;
             documentViewer1.HScrollBar.Minimum = 0F;
             documentViewer1.HScrollBar.SmallChange = 20F;
             documentViewer1.HScrollBar.Value = 0F;
-            documentViewer1.HScrollBar.Visibility = Gnostice.Core.Viewer.ScrollBarVisibility.Always;
+            documentViewer1.HScrollBar.Visibility = Gnostice.Core.Viewer.ScrollBarVisibility.Never;
             documentViewer1.HScrollBar.Visible = false;
             documentViewer1.Location = new Point(0, 0);
             documentViewer1.MouseMode = Gnostice.Core.DOM.CursorPreferences.Pan;
@@ -142,7 +145,7 @@
             zoom1.ZoomPercent = 100D;
             viewerSettings1.Zoom = zoom1;
             documentViewer1.Preferences.ViewerSettings = viewerSettings1;
-            documentViewer1.Size = new Size(500, 470);
+            documentViewer1.Size = new Size(584, 334);
             documentViewer1.TabIndex = 0;
             documentViewer1.VScrollBar.Enabled = false;
             documentViewer1.VScrollBar.LargeChange = 40F;
@@ -159,8 +162,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(documentViewer1);
             Name = "DocumentControl";
-            Size = new Size(503, 470);
+            Size = new Size(584, 334);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

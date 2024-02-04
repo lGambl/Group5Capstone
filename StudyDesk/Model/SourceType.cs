@@ -1,32 +1,28 @@
 ﻿namespace StudyDesk.Model
 {
     /// <summary>
-    ///   The Source Type Enum
+    /// An enum representing the type of source.
     /// </summary>
     public enum SourceType
     {
         /// <summary>
-        ///   The video
+        /// A video file.
         /// </summary>
         Video = 1,
-
         /// <summary>
-        ///   The video link
+        /// A video link.
         /// </summary>
         VideoLink = 2,
-
         /// <summary>
-        ///   The PDF
+        /// A PDF file.
         /// </summary>
         Pdf = 3,
-
         /// <summary>
-        ///   The PDF link
+        /// A PDF link.
         /// </summary>
         PdfLink = 4,
-
         /// <summary>
-        ///   The image
+        /// An image file.
         /// </summary>
         Image = 5
     }

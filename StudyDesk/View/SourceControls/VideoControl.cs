@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace StudyDesk.View.SourceControls
+﻿namespace StudyDesk.View.SourceControls
 {
+    /// <summary>
+    /// A user control for displaying a video.
+    /// </summary>
+    /// <seealso cref="System.Windows.Forms.UserControl" />
     public partial class VideoControl : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VideoControl"/> class.
+        /// </summary>
         public VideoControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }
