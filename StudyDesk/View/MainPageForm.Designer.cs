@@ -30,67 +30,65 @@
         {
             indexListView = new ListView();
             titleHeader = new ColumnHeader();
-            typeHeader = new ColumnHeader();
-            actionLabel = new Label();
-            viewButton = new Button();
+            addButton = new Button();
+            deleteButton = new Button();
             SuspendLayout();
             // 
             // indexListView
             // 
-            indexListView.Columns.AddRange(new ColumnHeader[] { titleHeader, typeHeader });
-            indexListView.Location = new Point(12, 12);
+            indexListView.Columns.AddRange(new ColumnHeader[] { titleHeader });
+            indexListView.Location = new Point(12, 48);
             indexListView.Name = "indexListView";
-            indexListView.Size = new Size(339, 166);
+            indexListView.Size = new Size(333, 300);
             indexListView.TabIndex = 0;
             indexListView.UseCompatibleStateImageBehavior = false;
+            indexListView.View = System.Windows.Forms.View.Details;
+            indexListView.SelectedIndexChanged += indexListView_SelectedIndexChanged;
+            indexListView.MouseDoubleClick += indexListView_MouseDoubleClick;
             // 
             // titleHeader
             // 
             titleHeader.Text = "Title";
+            titleHeader.Width = 325;
             // 
-            // typeHeader
+            // addButton
             // 
-            typeHeader.Text = "Type";
+            addButton.Location = new Point(12, 12);
+            addButton.Name = "addButton";
+            addButton.Size = new Size(94, 29);
+            addButton.TabIndex = 1;
+            addButton.Text = "Add";
+            addButton.UseVisualStyleBackColor = true;
+            addButton.Click += addButton_Click;
             // 
-            // actionLabel
+            // deleteButton
             // 
-            actionLabel.AutoSize = true;
-            actionLabel.Location = new Point(550, 58);
-            actionLabel.Name = "actionLabel";
-            actionLabel.Size = new Size(58, 20);
-            actionLabel.TabIndex = 1;
-            actionLabel.Text = "Actions";
-            // 
-            // viewButton
-            // 
-            viewButton.Location = new Point(532, 81);
-            viewButton.Name = "viewButton";
-            viewButton.Size = new Size(94, 29);
-            viewButton.TabIndex = 2;
-            viewButton.Text = "View";
-            viewButton.UseVisualStyleBackColor = true;
-            viewButton.Click += viewButton_Click;
+            deleteButton.Enabled = false;
+            deleteButton.Location = new Point(251, 12);
+            deleteButton.Name = "deleteButton";
+            deleteButton.Size = new Size(94, 29);
+            deleteButton.TabIndex = 2;
+            deleteButton.Text = "Delete";
+            deleteButton.UseVisualStyleBackColor = true;
             // 
             // MainPageForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(viewButton);
-            Controls.Add(actionLabel);
+            ClientSize = new Size(357, 360);
+            Controls.Add(deleteButton);
+            Controls.Add(addButton);
             Controls.Add(indexListView);
             Name = "MainPageForm";
             Text = "MainPageForm";
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
         private ListView indexListView;
         private ColumnHeader titleHeader;
-        private ColumnHeader typeHeader;
-        private Label actionLabel;
-        private Button viewButton;
+        private Button addButton;
+        private Button deleteButton;
     }
 }

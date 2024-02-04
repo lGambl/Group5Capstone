@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace StudyDesk.View
 {
@@ -15,11 +16,30 @@ namespace StudyDesk.View
         public MainPageForm()
         {
             this.InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.indexListView.Items.Add("dummyItem");
+        }
+        private void addButton_Click(object sender, EventArgs e)
+        {
+
         }
 
-        private void viewButton_Click(object sender, EventArgs e)
+        private void indexListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var sourceForm = new SourceForm();
+            if (this.indexListView.SelectedItems.Count > 0)
+            {
+                this.deleteButton.Enabled = true;
+            }
+            else
+            {
+                this.deleteButton.Enabled = false;
+            }
+
+        }
+
+        private void indexListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            
         }
     }
 }
