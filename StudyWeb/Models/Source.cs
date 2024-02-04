@@ -1,4 +1,7 @@
-﻿namespace StudyWeb.Models
+﻿using System.Collections.ObjectModel;
+using Microsoft.VisualBasic;
+
+namespace StudyWeb.Models
 {
     public enum SourceTypes{
         Video = 1,
@@ -12,15 +15,17 @@
     {
         public int Id { get; set; }
 
-        public string Link { get; set; }
+        public string Link { get; set; } = "";
 
-        public string Title { get; set; }
+        public string Title { get; set; } = "";
 
         public SourceTypes Type { get; set; }
 
         public string TypeString => SourceTypeToString();
 
-        public string Owner { get; set; }
+        public string Owner { get; set; } = "";
+
+        public ICollection<Note> Notes { get; set; } = new Collection<Note>();
 
         public string SourceTypeToString()
         {
