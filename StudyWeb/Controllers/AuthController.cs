@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using StudyWeb.Models;
 
 namespace StudyWeb.Controllers
@@ -39,8 +43,22 @@ namespace StudyWeb.Controllers
 
             if (result.Succeeded)
             {
-                // Generate a JWT token or similar here
-                return Ok();
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var keyString = "YourSuperSecretKeyThatIsLongEnough";
+                var key = Encoding.ASCII.GetBytes(keyString);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, model.Username)
+                        // Add other claims as needed
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7), // Set token expiration as needed
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return Ok(new { Token = tokenHandler.WriteToken(token) });
             }
             return Unauthorized();
         }
