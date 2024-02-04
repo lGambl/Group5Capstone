@@ -1,3 +1,6 @@
+using StudyDesk.Model;
+using System.Text;
+
 namespace StudyDesk.View
 {
     /// <summary>
