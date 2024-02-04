@@ -35,7 +35,8 @@ namespace StudyWeb.Data.Migrations
                 [Link] nvarchar(max) NOT NULL,
                 [Title] nvarchar(max) NOT NULL,
                 [Type] int NOT NULL,
-                [Owner] nvarchar(max) NOT NULL,
+                [Owner] nvarchar(450) NOT NULL,
+                CONSTRAINT [FK_Source_AspNetUsers] FOREIGN KEY ([Owner]) REFERENCES [dbo].[AspNetUsers] ([Id]),
                 CONSTRAINT [PK_Source] PRIMARY KEY ([Id])
             )
         END
@@ -74,7 +75,9 @@ namespace StudyWeb.Data.Migrations
                 [Id] int NOT NULL IDENTITY(1,1),
                 [Text] nvarchar(max) NOT NULL,
                 [SourceId] int  NOT NULL,
+                [Owner] nvarchar(450) NOT NULL,
                 CONSTRAINT [PK_Note] PRIMARY KEY ([Id]),
+                CONSTRAINT [FK_NOTE_ASPNETUSERS] FOREIGN KEY ([Owner]) REFERENCES [dbo].[AspNetUsers] ([Id]),
                 CONSTRAINT [FK_Note_Source] FOREIGN KEY ([SourceId]) REFERENCES [dbo].[Source] ([Id])
             )
         END
