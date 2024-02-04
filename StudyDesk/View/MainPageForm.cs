@@ -11,13 +11,19 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace StudyDesk.View
 {
+    /// <summary>
+    /// The main page form.
+    /// </summary>
+    /// <seealso cref="System.Windows.Forms.Form" />
     public partial class MainPageForm : Form
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainPageForm"/> class.
+        /// </summary>
         public MainPageForm()
         {
             this.InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.indexListView.Items.Add("dummyItem");
         }
         private void addButton_Click(object sender, EventArgs e)
         {
