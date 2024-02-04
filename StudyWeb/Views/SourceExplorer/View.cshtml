@@ -4,6 +4,10 @@
     ViewData["Title"] = "View";
 }
 
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
 <style>
     #notes {
         background-color: #fff8dc; /* Notebook-like paper color */
@@ -59,42 +63,85 @@
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr">
 
-@if (Model.Type == SourceTypes.VideoLink)
-{
-    <div>
-        <iframe width="1000" height="700" src="@Html.DisplayFor(model => model.Link)"></iframe>
-    </div>
-    
-}else if (Model.Type == SourceTypes.PdfLink)
-{ 
-    <div>
-        <iframe width="1000" height="700" controls  src="@Html.DisplayFor(model => model.Link)"></iframe>
-    </div>
-
-
-}
-else if (Model.Type == SourceTypes.Video)
-{
-    <div>
-        <video width="1000" height="700" controls>
-            <source src="@Url.Content("~/" + Model.Link)" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-}
-else if (Model.Type == SourceTypes.Pdf)
-{
-    <div>
-        <iframe width="1000" height="700" src="@Url.Content("~/" + Model.Link)"></iframe>
-    </div>
-}
-
-<div id="notes">
-    @foreach(Note note in Model.Notes)
+    @if (Model.Type == SourceTypes.VideoLink)
     {
-        <div class="note">
-            <p>@note.Text</p>
+        <div>
+            <iframe width="1000" height="700" src="@Html.DisplayFor(model => model.Link)"></iframe>
         </div>
-    }  
+    
+    }else if (Model.Type == SourceTypes.PdfLink)
+    { 
+        <div>
+            <iframe width="1000" height="700" controls  src="@Html.DisplayFor(model => model.Link)"></iframe>
+        </div>
+
+
+    }
+    else if (Model.Type == SourceTypes.Video)
+    {
+        <div>
+            <video width="1000" height="700" controls>
+                <source src="@Url.Content("~/" + Model.Link)" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    }
+    else if (Model.Type == SourceTypes.Pdf)
+    {
+        <div>
+            <iframe width="1000" height="700" src="@Url.Content("~/" + Model.Link)"></iframe>
+        </div>
+    }
+
+    <div id="notes">
+        @using (Html.BeginForm("Note", "SourceExplorer", FormMethod.Post, new { id = "noteForm", @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <p style="display:none" id="Id" >@Html.DisplayFor(Model => Model.Id)</p>
+
+            <div class="form-group">
+                <label for="text" class="control-label">Add Note</label>
+                <textarea name="text" id="noteText" class="form-control" rows="3" required placeholder="Enter your note here..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Note</button>
+        }
+        @foreach (Note note in Model.Notes)
+        {
+            <div class="note">
+                <p>@note.Text</p>
+            </div>
+        }
+    </div>
 </div>
-</div>
+<script>
+    $(document).ready(function () {
+        $('#noteForm').submit(function (e) {
+            e.preventDefault(); 
+
+            var sourceId = $("#Id").text();
+            var noteText = $('#noteText').val();
+
+            $.ajax({
+                url: '/SourceExplorer/Note', 
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                    text: noteText,
+                    sourceId: sourceId
+                },
+                success: function (response) {
+                    
+                    $('#notes').append('<div class="note"><p>' + noteText + '</p></div>');
+
+                    
+                    $('#noteText').val('');
+                },
+                error: function () {
+                    alert('There was an error adding your note. Please try again.');
+                }
+            });
+        });
+    });
+</script>
