@@ -12,6 +12,7 @@
   <ItemGroup>
     <Folder Include="Controller\" />
     <Folder Include="DAL\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>
