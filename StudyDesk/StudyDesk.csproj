@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controller\" />
     <Folder Include="DAL\" />
     <Folder Include="Resources\" />
   </ItemGroup>
@@ -18,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Gnostice.DocumentStudio.WinForms.Free" Version="23.2.211" />
     <PackageReference Include="LibVLCSharp.WinForms" Version="3.8.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
   </ItemGroup>
 
