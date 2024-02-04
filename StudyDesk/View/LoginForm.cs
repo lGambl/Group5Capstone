@@ -39,18 +39,6 @@ namespace StudyDesk.View
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
-            //TODO: Can be removed. Just using to test desktop authentication connection.
-            if (new AuthService().LoginAsync(this.UsernameTextBox.Text, this.PasswordTextBox.Text).Result == true)
-            {
-                this.UsernameTextBox.Text = Properties.Settings.Default.UserToken;
-            }
-            else
-            {
-                this.UsernameTextBox.Text = "False";
-            }
-            
-            //var service = new AuthService().LoginAsync(this.UsernameTextBox.Text, this.PasswordTextBox.Text);
-
             // this.controller.CurrentEmployee =
             //     LoginController.CheckLogin(this.UsernameTextBox.Text, this.PasswordTextBox.Text);
             // if (this.controller.CurrentEmployee != null)

@@ -50,7 +50,6 @@ namespace StudyDesk.Model
                 var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
                 Token = tokenResponse?.Token;
 
-                // Set the token as default request header for future requests
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
                 Properties.Settings.Default.UserToken = Token;
@@ -65,6 +64,5 @@ namespace StudyDesk.Model
             throw new Exception("Login failed with status code: " + response.StatusCode);
         }
 
-        // Additional methods to use the token in requests can be added here...
     }
 }

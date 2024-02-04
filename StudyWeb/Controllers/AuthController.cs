@@ -44,7 +44,7 @@ namespace StudyWeb.Controllers
             if (result.Succeeded)
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var keyString = "YourSuperSecretKeyThatIsLongEnough";
+                var keyString = "TheSuperSecretKeyThatIsLongEnough";
                 var key = Encoding.ASCII.GetBytes(keyString);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
@@ -53,7 +53,7 @@ namespace StudyWeb.Controllers
                         new Claim(ClaimTypes.Name, model.Username)
                         // Add other claims as needed
                     }),
-                    Expires = DateTime.UtcNow.AddDays(7), // Set token expiration as needed
+                    Expires = DateTime.UtcNow.AddDays(7),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
 

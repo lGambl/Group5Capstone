@@ -11,7 +11,7 @@
         /// <value>
         ///   The username.
         /// </value>
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
         /// <summary>
         ///   Gets or sets the password.
@@ -19,7 +19,7 @@
         /// <value>
         ///   The password.
         /// </value>
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
     }
 }
