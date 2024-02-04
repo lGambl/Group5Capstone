@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
-using StudyWeb.Models;
 
 namespace StudyDesk.Model
 {
