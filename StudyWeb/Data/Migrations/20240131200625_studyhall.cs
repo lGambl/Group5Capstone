@@ -73,8 +73,7 @@ namespace StudyWeb.Data.Migrations
             CREATE TABLE [dbo].[Note] (
                 [Id] int NOT NULL IDENTITY(1,1),
                 [Text] nvarchar(max) NOT NULL,
-                [DocumentId] int NOT NULL,
-                [SourceId] int,
+                [SourceId] int  NOT NULL,
                 CONSTRAINT [PK_Note] PRIMARY KEY ([Id]),
                 CONSTRAINT [FK_Note_Source] FOREIGN KEY ([SourceId]) REFERENCES [dbo].[Source] ([Id])
             )
