@@ -56,6 +56,10 @@ namespace StudyDesk.View
             // {
             //     MessageBox.Show(InvalidLoginMessage);
             // }
+            var mainpage = new MainPageForm();
+            mainpage.Show();
+            mainpage.Closed += (_, _) => Close();
+            Hide();
         }
 
         #endregion

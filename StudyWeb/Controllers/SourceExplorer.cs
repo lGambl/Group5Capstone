@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StudyWeb.Data;
 using StudyWeb.Models;
+using System.Security.Claims;
 
 namespace StudyWeb.Controllers
 {
@@ -77,6 +78,8 @@ namespace StudyWeb.Controllers
             }
 
             var source = _context.Source.FirstOrDefault(m => m.Id == id);
+
+            source.Notes = _context.Note.Where(n => n.SourceId == id).ToList();
 
             if (source == null)
             {
@@ -219,9 +222,42 @@ namespace StudyWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> AddNote(string Note)
+        [Authorize]
+        [HttpPost]
+        [Route("Note")]
+        public async Task<IActionResult> Note([FromForm] string text, [FromForm] int sourceId)
         {
-            return BadRequest();
+             if (string.IsNullOrWhiteSpace(text) || sourceId == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid note text or source ID." });
+            }
+
+            var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (owner == null)
+            {
+                return Unauthorized(new { success = false, message = "User is not authenticated." });
+            }
+
+            try
+            {
+                var insertNoteQuery = "INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);";
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@Text", text),
+                    new SqlParameter("@Owner", owner),
+                    new SqlParameter("@SourceId", sourceId)
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                
+                return BadRequest();
+            }
+
+            return Ok(new { success = true, message = "Note added successfully." });
         }
     }
 }

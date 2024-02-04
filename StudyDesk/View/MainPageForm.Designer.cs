@@ -28,12 +28,67 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "MainPageForm";
+            indexListView = new ListView();
+            titleHeader = new ColumnHeader();
+            addButton = new Button();
+            deleteButton = new Button();
+            SuspendLayout();
+            // 
+            // indexListView
+            // 
+            indexListView.Columns.AddRange(new ColumnHeader[] { titleHeader });
+            indexListView.Location = new Point(12, 48);
+            indexListView.Name = "indexListView";
+            indexListView.Size = new Size(333, 300);
+            indexListView.TabIndex = 0;
+            indexListView.UseCompatibleStateImageBehavior = false;
+            indexListView.View = System.Windows.Forms.View.Details;
+            indexListView.SelectedIndexChanged += indexListView_SelectedIndexChanged;
+            indexListView.MouseDoubleClick += indexListView_MouseDoubleClick;
+            // 
+            // titleHeader
+            // 
+            titleHeader.Text = "Title";
+            titleHeader.Width = 325;
+            // 
+            // addButton
+            // 
+            addButton.Location = new Point(12, 12);
+            addButton.Name = "addButton";
+            addButton.Size = new Size(94, 29);
+            addButton.TabIndex = 1;
+            addButton.Text = "Add";
+            addButton.UseVisualStyleBackColor = true;
+            addButton.Click += addButton_Click;
+            // 
+            // deleteButton
+            // 
+            deleteButton.Enabled = false;
+            deleteButton.Location = new Point(251, 12);
+            deleteButton.Name = "deleteButton";
+            deleteButton.Size = new Size(94, 29);
+            deleteButton.TabIndex = 2;
+            deleteButton.Text = "Delete";
+            deleteButton.UseVisualStyleBackColor = true;
+            // 
+            // MainPageForm
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(357, 360);
+            Controls.Add(deleteButton);
+            Controls.Add(addButton);
+            Controls.Add(indexListView);
+            Name = "MainPageForm";
+            Text = "MainPageForm";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private ListView indexListView;
+        private ColumnHeader titleHeader;
+        private Button addButton;
+        private Button deleteButton;
     }
 }

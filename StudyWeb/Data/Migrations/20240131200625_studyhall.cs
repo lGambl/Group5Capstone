@@ -20,8 +20,8 @@ namespace StudyWeb.Data.Migrations
             // Drop the 'Source' table if it exists
             migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Source') DROP TABLE [dbo].[Source]");
 
-            // Drop the 'sourceType' table if it exists
-            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'sourceType') DROP TABLE [dbo].[sourceType]");
+            // Drop the 'SourceType' table if it exists
+            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'SourceType') DROP TABLE [dbo].[SourceType]");
 
             
 
@@ -35,7 +35,8 @@ namespace StudyWeb.Data.Migrations
                 [Link] nvarchar(max) NOT NULL,
                 [Title] nvarchar(max) NOT NULL,
                 [Type] int NOT NULL,
-                [Owner] nvarchar(max) NOT NULL,
+                [Owner] nvarchar(450) NOT NULL,
+                CONSTRAINT [FK_Source_AspNetUsers] FOREIGN KEY ([Owner]) REFERENCES [dbo].[AspNetUsers] ([Id]),
                 CONSTRAINT [PK_Source] PRIMARY KEY ([Id])
             )
         END
@@ -43,9 +44,9 @@ namespace StudyWeb.Data.Migrations
 
             // Check if the 'sourceType' table exists and create it if it does not
             migrationBuilder.Sql(@"
-        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'sourceType')
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'SourceType')
         BEGIN
-            CREATE TABLE [dbo].[sourceType] (
+            CREATE TABLE [dbo].[SourceType] (
                 [Id] int NOT NULL IDENTITY(1,1),
                 [Name] nvarchar(max) NOT NULL,
                 CONSTRAINT [PK_sourceType] PRIMARY KEY ([Id])
@@ -73,9 +74,10 @@ namespace StudyWeb.Data.Migrations
             CREATE TABLE [dbo].[Note] (
                 [Id] int NOT NULL IDENTITY(1,1),
                 [Text] nvarchar(max) NOT NULL,
-                [DocumentId] int NOT NULL,
-                [SourceId] int,
+                [SourceId] int  NOT NULL,
+                [Owner] nvarchar(450) NOT NULL,
                 CONSTRAINT [PK_Note] PRIMARY KEY ([Id]),
+                CONSTRAINT [FK_NOTE_ASPNETUSERS] FOREIGN KEY ([Owner]) REFERENCES [dbo].[AspNetUsers] ([Id]),
                 CONSTRAINT [FK_Note_Source] FOREIGN KEY ([SourceId]) REFERENCES [dbo].[Source] ([Id])
             )
         END
