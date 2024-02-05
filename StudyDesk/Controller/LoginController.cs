@@ -1,29 +1,26 @@
 ﻿using StudyDesk.Model;
 
-namespace StudyDesk.Controller
+namespace StudyDesk.Controller;
+
+/// <summary>
+///     The Login Controller.
+/// </summary>
+public class LoginController
 {
+    #region Methods
+
     /// <summary>
-    ///   The Login Controller.
+    ///     Verifies the login credentials.
     /// </summary>
-    public class LoginController
+    /// <param name="username">The username.</param>
+    /// <param name="password">The password.</param>
+    /// <returns>
+    ///     True if login is successful, False if unsuccessful
+    /// </returns>
+    public static bool VerifyLoginCredentials(string username, string password)
     {
-
-        /// <summary>
-        ///   Verifies the login credentials.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <param name="password">The password.</param>
-        /// <returns>
-        ///   True if login is successful, False if unsuccessful
-        /// </returns>
-        public bool VerifyLoginCredentials(string username, string password)
-        {
-            if (new AuthService().LoginAsync(username, password).Result == true)
-            {
-                return true;
-            }
-            return false;
-        }
-
+        return new AuthService().LoginAsync(username, password).Result;
     }
+
+    #endregion
 }

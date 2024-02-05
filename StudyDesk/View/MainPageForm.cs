@@ -9,16 +9,25 @@ namespace StudyDesk.View
     public partial class MainPageForm : Form
     {
         private const string? NotImplementedYet = "Not implemented yet.";
-        private MainPageController controller;
+        private readonly MainPageController controller;
         /// <summary>
         /// Initializes a new instance of the <see cref="MainPageForm"/> class.
         /// </summary>
-        /// <param name="userId">The id of the logged-in user.</param>
-        public MainPageForm(string userId)
+        public MainPageForm()
         {
             this.InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
-            this.controller = new MainPageController(userId);
+            this.controller = new MainPageController();
+        }
+
+        private void loadSources()
+        {
+            this.indexListView.Items.Clear();
+            foreach (var source in this.controller.Sources)
+            {
+                var item = new ListViewItem(source.Title);
+                this.indexListView.Items.Add(item);
+            }
         }
 
         private void addButton_Click(object sender, EventArgs e)
