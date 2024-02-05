@@ -18,6 +18,7 @@ namespace StudyDesk.View
             this.InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
             this.controller = new MainPageController();
+            this.loadSources();
         }
 
         private void loadSources()
