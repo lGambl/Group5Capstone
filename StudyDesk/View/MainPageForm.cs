@@ -50,7 +50,8 @@ namespace StudyDesk.View
 
         private void indexListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            var sourceForm = new SourceForm();
+            var source = this.controller.Sources[this.indexListView.SelectedIndices[0]];
+            var sourceForm = new SourceForm(source);
             sourceForm.ShowDialog();
         }
     }

@@ -1,4 +1,5 @@
-﻿using StudyDesk.Model;
+﻿using StudyDesk.Controller;
+using StudyDesk.Model;
 using StudyDesk.View.SourceControls;
 
 namespace StudyDesk.View
@@ -9,23 +10,44 @@ namespace StudyDesk.View
     /// <seealso cref="System.Windows.Forms.Form" />
     public partial class SourceForm : Form
     {
+        private readonly SourceFormController controller;
         /// <summary>
         /// Initializes a new instance of the <see cref="SourceForm"/> class.
         /// </summary>
-        public SourceForm()
+        /// <param name="source">The source to display.</param>
+        public SourceForm(Source source)
         {
             this.InitializeComponent();
+            this.controller = new SourceFormController(source);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.loadNotes();
+            this.loadSource(source);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SourceForm"/> class.
         /// This constructor is currently unused.
         /// </summary>
-        /// <param name="type">The type.</param>
-        public SourceForm(SourceType type)
+        /// <param name="source">The source to display.</param>
+        // public SourceForm(Source source)
+        // {
+        //     this.InitializeComponent();
+        //     this.handleType(source.Type);
+        //     this.controller = new SourceFormController(source);
+        // }
+
+        private void loadNotes()
         {
-            this.InitializeComponent();
-            this.handleType(type);
+            this.noteGridView.Rows.Clear();
+            foreach (var note in this.controller.Notes)
+            {
+                this.noteGridView.Rows.Add(note.Text);
+            }
+        }
+
+        private void loadSource(Source source)
+        {
+            this.documentControl1.SetDocument(source.Link);
         }
 
         private void handleType(SourceType type)
@@ -54,7 +76,6 @@ namespace StudyDesk.View
             this.splitContainer1.Panel2.Controls.Add(videoControl);
         }
 
-
         private void addDocumentControl()
         {
             var documentControl = new DocumentControl();
@@ -68,7 +89,25 @@ namespace StudyDesk.View
 
         private void noteGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            // TODO: This handler will handle changes to notes. 
+            var noteIndex = e.RowIndex;
+            var noteText = this.noteGridView.Rows[noteIndex].Cells[0].Value.ToString();
+            if (string.IsNullOrEmpty(noteText))
+            {
+                if (this.controller.DeleteNoteAt(noteIndex))
+                {
+                    this.noteGridView.Rows.RemoveAt(noteIndex);
+                    return;
+                }
+            }
+            if (noteIndex < this.controller.Notes.Count)
+            {
+                _ = this.controller.EditNote(noteIndex, noteText!);
+            }
+            else
+            {
+                this.controller.AddNote(noteText!);
+            }
+            
         }
     }
 }
