@@ -59,14 +59,5 @@ namespace StudyDesk.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Amet est placerat in egestas erat imperdiet sed euismod nisi. Pulvinar etiam non quam lacus suspendisse. Consectetur a erat nam at lectus urna duis convallis convallis. Facilisis gravida neque convallis a cras semper auctor neque vitae. Phasellus faucibus scelerisque eleifend donec pretium. Eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque. Pellentesque adipiscing [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string dummyTextFile {
-            get {
-                return ResourceManager.GetString("dummyTextFile", resourceCulture);
-            }
-        }
     }
 }
