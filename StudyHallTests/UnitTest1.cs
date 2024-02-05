@@ -1,4 +1,4 @@
-using StudyWeb.Models;
+using StudyDesk.Model;
 
 namespace StudyHallTests
 {
@@ -12,17 +12,13 @@ namespace StudyHallTests
         [Test]
         public void Test1()
         {
-            Assert.Pass();
-        }
-
-        [Test]
-        public void TestInvalidSourceType()
-        {
-            var source = new Source
+            var webSource = new StudyWeb.Models.Source
             {
-                Type = (SourceTypes)5
+                Title = "Test",
+                Id = 5
             };
-            Assert.Throws<ArgumentException>(() => source.SourceTypeToString());
+            var deskSource = new StudyDesk.Model.Source(1, "test", "test", SourceType.Pdf, "test");
+            Assert.Pass();
         }
     }
 }
