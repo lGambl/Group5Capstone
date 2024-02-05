@@ -23,10 +23,6 @@ namespace StudyWeb.Data.Migrations
             // Drop the 'SourceType' table if it exists
             migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'SourceType') DROP TABLE [dbo].[SourceType]");
 
-            
-
-
-            // Check if the 'Source' table exists and create it if it does not
             migrationBuilder.Sql(@"
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Source')
         BEGIN
@@ -42,7 +38,7 @@ namespace StudyWeb.Data.Migrations
         END
     ");
 
-            // Check if the 'sourceType' table exists and create it if it does not
+            
             migrationBuilder.Sql(@"
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'SourceType')
         BEGIN
@@ -63,11 +59,10 @@ namespace StudyWeb.Data.Migrations
                     { 2, "VideoLink" },
                     { 3, "pdf" },
                     { 4, "pdfLink" },
-                    { 5, "image" },      // ID for 'image' as specified
-                    { 6, "imagelink" }   // ID for 'imagelink' as specified
+                    { 5, "image" },
+                    { 6, "imagelink" }   
                 });
 
-            // Check if the 'Note' table exists and create it if it does not
             migrationBuilder.Sql(@"
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Note')
         BEGIN
@@ -83,7 +78,7 @@ namespace StudyWeb.Data.Migrations
         END
     ");
 
-            // Create any additional indexes or constraints here, if necessary
+            
         }
 
 
