@@ -12,6 +12,8 @@ namespace StudyWeb.Data
         }
         public DbSet<Source> Source { get; set; } = default!;
 
-        public DbSet<SourceType> sourceType { get; set; } = default!;
+        public DbSet<Note> Note { get; set; } = default!;
+
+        public DbSet<SourceType> SourceType { get; set; } = default!;
     }
 }

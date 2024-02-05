@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StudyWeb.Data;
 using StudyWeb.Models;
+using System.Security.Claims;
 
 namespace StudyWeb.Controllers
 {
@@ -54,6 +55,7 @@ namespace StudyWeb.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         [Route("Source/{id?}")]
         public Source? GetSource(int? id)
         {
@@ -76,6 +78,8 @@ namespace StudyWeb.Controllers
             }
 
             var source = _context.Source.FirstOrDefault(m => m.Id == id);
+
+            source.Notes = _context.Note.Where(n => n.SourceId == id).ToList();
 
             if (source == null)
             {
@@ -194,7 +198,6 @@ namespace StudyWeb.Controllers
             return true;
         }
 
-
         private async Task<bool> AddLink(string title, string owner, string link, SourceTypes type)
         {
             try
@@ -217,113 +220,44 @@ namespace StudyWeb.Controllers
                 // For debugging: throw; or return false;
                 return false;
             }
-
-            return false;
         }
 
-
-
-        /*/// <summary>
-        ///   Shows the search results.
-        /// </summary>
-        /// <param name="SearchName">Name of the search.</param>
-        /// <returns>
-        ///   Task
-        /// </returns>
         [Authorize]
         [HttpPost]
-        [Route("Search")]
-        public async Task<IActionResult> ShowSearchResults(String SearchName)
+        [Route("Note")]
+        public async Task<IActionResult> Note([FromForm] string text, [FromForm] int sourceId)
         {
-            return View("Index", await _context.PhonebookEntry.Where(n => n.Name.Contains(SearchName)).ToListAsync());
-        }*/
-
-
-        /*/// <summary>
-        ///   Creates this instance.
-        /// </summary>
-        /// <returns>
-        ///   Result
-        /// </returns>
-        [Authorize]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-
-        /// <summary>
-        ///   reates the specified phonebook entry.
-        /// </summary>
-        /// <param name="phonebookEntry">The phonebook entry.</param>
-        /// <returns>
-        ///   Task
-        /// </returns>
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,PhoneNumber")] PhonebookEntry phonebookEntry)
-        {
-            if (ModelState.IsValid)
+             if (string.IsNullOrWhiteSpace(text) || sourceId == null)
             {
-                _context.Add(phonebookEntry);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(phonebookEntry);
-        }
-
-        /// <summary>
-        ///   Deletes the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>
-        ///   Task
-        /// </returns>
-        [Authorize]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+                return BadRequest(new { success = false, message = "Invalid note text or source ID." });
             }
 
-            var phonebookEntry = await _context.PhonebookEntry
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (phonebookEntry == null)
+            var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (owner == null)
             {
-                return NotFound();
+                return Unauthorized(new { success = false, message = "User is not authenticated." });
             }
 
-            return View(phonebookEntry);
-        }
-
-
-        /// <summary>
-        ///   Deletes the confirmed.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>
-        ///   Task
-        /// </returns>
-        [Authorize]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var phonebookEntry = await _context.PhonebookEntry.FindAsync(id);
-            if (phonebookEntry != null)
+            try
             {
-                _context.PhonebookEntry.Remove(phonebookEntry);
+                var insertNoteQuery = "INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);";
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@Text", text),
+                    new SqlParameter("@Owner", owner),
+                    new SqlParameter("@SourceId", sourceId)
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                
+                return BadRequest();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Ok(new { success = true, message = "Note added successfully." });
         }
-
-        private bool PhonebookEntryExists(int id)
-        {
-            return _context.PhonebookEntry.Any(e => e.Id == id);
-        }*/
     }
 }
