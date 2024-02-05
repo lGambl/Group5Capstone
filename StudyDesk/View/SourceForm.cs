@@ -21,7 +21,7 @@ namespace StudyDesk.View
             this.controller = new SourceFormController(source);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.loadNotes();
-            this.loadSource(source);
+            // this.loadSource(source);
         }
 
         /// <summary>
@@ -90,8 +90,11 @@ namespace StudyDesk.View
         private void noteGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             var noteIndex = e.RowIndex;
-            var noteText = this.noteGridView.Rows[noteIndex].Cells[0].Value.ToString();
-            if (string.IsNullOrEmpty(noteText))
+            if (noteIndex < 0)
+            {
+                return;
+            }
+            if (this.noteGridView.Rows[noteIndex].Cells[0] is null)
             {
                 if (this.controller.DeleteNoteAt(noteIndex))
                 {
@@ -99,6 +102,7 @@ namespace StudyDesk.View
                     return;
                 }
             }
+            var noteText = this.noteGridView.Rows[noteIndex].Cells[0].Value.ToString();
             if (noteIndex < this.controller.Notes.Count)
             {
                 _ = this.controller.EditNote(noteIndex, noteText!);

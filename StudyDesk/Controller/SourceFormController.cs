@@ -1,4 +1,5 @@
-﻿using StudyDesk.Model;
+﻿using Microsoft.Data.SqlClient;
+using StudyDesk.Model;
 
 namespace StudyDesk.Controller;
 
@@ -9,6 +10,9 @@ namespace StudyDesk.Controller;
 public class SourceFormController
 {
     #region Data members
+
+    private const string ConnectionString =
+        "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
 
     private readonly Source source;
 
@@ -97,22 +101,83 @@ public class SourceFormController
 
     private bool deleteNoteFromDb(Note note)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = new SqlCommand("DELETE FROM dbo.Note WHERE Id = @id", connection);
+            command.Parameters.AddWithValue("@id", note.Id);
+            var result = command.ExecuteNonQuery();
+            connection.Close();
+            return true;
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("Failed to delete note from database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
+        }
+
     }
 
     private bool updateNoteInDb(Note note)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = new SqlCommand("UPDATE dbo.Note SET Text = @text WHERE Id = @id", connection);
+            command.Parameters.AddWithValue("@text", note.Text);
+            command.Parameters.AddWithValue("@id", note.Id);
+            var result = command.ExecuteNonQuery();
+            connection.Close();
+            return true;
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("Failed to update note in database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
+        }
     }
 
     private bool addNoteToDb(Note note)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = new SqlCommand("INSERT INTO dbo.Note (Text, SourceId, Owner) VALUES (@text, @sourceId, @owner)", connection);
+            command.Parameters.AddWithValue("@text", note.Text);
+            command.Parameters.AddWithValue("@sourceId", note.SourceId);
+            command.Parameters.AddWithValue("@owner", note.Owner);
+            var result = command.ExecuteNonQuery();
+            connection.Close();
+            return true;
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("Failed to add note to database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
+        }
     }
 
     private void loadNotes()
     {
-        throw new NotImplementedException();
+        var notes = new List<Note>();
+        var connection = new SqlConnection(ConnectionString);
+        connection.Open();
+        var command = new SqlCommand("SELECT * FROM dbo.Note WHERE SourceId = @sourceId", connection);
+        command.Parameters.AddWithValue("@sourceId", this.source.Id);
+        var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var id = reader.GetInt32(0);
+            var text = reader.GetString(1);
+            var sourceId = reader.GetInt32(2);
+            var owner = reader.GetString(3);
+            notes.Add(new Note(id, text, sourceId, owner));
+        }
+        connection.Close();
+        this.Notes = notes;
     }
 
     #endregion

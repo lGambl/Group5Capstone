@@ -42,7 +42,7 @@ public class MainPageController
         while (reader.Read())
         {
             sources.Add(new Source(reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
-                (SourceType)reader.GetInt32(3), ""));
+                (SourceType)reader.GetInt32(3), reader.GetString(4)));
         }
         return sources;
     }
