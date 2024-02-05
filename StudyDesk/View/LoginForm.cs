@@ -40,27 +40,9 @@ namespace StudyDesk.View
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
-            // this.controller.CurrentEmployee =
-            //     LoginController.CheckLogin(this.UsernameTextBox.Text, this.PasswordTextBox.Text);
-            // if (this.controller.CurrentEmployee != null)
-            // {
-            //     var mainpageContgroller = new MainpageController
-            //     {
-            //         CurrentEmployee = this.controller.CurrentEmployee
-            //     };
-            //     var mainpage = new Mainpage(mainpageContgroller);
-            //     mainpage.Show();
-            //     mainpage.Closed += (_, _) => Close();
-            //     Hide();
-            // }
-            // else
-            // {
-            //     MessageBox.Show(InvalidLoginMessage);
-            // }
-
-            if (controller.VerifyLoginCredentials(this.UsernameTextBox.Text, this.PasswordTextBox.Text))
+            if (this.controller.VerifyLoginCredentials(this.UsernameTextBox.Text, this.PasswordTextBox.Text))
             {
-                var mainpage = new MainPageForm();
+                var mainpage = new MainPageForm(string.Empty);
                 mainpage.Show();
                 mainpage.Closed += (_, _) => Close();
                 Hide();

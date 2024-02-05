@@ -39,23 +39,41 @@ namespace StudyDesk.Controller
         public MainPageController(string id)
         {
             this.LoggedInId = id ?? throw new ArgumentNullException(nameof(id));
-            this.Sources = this.getSources();
+            this.Sources = new List<Source>();
         }
 
-        private IList<Source> getSources()
+        // private IList<Source> getSources()
+        // {
+        //     var sources = new List<Source>();
+        //     using var connection = new SqlConnection(ConnectionString);
+        //     connection.Open();
+        //     using var command = new SqlCommand("SELECT * FROM Sources WHERE UserId = @UserId", connection);
+        //     command.Parameters.AddWithValue("@UserId", this.LoggedInId);
+        //     using var reader = command.ExecuteReader();
+        //     while (reader.Read())
+        //     {
+        //         sources.Add(new Source(reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
+        //             (SourceType)reader.GetInt32(3), this.LoggedInId));
+        //     }
+        //     return sources;
+        // }
+
+        /// <summary>
+        /// Adds as source under the logged-in user.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="link">The link.</param>
+        ///
+        /// <precondition>name != null && !name.isEmptyOrBlank
+        ///               sourceType.isOfTypeEnum<see cref="SourceType"/>()
+        ///               link != null && !link.isEmptyOrBlank
+        /// </precondition>
+        /// 
+        /// <returns>True if addition is successful, false otherwise.</returns>
+        public bool AddSource(string name, SourceType type, string link)
         {
-            var sources = new List<Source>();
-            using var connection = new SqlConnection(ConnectionString);
-            connection.Open();
-            using var command = new SqlCommand("SELECT * FROM Sources WHERE UserId = @UserId", connection);
-            command.Parameters.AddWithValue("@UserId", this.LoggedInId);
-            using var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                sources.Add(new Source(reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
-                    (SourceType)reader.GetInt32(3), this.LoggedInId));
-            }
-            return sources;
+            return true;
         }
 
 
