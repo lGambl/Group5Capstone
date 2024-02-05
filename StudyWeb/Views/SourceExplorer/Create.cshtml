@@ -16,6 +16,8 @@
         <option value="4">Pdf Link</option>
         <option value="1">Video</option>
         <option value="3">Pdf</option>
+        <option value="5">Image</option>
+        <option value="6">Image Link</option>
     </select>
     
     
@@ -25,13 +27,18 @@
     </div>
     
     <div id="videoInput" style="display:none;">
-        <label for="videoUpload">Video</label>
+        <label>Video</label>
         <input type="file" name="videoUpload" accept=".mp4" />
     </div>
 
     <div id="pdfInput" style="display:none;">
-        <label for="pdfUpload">PDF</label>
+        <label>PDF</label>
         <input type="file" name="pdfUpload" accept=".pdf"/>
+    </div>
+    
+    <div id="imageInput" style="display: none">
+        <label>Image</label>
+        <input type="file" name="imageUpload" accept=".jpg, .jpeg, .png"/>
     </div>
 
     
@@ -41,31 +48,39 @@
 
 <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var typeSelect = document.getElementById('Type'); // The ID might be generated based on the model property name
+            var typeSelect = document.getElementById('Type'); 
             var linkInput = document.getElementById('linkInput');
             var fileInput = document.getElementById('pdfInput');
-            var videoInput = document.getElementById('videoInput')
+            var videoInput = document.getElementById('videoInput');
+            var imageInput = document.getElementById('imageInput');
 
             typeSelect.addEventListener('change', function () {
                 var selectedType = this.value;
 
-                if (selectedType === "2" || selectedType === "4") {
+                if (selectedType === "2" || selectedType === "4" || selectedType === "6") {
                     videoInput.style.display = 'none';
                     linkInput.style.display = 'block';
                     pdfInput.style.display = 'none';
+                    imageInput.style.display = 'none';
                 }
                 else if (selectedType === "3") {
                     videoInput.style.display = 'none';
                     fileInput.style.display = 'block';
                     linkInput.style.display = 'none';
+                    imageInput.style.display = 'none';
                 }else if (selectedType === "1"){
                     videoInput.style.display = 'block';
                     fileInput.style.display = 'none';
                     linkInput.style.display = 'none';
+                    imageInput.style.display = 'none';
+                }else if (selectedType === "5"){
+                    videoInput.style.display = 'none';
+                    fileInput.style.display = 'none';
+                    linkInput.style.display = 'none';
+                    imageInput.style.display = 'block';
                 }
             });
 
-            // Trigger the change event on page load
             typeSelect.dispatchEvent(new Event('change'));
         });
 </script>
