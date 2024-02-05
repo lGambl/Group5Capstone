@@ -1,17 +1,15 @@
-﻿using StudyDesk.Model;
+﻿using Microsoft.Data.SqlClient;
+using StudyDesk.Model;
 
 namespace StudyDesk.Controller;
 
 /// <summary>
 ///     Controller for the main page.
 /// </summary>
-/// <remarks>
-///     Initializes a new instance of the <see cref="MainPageController" /> class.
-/// </remarks>
-/// <param name="id">The identifier.</param>
-/// <precondition>id != null</precondition>
-public class MainPageController()
+public class MainPageController
 {
+    private const string ConnectionString =
+        "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
     #region Properties
 
     /// <summary>
@@ -20,15 +18,32 @@ public class MainPageController()
     /// <value>
     ///     The sources as a collection of Source objects.
     /// </value>
-    public IList<Source> Sources { get; private set; } = new List<Source>();
+    public IList<Source> Sources { get; private set; }
 
     #endregion
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MainPageController"/> class.
+    /// </summary>
+    public MainPageController()
+    {
+        this.Sources = this.getSources();
+    }
 
     #region Methods
 
     private IList<Source> getSources()
     {
         var sources = new List<Source>();
+        using var connection = new SqlConnection(ConnectionString);
+        connection.Open();
+        using var command = new SqlCommand("SELECT * FROM dbo.Source", connection);
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            sources.Add(new Source(reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
+                (SourceType)reader.GetInt32(3), ""));
+        }
         return sources;
     }
 
