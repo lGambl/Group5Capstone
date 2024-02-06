@@ -1,4 +1,7 @@
-﻿namespace StudyDesk.View
+﻿using StudyDesk.Controller;
+using StudyDesk.Model;
+
+namespace StudyDesk.View
 {
     /// <summary>
     /// The main page form.
@@ -6,18 +9,33 @@
     /// <seealso cref="System.Windows.Forms.Form" />
     public partial class MainPageForm : Form
     {
+        private const string? NotImplementedYet = "Not implemented yet.";
+        private readonly MainPageController controller;
         /// <summary>
         /// Initializes a new instance of the <see cref="MainPageForm"/> class.
         /// </summary>
-        public MainPageForm()
+        public MainPageForm(AuthService auth)
         {
             this.InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
+            this.controller = new MainPageController(auth);
+            this.loadSources();
+        }
+
+        private void loadSources()
+        {
+
+            this.indexListView.Items.Clear();
+            foreach (var source in this.controller.Sources)
+            {
+                var item = new ListViewItem(source.Title);
+                this.indexListView.Items.Add(item);
+            }
         }
 
         private void addButton_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show(NotImplementedYet);
         }
 
         private void indexListView_SelectedIndexChanged(object sender, EventArgs e)
