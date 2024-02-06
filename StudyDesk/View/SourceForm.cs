@@ -21,7 +21,7 @@ namespace StudyDesk.View
             this.controller = new SourceFormController(source);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.loadNotes();
-            // this.loadSource(source);
+            this.loadSource(source);
         }
 
         /// <summary>
@@ -45,9 +45,9 @@ namespace StudyDesk.View
             }
         }
 
-        private void loadSource(Source source)
+        private void  loadSource(Source source)
         {
-            this.documentControl1.SetDocument(source.Link);
+            _=this.documentControl1.SetDocument(source.Link).Result;
         }
 
         private void handleType(SourceType type)

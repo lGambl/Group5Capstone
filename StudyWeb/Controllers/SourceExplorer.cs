@@ -51,7 +51,7 @@ namespace StudyWeb.Controllers
                 {
                     if (source.Type == SourceTypes.Pdf || source.Type == SourceTypes.Video)
                     {
-                        source.Link = "localhost:7240" + Url.Content(source.Link);
+                        source.Link = "https://localhost:7240/" + source.Link;
                     }
                 }
                 return Ok(sources);
