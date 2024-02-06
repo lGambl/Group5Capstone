@@ -1,4 +1,5 @@
 ﻿using StudyDesk.Controller;
+using StudyDesk.Model;
 
 namespace StudyDesk.View
 {
@@ -13,16 +14,17 @@ namespace StudyDesk.View
         /// <summary>
         /// Initializes a new instance of the <see cref="MainPageForm"/> class.
         /// </summary>
-        public MainPageForm()
+        public MainPageForm(AuthService auth)
         {
             this.InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
-            this.controller = new MainPageController();
+            this.controller = new MainPageController(auth);
             this.loadSources();
         }
 
         private void loadSources()
         {
+
             this.indexListView.Items.Clear();
             foreach (var source in this.controller.Sources)
             {

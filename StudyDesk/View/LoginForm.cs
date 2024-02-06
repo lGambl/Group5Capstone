@@ -37,9 +37,10 @@ public partial class LoginForm : Form
 
     private void LoginButton_Click(object sender, EventArgs e)
     {
-        if (LoginController.VerifyLoginCredentials(this.UsernameTextBox.Text, this.PasswordTextBox.Text))
+        var auth = LoginController.VerifyLoginCredentials(this.UsernameTextBox.Text, this.PasswordTextBox.Text);
+        if (auth != null)
         {
-            var mainpage = new MainPageForm();
+            var mainpage = new MainPageForm(auth);
             mainpage.Show();
             mainpage.Closed += (_, _) => Close();
             Hide();

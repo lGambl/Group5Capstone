@@ -17,7 +17,7 @@ public class LoginController
     /// <returns>
     ///     True if login is successful, False if unsuccessful
     /// </returns>
-    public static bool VerifyLoginCredentials(string username, string password)
+    public static AuthService? VerifyLoginCredentials(string username, string password)
     {
         return new AuthService().LoginAsync(username, password).Result;
     }

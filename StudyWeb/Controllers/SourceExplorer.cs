@@ -35,6 +35,28 @@ namespace StudyWeb.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            if (Request.Headers["Accept"] == "application/json")
+            {
+                var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (owner == null)
+                {
+                    return Unauthorized(new { success = false, message = "User is not authenticated." });
+                }
+
+                var sources = await _context.Source.ToListAsync();
+
+                var ownerSources = sources.Where(s => s.Owner == owner).ToList();
+
+                foreach (var source in ownerSources)
+                {
+                    if (source.Type == SourceTypes.Pdf || source.Type == SourceTypes.Video)
+                    {
+                        source.Link = "localhost:7240" + Url.Content(source.Link);
+                    }
+                }
+                return Ok(sources);
+            }   
+
             return View(await _context.Source.ToListAsync());
         }
 
