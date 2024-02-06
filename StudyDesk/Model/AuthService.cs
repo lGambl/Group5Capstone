@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -24,7 +25,13 @@ namespace StudyDesk.Model
         /// </summary>
         public AuthService()
         {
-            _httpClient = new HttpClient();
+            var handler = new HttpClientHandler
+            {
+                CookieContainer = new CookieContainer(),
+                UseCookies = true,
+                UseDefaultCredentials = false
+            };
+            _httpClient = new HttpClient(handler);
         }
 
         /// <summary>
@@ -35,8 +42,8 @@ namespace StudyDesk.Model
         /// <returns>
         ///   True if the login was successful, false if unsuccessful
         /// </returns>
-        /// <exception cref="System.Exception">Login failed with status code: response.StatusCode</exception>
-        public async Task<bool> LoginAsync(string username, string password)
+        /// <exception cref="Exception">Login failed with status code: response.StatusCode</exception>
+        public async Task<AuthService?> LoginAsync(string username, string password)
         {
             var loginDto = new LoginDto { Username = username, Password = password };
             var content = new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json");
@@ -45,22 +52,44 @@ namespace StudyDesk.Model
 
             if (response.IsSuccessStatusCode)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
-                Token = tokenResponse?.Token;
-
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
-
-                Properties.Settings.Default.UserToken = Token;
-                Properties.Settings.Default.Save();
-
-                return true;
+                return this;
             }
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return false;
+                return null;
             }
             throw new Exception("Login failed with status code: " + response.StatusCode);
+        }
+
+        public async Task<IEnumerable<Source>> GetSources()
+        {
+            try
+            {
+
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await _httpClient.GetAsync("https://localhost:7240/SourceExplorer").ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var contentString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    
+                    var sources = JsonConvert.DeserializeObject<IEnumerable<Source>>(contentString);
+                    return sources ?? new List<Source>(); 
+                }
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    return new List<Source>();
+                }
+                
+                throw new Exception("Request failed with status code: " + response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception("An error occurred while fetching sources: " + ex.Message);
+            }
         }
 
     }

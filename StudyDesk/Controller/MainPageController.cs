@@ -18,21 +18,28 @@ public class MainPageController
     /// <value>
     ///     The sources as a collection of Source objects.
     /// </value>
-    public IList<Source> Sources { get; private set; }
+    public IEnumerable<Source> Sources { get; private set; }
+
+    public AuthService AuthService { get; set; }
 
     #endregion
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MainPageController"/> class.
     /// </summary>
-    public MainPageController()
+    public MainPageController(AuthService auth)
     {
-        this.Sources = this.getSources();
+        
+        this.AuthService = auth;
+        this.Sources = this.AuthService.GetSources().Result;
     }
+
+    
 
     #region Methods
 
-    private IList<Source> getSources()
+
+    /*private IList<Source> getSources()
     {
         var sources = new List<Source>();
         using var connection = new SqlConnection(ConnectionString);
@@ -45,7 +52,7 @@ public class MainPageController
                 (SourceType)reader.GetInt32(3), ""));
         }
         return sources;
-    }
+    }*/
 
     /// <summary>
     ///     Adds as source under the logged-in user.
