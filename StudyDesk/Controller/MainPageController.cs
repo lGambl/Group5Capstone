@@ -18,7 +18,7 @@ public class MainPageController
     /// <value>
     ///     The sources as a collection of Source objects.
     /// </value>
-    public IEnumerable<Source> Sources { get; private set; }
+    public IList<Source> Sources { get; private set; }
 
     public AuthService AuthService { get; set; }
 
@@ -31,28 +31,12 @@ public class MainPageController
     {
         
         this.AuthService = auth;
-        this.Sources = this.AuthService.GetSources().Result;
+        this.Sources = this.AuthService.GetSources().Result.ToList();
     }
 
-    
+
 
     #region Methods
-
-
-    /*private IList<Source> getSources()
-    {
-        var sources = new List<Source>();
-        using var connection = new SqlConnection(ConnectionString);
-        connection.Open();
-        using var command = new SqlCommand("SELECT * FROM dbo.Source", connection);
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            sources.Add(new Source(reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
-                (SourceType)reader.GetInt32(3), reader.GetString(4)));
-        }
-        return sources;
-    }*/
 
     /// <summary>
     ///     Adds as source under the logged-in user.
