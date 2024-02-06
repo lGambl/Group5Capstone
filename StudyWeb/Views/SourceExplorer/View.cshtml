@@ -58,24 +58,18 @@
     }
 </style>
 
+<button onclick="goBack()">Go Back</button>
 
 <h1>@Html.DisplayFor(model => model.Title)</h1>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr">
 
-    @if (Model.Type == SourceTypes.VideoLink)
+    @if (Model.Type == SourceTypes.VideoLink || Model.Type == SourceTypes.PdfLink || Model.Type == SourceTypes.ImageLink)
     {
         <div>
             <iframe width="1000" height="700" src="@Html.DisplayFor(model => model.Link)"></iframe>
         </div>
     
-    }else if (Model.Type == SourceTypes.PdfLink)
-    { 
-        <div>
-            <iframe width="1000" height="700" controls  src="@Html.DisplayFor(model => model.Link)"></iframe>
-        </div>
-
-
     }
     else if (Model.Type == SourceTypes.Video)
     {
@@ -86,7 +80,7 @@
             </video>
         </div>
     }
-    else if (Model.Type == SourceTypes.Pdf)
+    else if (Model.Type == SourceTypes.Pdf || Model.Type == SourceTypes.Image)
     {
         <div>
             <iframe width="1000" height="700" src="@Url.Content("~/" + Model.Link)"></iframe>
@@ -98,7 +92,7 @@
         {
             @Html.AntiForgeryToken()
 
-            <p style="display:none" id="Id" >@Html.DisplayFor(Model => Model.Id)</p>
+            <p style="display:none" id="Id" >@Html.DisplayFor(note => note.Id)</p>
 
             <div class="form-group">
                 <label for="text" class="control-label">Add Note</label>
@@ -116,6 +110,11 @@
     </div>
 </div>
 <script>
+
+    function goBack() {
+        window.history.back();
+    }
+
     $(document).ready(function () {
         $('#noteForm').submit(function (e) {
             e.preventDefault(); 

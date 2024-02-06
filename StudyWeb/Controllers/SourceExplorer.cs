@@ -100,9 +100,10 @@ namespace StudyWeb.Controllers
         [Authorize]
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create([Bind("Title")] string title, [Bind("Link")] string link, IFormFile pdfUpload, IFormFile videoUpload, [Bind("Type")] SourceTypes type)
+        public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string? link, IFormFile? pdfUpload, IFormFile? videoUpload, IFormFile? imageUpload, [Bind("Type")] SourceTypes? type)
         {
-            var owner = User.Claims.FirstOrDefault().Value;
+            var user = User.Claims.FirstOrDefault();
+            var owner = user?.Value;
             
 
             if (owner == null || title == null || type == null )
@@ -130,6 +131,28 @@ namespace StudyWeb.Controllers
                     }
 
                     if (!await saveFile(videoUpload, title, owner, type))
+                    {
+                        return BadRequest();
+                    }
+                    break;
+                case SourceTypes.Image:
+                    if (imageUpload == null)
+                    {
+                        return BadRequest();
+                    }
+
+                    if (!await saveFile(imageUpload, title, owner, type))
+                    {
+                        return BadRequest();
+                    }
+                    break;
+                case SourceTypes.ImageLink:
+                    if (link == null)
+                    {
+                        return BadRequest();
+                    }
+
+                    if (!await this.AddLink(title, owner, link, type))
                     {
                         return BadRequest();
                     }
@@ -162,7 +185,7 @@ namespace StudyWeb.Controllers
 
         }
 
-        private async Task<bool> saveFile(IFormFile file,string title, string owner, SourceTypes type)
+        private async Task<bool> saveFile(IFormFile? file,string? title, string? owner, SourceTypes? type)
         {
             
 
@@ -198,7 +221,7 @@ namespace StudyWeb.Controllers
             return true;
         }
 
-        private async Task<bool> AddLink(string title, string owner, string link, SourceTypes type)
+        private async Task<bool> AddLink(string? title, string? owner, string? link, SourceTypes? type)
         {
             try
             {
