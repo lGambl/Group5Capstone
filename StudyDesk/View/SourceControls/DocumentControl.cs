@@ -11,24 +11,27 @@ public partial class DocumentControl : UserControl
     /// </summary>
     public DocumentControl()
     {
-        InitializeComponent();
-        documentViewer1.PerformAutoScale();
+        this.InitializeComponent();
+        this.documentViewer1.PerformAutoScale();
     }
 
     /// <summary>
     ///     Sets the document.
     /// </summary>
     /// <param name="filename">The filename.</param>
-    public async Task<bool> SetDocument(string filename)
+    public Task<bool> SetDocument(string filename)
     {
         try
         {
             var temp = Path.Combine(Path.GetTempPath(), "peepee.pdf");
-            DownloadFileAsync(filename, temp);
-            var stream = new FileStream(temp, FileMode.Open, FileAccess.Read);
-            documentViewer1.LoadDocument(stream);
+            if (downloadFileAsync(filename, temp).Result)
+            {
+                var stream = new FileStream(temp, FileMode.Open, FileAccess.Read);
+                this.documentViewer1.LoadDocument(stream);
+                return Task.FromResult(true);
+            }
 
-            return true;
+            return Task.FromResult(false);
         }
         catch (Exception e)
         {
@@ -37,36 +40,36 @@ public partial class DocumentControl : UserControl
         }
     }
 
-    private async Task<bool> DownloadFileAsync(string fileUrl, string destinationPath)
+    private static async Task<bool> downloadFileAsync(string fileUrl, string destinationPath)
     {
         try
         {
 
-            using (var httpClient = new HttpClient())
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(fileUrl).ConfigureAwait(false);
+            if (response.IsSuccessStatusCode)
             {
-                var response = await httpClient.GetAsync(fileUrl).ConfigureAwait(false);
-                if (response.IsSuccessStatusCode)
+                var directory = Path.GetDirectoryName(destinationPath);
+                if (!Directory.Exists(directory))
                 {
-                    var directory = Path.GetDirectoryName(destinationPath);
-                    if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-
-
-                    var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write);
-
-
-                    await response.Content.CopyToAsync(fileStream);
+                    Directory.CreateDirectory(directory!);
                 }
-                else
-                {
-                    throw new Exception($"Failed to download the file. Status code: {response.StatusCode}");
-                }
+
+                var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write);
+
+
+                await response.Content.CopyToAsync(fileStream);
+                fileStream.Close();
+            }
+            else
+            {
+                throw new Exception($"Failed to download the file. Status code: {response.StatusCode}");
             }
 
             return true;
         }
         catch (Exception)
         {
-
             return false;
         }
     }

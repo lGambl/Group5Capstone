@@ -24,21 +24,10 @@ namespace StudyDesk.View
             this.loadSource(source);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SourceForm"/> class.
-        /// This constructor is currently unused.
-        /// </summary>
-        /// <param name="source">The source to display.</param>
-        // public SourceForm(Source source)
-        // {
-        //     this.InitializeComponent();
-        //     this.handleType(source.Type);
-        //     this.controller = new SourceFormController(source);
-        // }
-
         private void loadNotes()
         {
             this.noteGridView.Rows.Clear();
+            this.controller.RefreshNotes();
             foreach (var note in this.controller.Notes)
             {
                 this.noteGridView.Rows.Add(note.Text);
@@ -50,42 +39,42 @@ namespace StudyDesk.View
             _=this.documentControl1.SetDocument(source.Link).Result;
         }
 
-        private void handleType(SourceType type)
-        {
-            switch (type)
-            {
-                case SourceType.Video:
-                case SourceType.VideoLink:
-                    this.addVideoControl();
-                    break;
-                case SourceType.Pdf:
-                case SourceType.PdfLink:
-                    this.addDocumentControl();
-                    break;
-                case SourceType.Image:
-                    this.addImageControl();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-        }
+        // private void handleType(SourceType type)
+        // {
+        //     switch (type)
+        //     {
+        //         case SourceType.Video:
+        //         case SourceType.VideoLink:
+        //             this.addVideoControl();
+        //             break;
+        //         case SourceType.Pdf:
+        //         case SourceType.PdfLink:
+        //             this.addDocumentControl();
+        //             break;
+        //         case SourceType.Image:
+        //             this.addImageControl();
+        //             break;
+        //         default:
+        //             throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        //     }
+        // }
 
-        private void addVideoControl()
-        {
-            var videoControl = new VideoControl();
-            this.splitContainer1.Panel2.Controls.Add(videoControl);
-        }
-
-        private void addDocumentControl()
-        {
-            var documentControl = new DocumentControl();
-            this.splitContainer1.Panel2.Controls.Add(documentControl);
-        }
-        private void addImageControl()
-        {
-            var imageControl = new ImageControl();
-            this.splitContainer1.Panel2.Controls.Add(imageControl);
-        }
+        // private void addVideoControl()
+        // {
+        //     var videoControl = new VideoControl();
+        //     this.splitContainer1.Panel2.Controls.Add(videoControl);
+        // }
+        //
+        // private void addDocumentControl()
+        // {
+        //     var documentControl = new DocumentControl();
+        //     this.splitContainer1.Panel2.Controls.Add(documentControl);
+        // }
+        // private void addImageControl()
+        // {
+        //     var imageControl = new ImageControl();
+        //     this.splitContainer1.Panel2.Controls.Add(imageControl);
+        // }
 
         private void noteGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -94,7 +83,7 @@ namespace StudyDesk.View
             {
                 return;
             }
-            if (this.noteGridView.Rows[noteIndex].Cells[0] is null)
+            if (this.noteGridView.Rows[noteIndex].Cells[0].Value is null)
             {
                 if (this.controller.DeleteNoteAt(noteIndex))
                 {
@@ -109,9 +98,12 @@ namespace StudyDesk.View
             }
             else
             {
-                this.controller.AddNote(noteText!);
+                if (!this.controller.AddNote(noteText!))
+                {
+                    this.noteGridView.Rows.RemoveAt(noteIndex);
+                }
             }
-            
+            this.loadNotes();
         }
     }
 }

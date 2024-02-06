@@ -14,6 +14,11 @@ public class SourceFormController
     private const string ConnectionString =
         "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
 
+    private const string? FailedToAddNoteToDatabase = "Failed to add note to database";
+    private const string? ErrorCaption = "Error";
+    private const string? FailedToUpdateNoteInDatabase = "Failed to update note in database";
+    private const string? FailedToDeleteNoteFromDatabase = "Failed to delete note from database";
+
     private readonly Source source;
 
     #endregion
@@ -54,8 +59,8 @@ public class SourceFormController
     /// <returns>True if successfully added, false otherwise.</returns>
     public bool AddNote(string noteText)
     {
-        var note = new Note(0, noteText, this.source.Id, "TBD");
-        if (this.addNoteToDb(note))
+        var note = new Note(0, noteText, this.source.Id, this.source.Owner);
+        if (addNoteToDb(note))
         {
             this.Notes.Add(note);
             return true;
@@ -65,7 +70,7 @@ public class SourceFormController
     }
 
     /// <summary>
-    /// Edits the note at a given index.
+    ///     Edits the note at a given index.
     /// </summary>
     /// <param name="noteIndex">Index of the note.</param>
     /// <param name="noteText">The new text to add.</param>
@@ -74,23 +79,24 @@ public class SourceFormController
     {
         var note = this.Notes[noteIndex];
         var newNote = new Note(note.Id, noteText, note.SourceId, note.Owner);
-        if (this.updateNoteInDb(newNote))
+        if (updateNoteInDb(newNote))
         {
             this.Notes[noteIndex] = newNote;
             return true;
         }
+
         return false;
     }
 
     /// <summary>
-    /// Deletes the note at a given index.
+    ///     Deletes the note at a given index.
     /// </summary>
     /// <param name="noteIndex">Index of the note.</param>
     /// <returns>True if successfully removed, false otherwise.</returns>
     public bool DeleteNoteAt(int noteIndex)
     {
         var note = this.Notes[noteIndex];
-        if (this.deleteNoteFromDb(note))
+        if (deleteNoteFromDb(note))
         {
             this.Notes.RemoveAt(noteIndex);
             return true;
@@ -99,7 +105,7 @@ public class SourceFormController
         return false;
     }
 
-    private bool deleteNoteFromDb(Note note)
+    private static bool deleteNoteFromDb(Note note)
     {
         try
         {
@@ -113,13 +119,12 @@ public class SourceFormController
         }
         catch (Exception)
         {
-            MessageBox.Show("Failed to delete note from database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(FailedToDeleteNoteFromDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
             return false;
         }
-
     }
 
-    private bool updateNoteInDb(Note note)
+    private static bool updateNoteInDb(Note note)
     {
         try
         {
@@ -134,18 +139,20 @@ public class SourceFormController
         }
         catch (Exception)
         {
-            MessageBox.Show("Failed to update note in database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(FailedToUpdateNoteInDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
             return false;
         }
     }
 
-    private bool addNoteToDb(Note note)
+    private static bool addNoteToDb(Note note)
     {
         try
         {
             var connection = new SqlConnection(ConnectionString);
             connection.Open();
-            var command = new SqlCommand("INSERT INTO dbo.Note (Text, SourceId, Owner) VALUES (@text, @sourceId, @owner)", connection);
+            var command =
+                new SqlCommand("INSERT INTO dbo.Note (Text, SourceId, Owner) VALUES (@text, @sourceId, @owner)",
+                    connection);
             command.Parameters.AddWithValue("@text", note.Text);
             command.Parameters.AddWithValue("@sourceId", note.SourceId);
             command.Parameters.AddWithValue("@owner", note.Owner);
@@ -155,9 +162,17 @@ public class SourceFormController
         }
         catch (Exception)
         {
-            MessageBox.Show("Failed to add note to database", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(FailedToAddNoteToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
             return false;
         }
+    }
+
+    /// <summary>
+    ///     Refreshes the notes.
+    /// </summary>
+    public void RefreshNotes()
+    {
+        this.loadNotes();
     }
 
     private void loadNotes()
@@ -176,6 +191,7 @@ public class SourceFormController
             var owner = reader.GetString(3);
             notes.Add(new Note(id, text, sourceId, owner));
         }
+
         connection.Close();
         this.Notes = notes;
     }
