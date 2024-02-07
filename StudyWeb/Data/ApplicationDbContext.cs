@@ -2,33 +2,43 @@
 using Microsoft.EntityFrameworkCore;
 using StudyWeb.Models;
 
-namespace StudyWeb.Data;
-
-/// <summary>
-///     The Database Context
-/// </summary>
-/// <remarks>
-///     The database context
-/// </remarks>
-/// <param name="options"></param>
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+namespace StudyWeb.Data
 {
-    #region Properties
-
     /// <summary>
-    ///     The Source
+    /// The Database Context
     /// </summary>
-    public DbSet<Source> Source { get; init; } = default!;
+    public class ApplicationDbContext : IdentityDbContext
+    {
+        /// <summary>
+        /// The database context
+        /// </summary>
+        /// <param name="options"></param>
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
 
-    /// <summary>
-    ///     The Note
-    /// </summary>
-    public DbSet<Note> Note { get; init; } = default!;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
+        /// Designed for testing purposes
+        /// </summary>
+        public ApplicationDbContext()
+        {
 
-    /// <summary>
-    ///     The SourceType
-    /// </summary>
-    public DbSet<SourceType> SourceType { get; init; } = default!;
+        }
+        /// <summary>
+        /// The Source
+        /// </summary>
+        public virtual DbSet<Source> Source { get; init; } = default!;
 
-    #endregion
+        /// <summary>
+        /// The Note
+        /// </summary>
+        public virtual DbSet<Note> Note { get; init; } = default!;
+
+        /// <summary>
+        /// The SourceType
+        /// </summary>
+        public virtual DbSet<SourceType> SourceType { get; init; } = default!;
+    }
 }

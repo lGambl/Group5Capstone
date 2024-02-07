@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StudyWeb.Controllers;
 using StudyWeb.Models;
 
-namespace StudyHallTests.StudyWebTests;
+namespace StudyHallTests.StudyWebTests.controller;
 
 [TestFixture]
 public class HomeControllerTest
