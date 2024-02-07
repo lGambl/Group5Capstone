@@ -33,6 +33,14 @@ public class SourceFormController
     /// </value>
     public IList<Note> Notes { get; private set; }
 
+    /// <summary>
+    /// Gets the notes repository.
+    /// </summary>
+    /// <value>
+    /// The notes repository.
+    /// </value>
+    private INotesRepository NotesRepository { get; }
+
     #endregion
 
     #region Constructors
@@ -45,7 +53,21 @@ public class SourceFormController
     {
         this.source = source;
         this.Notes = new List<Note>();
-        this.loadNotes();
+        this.NotesRepository = new DbNotesRepository(ConnectionString, this.source);
+        this.RefreshNotes();
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SourceFormController"/> class.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="notesRepository">The notes repository.</param>
+    public SourceFormController(Source source, INotesRepository notesRepository)
+    {
+        this.source = source;
+        this.Notes = new List<Note>();
+        this.NotesRepository = notesRepository;
+        this.RefreshNotes();
     }
 
     #endregion
@@ -60,7 +82,7 @@ public class SourceFormController
     public bool AddNote(string noteText)
     {
         var note = new Note(0, noteText, this.source.Id, this.source.Owner);
-        if (addNoteToDb(note))
+        if (this.NotesRepository.AddNoteToDatabase(note))
         {
             this.Notes.Add(note);
             return true;
@@ -79,7 +101,7 @@ public class SourceFormController
     {
         var note = this.Notes[noteIndex];
         var newNote = new Note(note.Id, noteText, note.SourceId, note.Owner);
-        if (updateNoteInDb(newNote))
+        if (this.NotesRepository.UpdateNoteInDatabase(newNote))
         {
             this.Notes[noteIndex] = newNote;
             return true;
@@ -96,7 +118,7 @@ public class SourceFormController
     public bool DeleteNoteAt(int noteIndex)
     {
         var note = this.Notes[noteIndex];
-        if (deleteNoteFromDb(note))
+        if (this.NotesRepository.DeleteNoteFromDatabase(note))
         {
             this.Notes.RemoveAt(noteIndex);
             return true;
@@ -105,96 +127,106 @@ public class SourceFormController
         return false;
     }
 
-    private static bool deleteNoteFromDb(Note note)
-    {
-        try
-        {
-            var connection = new SqlConnection(ConnectionString);
-            connection.Open();
-            var command = new SqlCommand("DELETE FROM dbo.Note WHERE Id = @id", connection);
-            command.Parameters.AddWithValue("@id", note.Id);
-            var result = command.ExecuteNonQuery();
-            connection.Close();
-            return true;
-        }
-        catch (Exception)
-        {
-            MessageBox.Show(FailedToDeleteNoteFromDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false;
-        }
-    }
-
-    private static bool updateNoteInDb(Note note)
-    {
-        try
-        {
-            var connection = new SqlConnection(ConnectionString);
-            connection.Open();
-            var command = new SqlCommand("UPDATE dbo.Note SET Text = @text WHERE Id = @id", connection);
-            command.Parameters.AddWithValue("@text", note.Text);
-            command.Parameters.AddWithValue("@id", note.Id);
-            var result = command.ExecuteNonQuery();
-            connection.Close();
-            return true;
-        }
-        catch (Exception)
-        {
-            MessageBox.Show(FailedToUpdateNoteInDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false;
-        }
-    }
-
-    private static bool addNoteToDb(Note note)
-    {
-        try
-        {
-            var connection = new SqlConnection(ConnectionString);
-            connection.Open();
-            var command =
-                new SqlCommand("INSERT INTO dbo.Note (Text, SourceId, Owner) VALUES (@text, @sourceId, @owner)",
-                    connection);
-            command.Parameters.AddWithValue("@text", note.Text);
-            command.Parameters.AddWithValue("@sourceId", note.SourceId);
-            command.Parameters.AddWithValue("@owner", note.Owner);
-            var result = command.ExecuteNonQuery();
-            connection.Close();
-            return true;
-        }
-        catch (Exception)
-        {
-            MessageBox.Show(FailedToAddNoteToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false;
-        }
-    }
-
     /// <summary>
     ///     Refreshes the notes.
     /// </summary>
     public void RefreshNotes()
     {
-        this.loadNotes();
-    }
-
-    private void loadNotes()
-    {
-        var notes = new List<Note>();
-        var connection = new SqlConnection(ConnectionString);
-        connection.Open();
-        var command = new SqlCommand("SELECT * FROM dbo.Note WHERE SourceId = @sourceId", connection);
-        command.Parameters.AddWithValue("@sourceId", this.source.Id);
-        var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            var id = reader.GetInt32(0);
-            var text = reader.GetString(1);
-            var sourceId = reader.GetInt32(2);
-            var owner = reader.GetString(3);
-            notes.Add(new Note(id, text, sourceId, owner));
-        }
-
-        connection.Close();
-        this.Notes = notes;
+        this.NotesRepository.GetNotes();
     }
 
     #endregion
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbNotesRepository"/> class.
+    /// </summary>
+    /// <param name="connectionString">The connection string.</param>
+    private class DbNotesRepository(string connectionString, Source source) : INotesRepository
+    {
+        private readonly string connectionString = connectionString;
+        private readonly Source source = source;
+
+        public IList<Note> GetNotes()
+        {
+            var notes = new List<Note>();
+            var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = new SqlCommand("SELECT * FROM dbo.Note WHERE SourceId = @sourceId", connection);
+            command.Parameters.AddWithValue("@sourceId", this.source.Id);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var id = reader.GetInt32(0);
+                var text = reader.GetString(1);
+                var sourceId = reader.GetInt32(2);
+                var owner = reader.GetString(3);
+                notes.Add(new Note(id, text, sourceId, owner));
+            }
+
+            connection.Close();
+            return notes;
+        }
+
+        public bool AddNoteToDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command =
+                    new SqlCommand("INSERT INTO dbo.Note (Text, SourceId, Owner) VALUES (@text, @sourceId, @owner)",
+                        connection);
+                command.Parameters.AddWithValue("@text", note.Text);
+                command.Parameters.AddWithValue("@sourceId", note.SourceId);
+                command.Parameters.AddWithValue("@owner", note.Owner);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToAddNoteToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool UpdateNoteInDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand("UPDATE dbo.Note SET Text = @text WHERE Id = @id", connection);
+                command.Parameters.AddWithValue("@text", note.Text);
+                command.Parameters.AddWithValue("@id", note.Id);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToUpdateNoteInDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool DeleteNoteFromDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand("DELETE FROM dbo.Note WHERE Id = @id", connection);
+                command.Parameters.AddWithValue("@id", note.Id);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToDeleteNoteFromDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+    }
 }

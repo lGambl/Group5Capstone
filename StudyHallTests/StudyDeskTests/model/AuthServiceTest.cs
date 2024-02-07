@@ -15,7 +15,7 @@ namespace StudyHallTests.StudyDeskTests.model
         public void Setup()
         {
             this.handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-            var httpClient = new HttpClient(handlerMock.Object)
+            var httpClient = new HttpClient(this.handlerMock.Object)
             {
                 BaseAddress = new Uri("https://localhost:7240/"),
             };
@@ -35,7 +35,7 @@ namespace StudyHallTests.StudyDeskTests.model
         {
             var expectedUri = new Uri("https://localhost:7240/auth/login");
 
-            handlerMock!.Protected()
+            this.handlerMock!.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -44,10 +44,10 @@ namespace StudyHallTests.StudyDeskTests.model
                 })
                 .Verifiable();
 
-            var result = await authService!.LoginAsync("testuser", "testpass");
+            var result = await this.authService!.LoginAsync("testuser", "testpass");
 
             Assert.That(result, Is.Not.Null);
-            handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
+            this.handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace StudyHallTests.StudyDeskTests.model
         {
             var expectedUri = new Uri("https://localhost:7240/auth/login");
 
-            handlerMock!.Protected()
+            this.handlerMock!.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -64,10 +64,10 @@ namespace StudyHallTests.StudyDeskTests.model
                 })
                 .Verifiable();
 
-            var result = await authService!.LoginAsync("testuser", "testpass");
+            var result = await this.authService!.LoginAsync("testuser", "testpass");
 
             Assert.That(result, Is.Null);
-            handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
+            this.handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace StudyHallTests.StudyDeskTests.model
         {
             var expectedUri = new Uri("https://localhost:7240/auth/login");
 
-            handlerMock!.Protected()
+            this.handlerMock!.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -84,9 +84,9 @@ namespace StudyHallTests.StudyDeskTests.model
                 })
                 .Verifiable();
 
-            Assert.ThrowsAsync<Exception>(() => authService!.LoginAsync("testuser", "testpass"));
+            Assert.ThrowsAsync<Exception>(() => this.authService!.LoginAsync("testuser", "testpass"));
 
-            handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
+            this.handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace StudyHallTests.StudyDeskTests.model
         {
             var expectedUri = new Uri("https://localhost:7240/SourceExplorer");
 
-            handlerMock!.Protected()
+            this.handlerMock!.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -103,12 +103,12 @@ namespace StudyHallTests.StudyDeskTests.model
                 })
                 .Verifiable();
 
-            var result = await authService!.GetSources();
+            var result = await this.authService!.GetSources();
             var sourceList = result.ToList();
 
             Assert.That(sourceList, Is.Not.Null);
             Assert.That(sourceList, Has.Exactly(1).Items);
-            handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
+            this.handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace StudyHallTests.StudyDeskTests.model
         {
             var expectedUri = new Uri("https://localhost:7240/SourceExplorer");
 
-            handlerMock!.Protected()
+            this.handlerMock!.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -125,9 +125,9 @@ namespace StudyHallTests.StudyDeskTests.model
                 })
                 .Verifiable();
 
-            Assert.ThrowsAsync<Exception>(() => authService!.GetSources());
+            Assert.ThrowsAsync<Exception>(() => this.authService!.GetSources());
 
-            handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
+            this.handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
         }
 
         [Test]
@@ -135,14 +135,14 @@ namespace StudyHallTests.StudyDeskTests.model
         {
             var expectedUri = new Uri("https://localhost:7240/SourceExplorer");
 
-            handlerMock!.Protected()
+            this.handlerMock!.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>())
                 .ThrowsAsync(new Exception("Test exception"))
                 .Verifiable();
 
-            Assert.ThrowsAsync<Exception>(() => authService!.GetSources());
+            Assert.ThrowsAsync<Exception>(() => this.authService!.GetSources());
 
-            handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
+            this.handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace StudyHallTests.StudyDeskTests.model
         {
             var expectedUri = new Uri("https://localhost:7240/SourceExplorer");
 
-            handlerMock!.Protected()
+            this.handlerMock!.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -159,11 +159,11 @@ namespace StudyHallTests.StudyDeskTests.model
                 })
                 .Verifiable();
 
-            var result = authService!.GetSources().Result.ToList();
+            var result = this.authService!.GetSources().Result.ToList();
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.Empty);
-            handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
+            this.handlerMock!.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
         }
     }
 }
