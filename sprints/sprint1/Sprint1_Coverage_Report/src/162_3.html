@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyDesk\Controller\SourceFormController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.Data.SqlClient;
+using StudyDesk.Model;
+
+namespace StudyDesk.Controller;
+
+/// &lt;summary&gt;
+///     Controller for the Source Form. Pushes changes from the form to the database
+///     and vice versa.
+/// &lt;/summary&gt;
+public class SourceFormController
+{
+    #region Data members
+
+    private const string ConnectionString =
+        &quot;Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true&quot;;
+
+    private const string? FailedToAddNoteToDatabase = &quot;Failed to add note to database&quot;;
+    private const string? ErrorCaption = &quot;Error&quot;;
+    private const string? FailedToUpdateNoteInDatabase = &quot;Failed to update note in database&quot;;
+    private const string? FailedToDeleteNoteFromDatabase = &quot;Failed to delete note from database&quot;;
+
+    private readonly Source source;
+
+    #endregion
+
+    #region Properties
+
+    /// &lt;summary&gt;
+    ///     Gets or sets the notes.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The notes.
+    /// &lt;/value&gt;
+    public IList&lt;Note&gt; Notes { get; private set; }
+
+    /// &lt;summary&gt;
+    ///     Gets the notes repository.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The notes repository.
+    /// &lt;/value&gt;
+    public INotesRepository NotesRepository { get; }
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;SourceFormController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;source&quot;&gt;The source.&lt;/param&gt;
+    public SourceFormController(Source source)
+    {
+        this.source = source;
+        this.Notes = new List&lt;Note&gt;();
+        this.NotesRepository = new DbNotesRepository(ConnectionString, this.source);
+    }
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;SourceFormController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;source&quot;&gt;The source.&lt;/param&gt;
+    /// &lt;param name=&quot;notesRepository&quot;&gt;The notes repository.&lt;/param&gt;
+    public SourceFormController(Source source, INotesRepository notesRepository)
+    {
+        this.source = source;
+        this.Notes = new List&lt;Note&gt;();
+        this.NotesRepository = notesRepository;
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///     Adds a note to the source.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;noteText&quot;&gt;The note text.&lt;/param&gt;
+    /// &lt;returns&gt;True if successfully added, false otherwise.&lt;/returns&gt;
+    public bool AddNote(string noteText)
+    {
+        var note = new Note(0, noteText, this.source.Id, this.source.Owner);
+        if (this.NotesRepository.AddNoteToDatabase(note))
+        {
+            this.Notes.Add(note);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///     Edits the note at a given index.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;noteIndex&quot;&gt;Index of the note.&lt;/param&gt;
+    /// &lt;param name=&quot;noteText&quot;&gt;The new text to add.&lt;/param&gt;
+    /// &lt;returns&gt;True if successfully edited, false otherwise.&lt;/returns&gt;
+    public bool EditNote(int noteIndex, string noteText)
+    {
+        var note = this.Notes[noteIndex];
+        var newNote = new Note(note.Id, noteText, note.SourceId, note.Owner);
+        if (this.NotesRepository.UpdateNoteInDatabase(newNote))
+        {
+            this.Notes[noteIndex] = newNote;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///     Deletes the note at a given index.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;noteIndex&quot;&gt;Index of the note.&lt;/param&gt;
+    /// &lt;returns&gt;True if successfully removed, false otherwise.&lt;/returns&gt;
+    public bool DeleteNoteAt(int noteIndex)
+    {
+        var note = this.Notes[noteIndex];
+        if (this.NotesRepository.DeleteNoteFromDatabase(note))
+        {
+            this.Notes.RemoveAt(noteIndex);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///     Refreshes the notes.
+    /// &lt;/summary&gt;
+    public void RefreshNotes()
+    {
+        this.Notes = this.NotesRepository.GetNotes();
+    }
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;DbNotesRepository&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;connectionString&quot;&gt;The connection string.&lt;/param&gt;
+    private class DbNotesRepository(string connectionString, Source source) : INotesRepository
+    {
+        #region Data members
+
+        private readonly string connectionString = connectionString;
+        private readonly Source source = source;
+
+        #endregion
+
+        #region Methods
+
+        public IList&lt;Note&gt; GetNotes()
+        {
+            var notes = new List&lt;Note&gt;();
+            var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = new SqlCommand(&quot;SELECT * FROM dbo.Note WHERE SourceId = @sourceId&quot;, connection);
+            command.Parameters.AddWithValue(&quot;@sourceId&quot;, this.source.Id);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var id = reader.GetInt32(0);
+                var text = reader.GetString(1);
+                var sourceId = reader.GetInt32(2);
+                var owner = reader.GetString(3);
+                notes.Add(new Note(id, text, sourceId, owner));
+            }
+
+            connection.Close();
+            return notes;
+        }
+
+        public bool AddNoteToDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command =
+                    new SqlCommand(&quot;INSERT INTO dbo.Note (Text, SourceId, Owner) VALUES (@text, @sourceId, @owner)&quot;,
+                        connection);
+                command.Parameters.AddWithValue(&quot;@text&quot;, note.Text);
+                command.Parameters.AddWithValue(&quot;@sourceId&quot;, note.SourceId);
+                command.Parameters.AddWithValue(&quot;@owner&quot;, note.Owner);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToAddNoteToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool UpdateNoteInDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;UPDATE dbo.Note SET Text = @text WHERE Id = @id&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@text&quot;, note.Text);
+                command.Parameters.AddWithValue(&quot;@id&quot;, note.Id);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToUpdateNoteInDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool DeleteNoteFromDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;DELETE FROM dbo.Note WHERE Id = @id&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@id&quot;, note.Id);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToDeleteNoteFromDatabase, ErrorCaption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        #endregion
+    }
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[34,32,34,36,1],[34,37,34,49,1],[42,47,42,51,1],[52,5,52,47,1],[53,5,53,6,1],[54,9,54,30,1],[55,9,55,39,1],[56,9,56,85,1],[57,5,57,6,1],[64,5,64,81,1],[65,5,65,6,1],[66,9,66,30,1],[67,9,67,39,1],[68,9,68,48,1],[69,5,69,6,1],[81,5,81,6,1],[82,9,82,77,1],[83,9,83,58,1],[84,9,84,10,1],[85,13,85,34,1],[86,13,86,25,1],[89,9,89,22,1],[90,5,90,6,1],[99,5,99,6,1],[100,9,100,42,1],[101,9,101,78,1],[102,9,102,64,1],[103,9,103,10,1],[104,13,104,45,1],[105,13,105,25,1],[108,9,108,22,1],[109,5,109,6,1],[117,5,117,6,1],[118,9,118,42,1],[119,9,119,63,1],[120,9,120,10,1],[121,13,121,44,1],[122,13,122,25,1],[125,9,125,22,1],[126,5,126,6,1],[132,5,132,6,1],[133,9,133,54,1],[134,5,134,6,1]]);
+    </script>
+  </body>
+</html>

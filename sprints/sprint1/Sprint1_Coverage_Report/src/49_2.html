@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyWeb\Models\Source.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Collections.ObjectModel;
+
+namespace StudyWeb.Models;
+
+/// &lt;summary&gt;
+///     Source types of sources
+/// &lt;/summary&gt;
+public enum SourceTypes
+{
+    /// &lt;summary&gt;
+    ///     A video
+    /// &lt;/summary&gt;
+    Video = 1,
+
+    /// &lt;summary&gt;
+    ///     A link to a video
+    /// &lt;/summary&gt;
+    VideoLink = 2,
+
+    /// &lt;summary&gt;
+    ///     A pdf
+    /// &lt;/summary&gt;
+    Pdf = 3,
+
+    /// &lt;summary&gt;
+    ///     A link to a pdf
+    /// &lt;/summary&gt;
+    PdfLink = 4,
+
+    /// &lt;summary&gt;
+    ///     An image
+    /// &lt;/summary&gt;
+    Image = 5,
+
+    /// &lt;summary&gt;
+    ///     A link to an image
+    /// &lt;/summary&gt;
+    ImageLink = 6
+}
+
+/// &lt;summary&gt;
+///     A source of information
+/// &lt;/summary&gt;
+public class Source
+{
+    #region Properties
+
+    /// &lt;summary&gt;
+    ///     Id of Source
+    /// &lt;/summary&gt;
+    public int Id { get; init; }
+
+    /// &lt;summary&gt;
+    ///     Link to the source
+    /// &lt;/summary&gt;
+    public string Link { get; set; } = &quot;&quot;;
+
+    /// &lt;summary&gt;
+    ///     Title of the source
+    /// &lt;/summary&gt;
+    public string Title { get; init; } = &quot;&quot;;
+
+    /// &lt;summary&gt;
+    ///     Type of source
+    /// &lt;/summary&gt;
+    public SourceTypes Type { get; init; }
+
+    /// &lt;summary&gt;
+    ///     Type of source as a string
+    /// &lt;/summary&gt;
+    public string TypeString =&gt; this.SourceTypeToString();
+
+    /// &lt;summary&gt;
+    ///     Owner of the source
+    /// &lt;/summary&gt;
+    public string Owner { get; init; } = &quot;&quot;;
+
+    /// &lt;summary&gt;
+    ///     Notes on the source
+    /// &lt;/summary&gt;
+    public ICollection&lt;Note&gt; Notes { get; set; } = new Collection&lt;Note&gt;();
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///     Convert source type to string
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    /// &lt;exception cref=&quot;ArgumentException&quot;&gt;&lt;/exception&gt;
+    public string SourceTypeToString()
+    {
+        return this.Type switch
+        {
+            SourceTypes.Video =&gt; &quot;video&quot;,
+            SourceTypes.VideoLink =&gt; &quot;videoLink&quot;,
+            SourceTypes.Pdf =&gt; &quot;pdf&quot;,
+            SourceTypes.PdfLink =&gt; &quot;pdfLink&quot;,
+            SourceTypes.Image =&gt; &quot;image&quot;,
+            SourceTypes.ImageLink =&gt; &quot;imageLink&quot;,
+            _ =&gt; throw new ArgumentException(&quot;No video type&quot;)
+        };
+    }
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[51,21,51,25,1],[51,26,51,31,1],[56,26,56,30,1],[56,31,56,35,1],[56,40,56,42,1],[61,27,61,31,1],[61,32,61,37,1],[61,42,61,44,1],[66,31,66,35,1],[66,36,66,41,1],[71,33,71,58,1],[76,27,76,31,1],[76,32,76,37,1],[76,42,76,44,1],[81,38,81,42,1],[81,43,81,47,1],[81,52,81,74,1],[93,5,93,6,1],[94,9,96,34,1],[96,34,96,41,1],[96,41,97,38,1],[97,38,97,49,1],[97,49,98,32,1],[98,32,98,37,1],[98,37,99,36,1],[99,36,99,45,1],[99,45,100,34,1],[100,34,100,41,1],[100,41,101,38,1],[101,38,101,49,1],[101,49,102,18,1],[102,18,102,62,1],[102,62,103,11,1],[104,5,104,6,1]]);
+    </script>
+  </body>
+</html>

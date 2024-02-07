@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyDesk\Model\Note.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace StudyDesk.Model
+{
+    /// &lt;summary&gt;
+    ///   The note class in the Desktop App.
+    /// &lt;/summary&gt;
+    public class Note
+    {
+        /// &lt;summary&gt;
+        ///   Gets or sets the identifier.
+        /// &lt;/summary&gt;
+        /// &lt;value&gt;The identifier.&lt;/value&gt;
+        public int Id { get; set; }
+
+        /// &lt;summary&gt;
+        ///   Gets or sets the text.
+        /// &lt;/summary&gt;
+        /// &lt;value&gt;The text.&lt;/value&gt;
+        public string Text { get; set; }
+
+        /// &lt;summary&gt;
+        ///   Gets or sets the source identifier.
+        /// &lt;/summary&gt;
+        /// &lt;value&gt;The source identifier.&lt;/value&gt;
+        public int SourceId { get; set; }
+
+        /// &lt;summary&gt;
+        ///   Gets or sets the owner.
+        /// &lt;/summary&gt;
+        /// &lt;value&gt;The owner.&lt;/value&gt;
+        public string Owner { get; set; }
+
+        /// &lt;summary&gt;
+        ///   Initializes a new instance of the &lt;see cref=&quot;Note&quot; /&gt; class.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;id&quot;&gt;The identifier.&lt;/param&gt;
+        /// &lt;param name=&quot;text&quot;&gt;The text.&lt;/param&gt;
+        /// &lt;param name=&quot;sourceId&quot;&gt;The source identifier.&lt;/param&gt;
+        /// &lt;param name=&quot;owner&quot;&gt;The owner.&lt;/param&gt;
+        public Note(int id, string text, int sourceId, string owner)
+        {
+            this.Id = id;
+            this.Text = text;
+            this.SourceId = sourceId;
+            this.Owner = owner;
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,25,12,29,1],[12,30,12,34,1],[18,30,18,34,1],[18,35,18,39,1],[24,31,24,35,1],[24,36,24,40,1],[30,31,30,35,1],[30,36,30,40,1],[39,9,39,69,1],[40,9,40,10,1],[41,13,41,26,1],[42,13,42,30,1],[43,13,43,38,1],[44,13,44,32,1],[45,9,45,10,1]]);
+    </script>
+  </body>
+</html>
