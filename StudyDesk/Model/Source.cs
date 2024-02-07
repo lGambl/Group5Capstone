@@ -9,37 +9,37 @@
         ///   Gets or sets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         /// <summary>
         ///   Gets or sets the link.
         /// </summary>
         /// <value>The link.</value>
-        public string Link { get; set; }
+        public string Link { get; init; }
 
         /// <summary>
         ///   Gets or sets the title.
         /// </summary>
         /// <value>The title.</value>
-        public string Title { get; set; }
+        public string Title { get; init; }
 
         /// <summary>
         ///   Gets or sets the type.
         /// </summary>
         /// <value>The type.</value>
-        public SourceType Type { get; set; }
+        public SourceType Type { get; init; }
 
         /// <summary>
         ///   Gets or sets the type string.
         /// </summary>
         /// <value>The type string.</value>
-        public string TypeString { get; set; }
+        public string TypeString => this.sourceTypeToString();
 
         /// <summary>
         ///   Gets or sets the owner.
         /// </summary>
         /// <value>The owner.</value>
-        public string Owner { get; set; }
+        public string Owner { get; init; }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="Source" /> class.
@@ -55,25 +55,20 @@
             this.Link = link;
             this.Title = title;
             this.Type = type;
-            this.TypeString = this.SourceTypeToString();
             this.Owner = owner;
         }
 
-        private string SourceTypeToString()
+        private string sourceTypeToString()
         {
-            switch (this.Type)
+            return this.Type switch
             {
-                case SourceType.Video:
-                    return "video";
-                case SourceType.VideoLink:
-                    return "videoLink";
-                case SourceType.Pdf:
-                    return "pdf";
-                case SourceType.PdfLink:
-                    return "pdfLink";
-                default:
-                    throw new ArgumentException("No source type");
-            }
+                SourceType.Video => "video",
+                SourceType.VideoLink => "videoLink",
+                SourceType.Pdf => "pdf",
+                SourceType.PdfLink => "pdfLink",
+                SourceType.Image => "image",
+                _ => throw new ArgumentException("No source type")
+            };
         }
 
     }
