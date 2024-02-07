@@ -7,6 +7,17 @@ namespace StudyDesk.Controller;
 /// </summary>
 public class LoginController
 {
+
+    private readonly AuthService authService;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LoginController"/> class.
+    /// </summary>
+    /// <param name="authService">The authentication service.</param>
+    public LoginController(AuthService authService)
+    {
+        this.authService = authService;
+    }
     #region Methods
 
     /// <summary>
@@ -17,9 +28,9 @@ public class LoginController
     /// <returns>
     ///     True if login is successful, False if unsuccessful
     /// </returns>
-    public static AuthService? VerifyLoginCredentials(string username, string password)
+    public AuthService? VerifyLoginCredentials(string username, string password)
     {
-        return new AuthService().LoginAsync(username, password).Result;
+        return this.authService.LoginAsync(username, password).Result;
     }
 
     #endregion

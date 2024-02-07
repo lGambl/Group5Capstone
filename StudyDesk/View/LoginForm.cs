@@ -1,4 +1,5 @@
 using StudyDesk.Controller;
+using StudyDesk.Model;
 
 namespace StudyDesk.View;
 
@@ -37,7 +38,8 @@ public partial class LoginForm : Form
 
     private void LoginButton_Click(object sender, EventArgs e)
     {
-        var auth = LoginController.VerifyLoginCredentials(this.UsernameTextBox.Text, this.PasswordTextBox.Text);
+        var loginController = new LoginController(new AuthService());
+        var auth = loginController.VerifyLoginCredentials(this.UsernameTextBox.Text, this.PasswordTextBox.Text);
         if (auth != null)
         {
             var mainpage = new MainPageForm(auth);

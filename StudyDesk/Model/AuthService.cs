@@ -47,12 +47,12 @@ public class AuthService
     #region Methods
 
     /// <summary>
-    ///     Logins the asynchronous.
+    ///     Logs in the user, and returns the AuthService object if successful.
     /// </summary>
     /// <param name="username">The username.</param>
     /// <param name="password">The password.</param>
     /// <returns>
-    ///     True if the login was successful, false if unsuccessful
+    ///     An AuthService object if successful, null if unsuccessful.
     /// </returns>
     /// <exception cref="Exception">Login failed with status code: response.StatusCode</exception>
     public async Task<AuthService?> LoginAsync(string username, string password)
