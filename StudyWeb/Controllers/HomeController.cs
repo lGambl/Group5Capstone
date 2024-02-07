@@ -10,18 +10,6 @@ namespace StudyWeb.Controllers
     /// </summary>
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="HomeController" /> class.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
 
         /// <summary>
         ///   Indexes this instance.
