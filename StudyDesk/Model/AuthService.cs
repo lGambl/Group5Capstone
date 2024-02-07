@@ -16,18 +16,6 @@ public class AuthService
 
     #endregion
 
-    #region Properties
-
-    /// <summary>
-    ///     Gets or sets the token.
-    /// </summary>
-    /// <value>
-    ///     The token.
-    /// </value>
-    public string? Token { get; set; }
-
-    #endregion
-
     #region Constructors
 
     /// <summary>
@@ -44,17 +32,27 @@ public class AuthService
         this.httpClient = new HttpClient(handler);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthService"/> class.
+    /// Designed for testing purposes.
+    /// </summary>
+    /// <param name="httpClient">The HTTP client.</param>
+    public AuthService(HttpClient httpClient)
+    {
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+
     #endregion
 
     #region Methods
 
     /// <summary>
-    ///     Logins the asynchronous.
+    ///     Logs in the user, and returns the AuthService object if successful.
     /// </summary>
     /// <param name="username">The username.</param>
     /// <param name="password">The password.</param>
     /// <returns>
-    ///     True if the login was successful, false if unsuccessful
+    ///     An AuthService object if successful, null if unsuccessful.
     /// </returns>
     /// <exception cref="Exception">Login failed with status code: response.StatusCode</exception>
     public async Task<AuthService?> LoginAsync(string username, string password)
