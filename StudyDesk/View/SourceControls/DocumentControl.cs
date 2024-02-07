@@ -1,4 +1,6 @@
-﻿namespace StudyDesk.View.SourceControls;
+﻿using System.Text.RegularExpressions;
+
+namespace StudyDesk.View.SourceControls;
 
 /// <summary>
 ///     UserControl for displaying a document.
@@ -23,7 +25,11 @@ public partial class DocumentControl : UserControl
     {
         try
         {
-            var temp = Path.Combine(Path.GetTempPath(), "peepee.pdf");
+            
+            var trimmedFile = filename.Split("/")[^1];
+            var trimmedFilename = trimmedFile.Substring(8);
+            
+            var temp = Path.Combine(Path.GetTempPath(), trimmedFilename);
             if (downloadFileAsync(filename, temp).Result)
             {
                 var stream = new FileStream(temp, FileMode.Open, FileAccess.Read);
