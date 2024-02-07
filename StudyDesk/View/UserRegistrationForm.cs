@@ -12,7 +12,7 @@ namespace StudyDesk.View
         /// </summary>
         public UserRegistrationForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.centerForm();
         }
 

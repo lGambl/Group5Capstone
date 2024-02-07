@@ -14,12 +14,12 @@ namespace StudyHallTests.StudyDeskTests.model
         [SetUp]
         public void Setup()
         {
-            handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+            this.handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             var httpClient = new HttpClient(handlerMock.Object)
             {
                 BaseAddress = new Uri("https://localhost:7240/"),
             };
-            authService = new AuthService(httpClient);
+            this.authService = new AuthService(httpClient);
         }
 
         [Test]
