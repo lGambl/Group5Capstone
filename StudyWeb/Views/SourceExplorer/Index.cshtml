@@ -4,23 +4,46 @@
     ViewData["Title"] = "Index";
 }
 
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
 <h1>Index</h1>
 
-<a asp-action="Create">Add</a>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Add Source</h5>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<button type="button" class="btn btn-primary" id="btnShowModal">Add Source</button>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                Title
-            </th>
-            <th>
-                Actions
-            </th>
+    <tr>
+        <th>
+            Title
+        </th>
+        <th>
+            Actions
+        </th>
             
-        </tr>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
@@ -29,6 +52,65 @@
                 <a asp-action="View" asp-route-id="@item.Id">View</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#btnShowModal").click(function () {
+            $(".modal-body").load("/SourceExplorer/Create", function () {
+                $('#myModal').modal('show');
+                // Directly add your event listeners here, no need for 'DOMContentLoaded'
+                var typeSelect = document.getElementById('Type');
+                var linkInput = document.getElementById('linkInput');
+                var fileInput = document.getElementById('pdfInput');
+                var videoInput = document.getElementById('videoInput');
+                var imageInput = document.getElementById('imageInput');
+
+                typeSelect.addEventListener('change', function () {
+                    var selectedType = this.value;
+
+                    switch (selectedType) {
+                        case "2":
+                        case "4":
+                        case "6":
+                            videoInput.style.display = 'none';
+                            linkInput.style.display = 'block';
+                            fileInput.style.display = 'none';
+                            imageInput.style.display = 'none';
+                            break;
+                        case "3":
+                            videoInput.style.display = 'none';
+                            fileInput.style.display = 'block';
+                            linkInput.style.display = 'none';
+                            imageInput.style.display = 'none';
+                            break;
+                        case "1":
+                            videoInput.style.display = 'block';
+                            fileInput.style.display = 'none';
+                            linkInput.style.display = 'none';
+                            imageInput.style.display = 'none';
+                            break;
+                        case "5":
+                            videoInput.style.display = 'none';
+                            fileInput.style.display = 'none';
+                            linkInput.style.display = 'none';
+                            imageInput.style.display = 'block';
+                            break;
+                        default:
+                            // Handle default case if necessary
+                            break;
+                    }
+                });
+
+                // Trigger the change event to set the initial state
+                typeSelect.dispatchEvent(new Event('change'));
+            });
+        });
+    });
+
+    
+</script>

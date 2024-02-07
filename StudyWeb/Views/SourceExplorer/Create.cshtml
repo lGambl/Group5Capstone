@@ -4,14 +4,12 @@
     ViewData["Title"] = "Add Source";
 }
 
-<h1>Add Source</h1>
-
 <form asp-action="Create" method="post" enctype="multipart/form-data">
-    <label asp-for="Title"> Title</label>
-    <input asp-for="Title" />
+    <label class="form-label" asp-for="Title"> Title</label>
+    <input class="form-control" asp-for="Title" />
     
-    <label asp-for="Type" id="typeSelect"> Type</label>
-    <select asp-for="Type">
+    <label class="form-label" asp-for="Type" id="typeSelect"> Type</label>
+    <select class="form-control" asp-for="Type">
         <option value="2">Video Link</option>
         <option value="4">Pdf Link</option>
         <option value="1">Video</option>
@@ -22,65 +20,26 @@
     
     
     <div id="linkInput" style="display:none;">
-        <label asp-for="Link"> Link</label>
-        <input asp-for="Link"/>
+        <label asp-for="Link" class="form-label"> Link</label>
+        <input asp-for="Link" class="form-control"/>
     </div>
     
     <div id="videoInput" style="display:none;">
-        <label>Video</label>
-        <input type="file" name="videoUpload" accept=".mp4" />
+        <label class="form-label">Video</label>
+        <input type="file" class="form-control" name="videoUpload" accept=".mp4" />
     </div>
 
-    <div id="pdfInput" style="display:none;">
-        <label>PDF</label>
-        <input type="file" name="pdfUpload" accept=".pdf"/>
+    <div id="pdfInput"  style="display:none;">
+        <label class="form-label">PDF</label>
+        <input class="form-control" type="file" name="pdfUpload" accept=".pdf" />
     </div>
     
     <div id="imageInput" style="display: none">
-        <label>Image</label>
-        <input type="file" name="imageUpload" accept=".jpg, .jpeg, .png"/>
+        <label class="form-label">Image</label>
+        <input type="file" class="form-control" name="imageUpload" accept=".jpg, .jpeg, .png" />
     </div>
 
     
-    <input type="submit" value="Add Source" class="btn btn-primary"/>
+    <input type="submit" style="margin-top: 5px" value="Add Source" class="btn btn-primary" />
 
 </form>
-
-<script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var typeSelect = document.getElementById('Type'); 
-            var linkInput = document.getElementById('linkInput');
-            var fileInput = document.getElementById('pdfInput');
-            var videoInput = document.getElementById('videoInput');
-            var imageInput = document.getElementById('imageInput');
-
-            typeSelect.addEventListener('change', function () {
-                var selectedType = this.value;
-
-                if (selectedType === "2" || selectedType === "4" || selectedType === "6") {
-                    videoInput.style.display = 'none';
-                    linkInput.style.display = 'block';
-                    pdfInput.style.display = 'none';
-                    imageInput.style.display = 'none';
-                }
-                else if (selectedType === "3") {
-                    videoInput.style.display = 'none';
-                    fileInput.style.display = 'block';
-                    linkInput.style.display = 'none';
-                    imageInput.style.display = 'none';
-                }else if (selectedType === "1"){
-                    videoInput.style.display = 'block';
-                    fileInput.style.display = 'none';
-                    linkInput.style.display = 'none';
-                    imageInput.style.display = 'none';
-                }else if (selectedType === "5"){
-                    videoInput.style.display = 'none';
-                    fileInput.style.display = 'none';
-                    linkInput.style.display = 'none';
-                    imageInput.style.display = 'block';
-                }
-            });
-
-            typeSelect.dispatchEvent(new Event('change'));
-        });
-</script>
