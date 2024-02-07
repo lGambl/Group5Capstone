@@ -34,12 +34,12 @@ public class SourceFormController
     public IList<Note> Notes { get; private set; }
 
     /// <summary>
-    /// Gets the notes repository.
+    ///     Gets the notes repository.
     /// </summary>
     /// <value>
-    /// The notes repository.
+    ///     The notes repository.
     /// </value>
-    private INotesRepository NotesRepository { get; }
+    public INotesRepository NotesRepository { get; }
 
     #endregion
 
@@ -54,11 +54,10 @@ public class SourceFormController
         this.source = source;
         this.Notes = new List<Note>();
         this.NotesRepository = new DbNotesRepository(ConnectionString, this.source);
-        this.RefreshNotes();
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SourceFormController"/> class.
+    ///     Initializes a new instance of the <see cref="SourceFormController" /> class.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="notesRepository">The notes repository.</param>
@@ -67,7 +66,6 @@ public class SourceFormController
         this.source = source;
         this.Notes = new List<Note>();
         this.NotesRepository = notesRepository;
-        this.RefreshNotes();
     }
 
     #endregion
@@ -132,19 +130,23 @@ public class SourceFormController
     /// </summary>
     public void RefreshNotes()
     {
-        this.NotesRepository.GetNotes();
+        this.Notes = this.NotesRepository.GetNotes();
     }
 
-    #endregion
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="DbNotesRepository"/> class.
+    ///     Initializes a new instance of the <see cref="DbNotesRepository" /> class.
     /// </summary>
     /// <param name="connectionString">The connection string.</param>
     private class DbNotesRepository(string connectionString, Source source) : INotesRepository
     {
+        #region Data members
+
         private readonly string connectionString = connectionString;
         private readonly Source source = source;
+
+        #endregion
+
+        #region Methods
 
         public IList<Note> GetNotes()
         {
@@ -224,9 +226,14 @@ public class SourceFormController
             }
             catch (Exception)
             {
-                MessageBox.Show(FailedToDeleteNoteFromDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(FailedToDeleteNoteFromDatabase, ErrorCaption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 return false;
             }
         }
+
+        #endregion
     }
+
+    #endregion
 }
