@@ -42,7 +42,7 @@ namespace StudyWeb.Models
     /// <summary>
     /// A source of information
     /// </summary>
-    public class Source : IEnumerable
+    public class Source
     {
         /// <summary>
         /// Id of Source
@@ -103,11 +103,6 @@ namespace StudyWeb.Models
                 default:
                     throw new ArgumentException("No video type");
             }
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
         }
     }
 }
