@@ -246,7 +246,7 @@ public class SourceExplorer : Controller
         {
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                file?.CopyToAsync(stream);
+                file?.CopyTo(stream);
             }
         }
         catch
