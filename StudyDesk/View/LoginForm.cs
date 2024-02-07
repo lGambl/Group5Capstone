@@ -47,9 +47,17 @@ public partial class LoginForm : Form
         }
         else
         {
-            MessageBox.Show(InvalidLoginMessage,LoginFailed, MessageBoxButtons.OK,
+            MessageBox.Show(InvalidLoginMessage, LoginFailed, MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
+    }
+
+    private void newUserButton_Click(object sender, EventArgs e)
+    {
+        var registrationPage = new UserRegistrationForm();
+        registrationPage.Show();
+        registrationPage.Closed += (_, _) => Close();
+        Hide();
     }
 
     #endregion
