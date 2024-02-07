@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyWeb\Controllers\AccountController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using StudyWeb.Models;
+
+namespace StudyWeb.Controllers
+{
+    /// &lt;summary&gt;
+    ///   The Account Controller class.
+    /// &lt;/summary&gt;
+    [Route(&quot;[controller]&quot;)]
+    public class AccountController : ControllerBase
+    {
+        private readonly UserManager&lt;IdentityUser&gt; _userManager;
+
+        /// &lt;summary&gt;
+        ///   Initializes a new instance of the &lt;see cref=&quot;AccountController&quot; /&gt; class.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;userManager&quot;&gt;The user manager.&lt;/param&gt;
+        public AccountController(UserManager&lt;IdentityUser&gt; userManager)
+        {
+            _userManager = userManager;
+        }
+
+        /// &lt;summary&gt;
+        ///   Registers the specified model.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;model&quot;&gt;The model.&lt;/param&gt;
+        /// &lt;returns&gt;
+        ///   Succeeded if the registration was successful, bad request if unsuccessful
+        /// &lt;/returns&gt;
+        [HttpPost(&quot;register&quot;)]
+        public async Task&lt;IActionResult&gt; Register([FromBody] RegisterDto model)
+        {
+            var user = new IdentityUser { UserName = model.Username, Email = model.Email, EmailConfirmed = true};
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = &quot;user created successfully&quot; });
+            }
+
+            return BadRequest(result.Errors);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,72,0],[20,9,20,10,0],[21,13,21,40,0],[22,9,22,10,0],[33,9,33,10,0],[34,13,34,114,0],[35,13,35,79,0],[37,13,37,34,0],[38,13,38,14,0],[39,17,39,74,0],[42,13,42,46,0],[43,9,43,10,0]]);
+    </script>
+  </body>
+</html>

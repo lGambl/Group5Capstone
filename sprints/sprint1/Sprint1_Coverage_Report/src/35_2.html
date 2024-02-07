@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyWeb\Controllers\HomeController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using StudyWeb.Models;
+
+namespace StudyWeb.Controllers
+{
+
+    /// &lt;summary&gt;
+    ///   The Home Controller class.
+    /// &lt;/summary&gt;
+    public class HomeController : Controller
+    {
+        private readonly ILogger&lt;HomeController&gt; _logger;
+
+
+        /// &lt;summary&gt;
+        ///   Initializes a new instance of the &lt;see cref=&quot;HomeController&quot; /&gt; class.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;logger&quot;&gt;The logger.&lt;/param&gt;
+        public HomeController(ILogger&lt;HomeController&gt; logger)
+        {
+            _logger = logger;
+        }
+
+
+        /// &lt;summary&gt;
+        ///   Indexes this instance.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;
+        ///   The Index page.
+        /// &lt;/returns&gt;
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+
+        /// &lt;summary&gt;
+        ///   Privacies this instance.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;
+        ///   The Privacy page.
+        /// &lt;/returns&gt;
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+
+        /// &lt;summary&gt;
+        ///   Errors this instance.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;
+        ///   The error page.
+        /// &lt;/returns&gt;
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,62,0],[21,9,21,10,0],[22,13,22,30,0],[23,9,23,10,0],[33,9,33,10,0],[34,13,34,27,0],[35,9,35,10,0],[45,9,45,10,0],[46,13,46,27,0],[47,9,47,10,0],[58,9,58,10,0],[59,13,59,113,0],[60,9,60,10,0]]);
+    </script>
+  </body>
+</html>

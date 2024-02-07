@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyWeb\Controllers\SourceExplorer.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using StudyWeb.Data;
+using StudyWeb.Models;
+
+namespace StudyWeb.Controllers;
+
+/// &lt;summary&gt;The Source Explorer Controller&lt;/summary&gt;
+[Route(&quot;[controller]&quot;)]
+public class SourceExplorer : Controller
+{
+    #region Data members
+
+    private readonly ApplicationDbContext context;
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;SourceExplorer&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;context&quot;&gt;The context.&lt;/param&gt;
+    public SourceExplorer(ApplicationDbContext context)
+    {
+        this.context = context;
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///     Indexes this instance.
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;
+    ///     Task
+    /// &lt;/returns&gt;
+    [Authorize]
+    public async Task&lt;IActionResult&gt; Index()
+    {
+        if (Request.Headers[&quot;Accept&quot;] == &quot;application/json&quot;)
+        {
+            var owner = User.Claims.FirstOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (owner == null)
+            {
+                return Unauthorized(new { success = false, message = &quot;User is not authenticated.&quot; });
+            }
+
+            var sources = await this.context.Source.ToListAsync();
+
+            var ownerSources = sources.Where(s =&gt; s.Owner == owner).ToList();
+
+            foreach (var source in ownerSources)
+            {
+                if (source.Type == SourceTypes.Pdf || source.Type == SourceTypes.Video)
+                {
+                    source.Link = &quot;https://localhost:7240/&quot; + source.Link;
+                }
+            }
+
+            return Ok(sources);
+        }
+
+        return View(await this.context.Source.ToListAsync());
+    }
+
+    /// &lt;summary&gt;
+    ///     Views the specified identifier source page
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;id&quot;&gt;&lt;/param&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    [Authorize]
+    [Route(&quot;View/{id?}&quot;)]
+    public async Task&lt;IActionResult&gt; View(int? id)
+    {
+        var source = this.getSource(id);
+
+        if (source == null)
+        {
+            return NotFound();
+        }
+
+        return View(source);
+    }
+
+    private Source? getSource(int? id)
+    {
+        if (id == null)
+        {
+            return null;
+        }
+
+        var source = this.context.Source.FirstOrDefault(m =&gt; m.Id == id);
+
+        if (source != null)
+        {
+            source.Notes = this.context.Note.Where(n =&gt; n.SourceId == id).ToList();
+
+            return source;
+        }
+
+        return null;
+    }
+
+    /// &lt;summary&gt;
+    ///     Show view for creating a source
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    [Authorize]
+    [Route(&quot;Create&quot;)]
+    public async Task&lt;PartialViewResult&gt; Create()
+    {
+        return PartialView();
+    }
+
+    /// &lt;summary&gt;
+    ///     Create a source. This is a endpoint for the form submission and the API.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;title&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;link&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;pdfUpload&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;videoUpload&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;imageUpload&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;type&quot;&gt;&lt;/param&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    [Authorize]
+    [HttpPost]
+    [Route(&quot;Create&quot;)]
+    public async Task&lt;IActionResult&gt; Create([Bind(&quot;Title&quot;)] string? title, [Bind(&quot;Link&quot;)] string? link,
+        IFormFile? pdfUpload, IFormFile? videoUpload, IFormFile? imageUpload, [Bind(&quot;Type&quot;)] SourceTypes? type)
+    {
+        var user = User.Claims.FirstOrDefault();
+        var owner = user?.Value;
+
+        if (owner == null || title == null || type == null)
+        {
+            return BadRequest();
+        }
+
+        switch (type)
+        {
+            case SourceTypes.Pdf:
+                if (pdfUpload == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!await this.saveFile(pdfUpload, title, owner, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            case SourceTypes.Video:
+                if (videoUpload == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!await this.saveFile(videoUpload, title, owner, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            case SourceTypes.Image:
+                if (imageUpload == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!await this.saveFile(imageUpload, title, owner, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            case SourceTypes.ImageLink:
+                if (link == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!await this.addLink(title, owner, link, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            case SourceTypes.PdfLink:
+                await this.addLink(title, owner, link, type);
+                break;
+            case SourceTypes.VideoLink:
+                if (link == null)
+                {
+                    return BadRequest();
+                }
+
+                link = fixYoutubeLink(link);
+                if (!await this.addLink(title, owner, link, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            default:
+                return BadRequest();
+        }
+
+        if (Request.Headers[&quot;Accept&quot;] == &quot;application/json&quot;)
+        {
+            return Ok(new { success = true, message = &quot;Source created successfully.&quot; });
+        }
+
+        return RedirectToAction(&quot;Index&quot;, &quot;SourceExplorer&quot;);
+    }
+
+    private static string fixYoutubeLink(string link)
+    {
+        if (!link.Contains(&quot;youtube.com/watch?v=&quot;))
+        {
+            return link;
+        }
+
+        var split = link.Split(&quot;=&quot;);
+        return &quot;https://www.youtube.com/embed/&quot; + split[^1];
+    }
+
+    private async Task&lt;bool&gt; saveFile(IFormFile? file, string? title, string? owner, SourceTypes? type)
+    {
+        var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), &quot;wwwroot&quot;, &quot;uploads&quot;);
+
+        if (!Directory.Exists(uploadsFolderPath))
+        {
+            Directory.CreateDirectory(uploadsFolderPath);
+        }
+
+        var uniqueFileName = Guid.NewGuid() + &quot;_&quot; + file?.FileName;
+        var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+
+        try
+        {
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file?.CopyTo(stream);
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        var relativePath = &quot;uploads&quot;;
+
+        var relativeFilePath = Path.Combine(relativePath, uniqueFileName);
+
+        await this.addLink(title, owner, relativeFilePath, type);
+
+        return true;
+    }
+
+    private async Task&lt;bool&gt; addLink(string? title, string? owner, string? link, SourceTypes? type)
+    {
+        try
+        {
+            var insertSourceQuery =
+                &quot;INSERT INTO Source (title, owner, link, type) VALUES (@title, @owner, @link, @type);&quot;;
+            SqlParameter[] parameters =
+            {
+                new(&quot;@title&quot;, title),
+                new(&quot;@owner&quot;, owner),
+                new(&quot;@link&quot;, link),
+                new(&quot;@type&quot;, type)
+            };
+
+            await this.context.Database.ExecuteSqlRawAsync(insertSourceQuery, parameters);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    /// &lt;summary&gt;
+    ///     Route for adding a note to a source
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;text&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;sourceId&quot;&gt;&lt;/param&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    [Authorize]
+    [HttpPost]
+    [Route(&quot;Note&quot;)]
+    public async Task&lt;IActionResult&gt; Note([FromForm] string text, [FromForm] int sourceId)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return BadRequest(new { success = false, message = &quot;Invalid note text or source ID.&quot; });
+        }
+
+        var owner = User.Claims.FirstOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (owner == null)
+        {
+            return Unauthorized(new { success = false, message = &quot;User is not authenticated.&quot; });
+        }
+
+        try
+        {
+            var insertNoteQuery = &quot;INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);&quot;;
+            SqlParameter[] parameters =
+            {
+                new(&quot;@Text&quot;, text),
+                new(&quot;@Owner&quot;, owner),
+                new(&quot;@SourceId&quot;, sourceId)
+            };
+
+            await this.context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest();
+        }
+
+        return Ok(new { success = true, message = &quot;Note added successfully.&quot; });
+    }
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[27,5,27,56,0],[28,5,28,6,0],[29,9,29,32,0],[30,5,30,6,0],[44,5,44,6,0],[45,9,45,61,0],[46,9,46,10,0],[47,13,47,57,0],[47,57,47,92,0],[47,92,47,101,0],[48,13,48,31,0],[49,13,49,14,0],[50,17,50,102,0],[53,13,53,67,0],[55,13,55,51,0],[55,51,55,67,0],[55,67,55,78,0],[57,13,57,20,0],[57,22,57,32,0],[57,33,57,35,0],[57,36,57,48,0],[58,13,58,14,0],[59,17,59,88,0],[60,17,60,18,0],[61,21,61,75,0],[62,17,62,18,0],[63,13,63,14,0],[65,13,65,32,0],[68,9,68,62,0],[69,5,69,6,0],[79,5,79,6,0],[80,9,80,41,0],[82,9,82,28,0],[83,9,83,10,0],[84,13,84,31,0],[87,9,87,29,0],[88,5,88,6,0],[91,5,91,6,0],[92,9,92,24,0],[93,9,93,10,0],[94,13,94,25,0],[97,9,97,74,0],[99,9,99,28,0],[100,9,100,10,0],[101,13,101,84,0],[103,13,103,27,0],[106,9,106,21,0],[107,5,107,6,0],[116,5,116,6,0],[117,9,117,30,0],[118,5,118,6,0],[135,5,135,6,0],[136,9,136,49,0],[137,9,137,33,0],[139,9,139,60,0],[140,9,140,10,0],[141,13,141,33,0],[144,9,144,22,0],[147,17,147,39,0],[148,17,148,18,0],[149,21,149,41,0],[152,17,152,73,0],[153,17,153,18,0],[154,21,154,41,0],[157,17,157,23,0],[159,17,159,41,0],[160,17,160,18,0],[161,21,161,41,0],[164,17,164,75,0],[165,17,165,18,0],[166,21,166,41,0],[169,17,169,23,0],[171,17,171,41,0],[172,17,172,18,0],[173,21,173,41,0],[176,17,176,75,0],[177,17,177,18,0],[178,21,178,41,0],[181,17,181,23,0],[183,17,183,34,0],[184,17,184,18,0],[185,21,185,41,0],[188,17,188,67,0],[189,17,189,18,0],[190,21,190,41,0],[193,17,193,23,0],[195,17,195,62,0],[196,17,196,23,0],[198,17,198,34,0],[199,17,199,18,0],[200,21,200,41,0],[203,17,203,45,0],[204,17,204,67,0],[205,17,205,18,0],[206,21,206,41,0],[209,17,209,23,0],[211,17,211,37,0],[214,9,214,61,0],[215,9,215,10,0],[216,13,216,89,0],[219,9,219,60,0],[220,5,220,6,0],[223,5,223,6,0],[224,9,224,52,0],[225,9,225,10,0],[226,13,226,25,0],[229,9,229,37,0],[230,9,230,61,0],[231,5,231,6,0],[234,5,234,6,0],[235,9,235,101,0],[237,9,237,50,0],[238,9,238,10,0],[239,13,239,58,0],[240,9,240,10,0],[242,9,242,68,0],[243,9,243,72,0],[246,9,246,10,0],[247,20,247,74,0],[248,13,248,14,0],[249,17,249,38,0],[250,13,250,14,0],[251,9,251,10,0],[252,9,252,14,0],[253,9,253,10,0],[254,13,254,26,0],[257,9,257,38,0],[259,9,259,75,0],[261,9,261,66,0],[263,9,263,21,0],[264,5,264,6,0],[267,5,267,6,0],[269,9,269,10,0],[270,13,271,104,0],[272,13,278,15,0],[280,13,280,91,0],[281,13,281,25,0],[283,9,283,29,0],[284,9,284,10,0],[285,13,285,26,0],[287,5,287,6,0],[299,5,299,6,0],[300,9,300,45,0],[301,9,301,10,0],[302,13,302,101,0],[305,9,305,53,0],[305,53,305,88,0],[305,88,305,97,0],[306,9,306,27,0],[307,9,307,10,0],[308,13,308,98,0],[312,9,312,10,0],[313,13,313,113,0],[314,13,319,15,0],[321,13,321,89,0],[322,9,322,10,0],[323,9,323,29,0],[324,9,324,10,0],[325,13,325,33,0],[328,9,328,81,0],[329,5,329,6,0]]);
+    </script>
+  </body>
+</html>

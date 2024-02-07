@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyDesk\Controller\MainPageController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using StudyDesk.Model;
+
+namespace StudyDesk.Controller;
+
+/// &lt;summary&gt;
+///     Controller for the main page.
+/// &lt;/summary&gt;
+public class MainPageController
+{
+    #region Properties
+
+    /// &lt;summary&gt;
+    ///     Gets or sets the sources of the logged-in user.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The sources as a collection of Source objects.
+    /// &lt;/value&gt;
+    public IList&lt;Source&gt; Sources { get; private set; }
+
+    private AuthService AuthService { get; set; }
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;MainPageController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    public MainPageController(AuthService auth)
+    {
+        this.AuthService = auth;
+        this.Sources = this.AuthService.GetSources().Result.ToList();
+    }
+
+    #endregion
+
+    #region Methods
+
+    // /// &lt;summary&gt;
+    // ///     Adds as source under the logged-in user.
+    // /// &lt;/summary&gt;
+    // /// &lt;param name=&quot;name&quot;&gt;The name.&lt;/param&gt;
+    // /// &lt;param name=&quot;type&quot;&gt;The type.&lt;/param&gt;
+    // /// &lt;param name=&quot;link&quot;&gt;The link.&lt;/param&gt;
+    // /// &lt;precondition&gt;
+    // ///     name != null AND !name.isEmptyOrBlank
+    // ///     sourceType.isOfTypeEnum&lt;see cref=&quot;SourceType&quot; /&gt;() AND
+    // ///     link != null AND !link.isEmptyOrBlank
+    // /// &lt;/precondition&gt;
+    // /// &lt;returns&gt;True if addition is successful, false otherwise.&lt;/returns&gt;
+    // public bool AddSource(string name, SourceType type, string link)
+    // {
+    //     return true;
+    // }
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,36,18,40,1],[18,41,18,53,1],[20,39,20,43,1],[20,44,20,48,1],[29,5,29,48,1],[30,5,30,6,1],[31,9,31,33,1],[32,9,32,70,1],[33,5,33,6,1]]);
+    </script>
+  </body>
+</html>
