@@ -16,18 +16,6 @@ public class AuthService
 
     #endregion
 
-    #region Properties
-
-    /// <summary>
-    ///     Gets or sets the token.
-    /// </summary>
-    /// <value>
-    ///     The token.
-    /// </value>
-    public string? Token { get; set; }
-
-    #endregion
-
     #region Constructors
 
     /// <summary>
@@ -42,6 +30,16 @@ public class AuthService
             UseDefaultCredentials = false
         };
         this.httpClient = new HttpClient(handler);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthService"/> class.
+    /// Designed for testing purposes.
+    /// </summary>
+    /// <param name="httpClient">The HTTP client.</param>
+    public AuthService(HttpClient httpClient)
+    {
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
     #endregion
