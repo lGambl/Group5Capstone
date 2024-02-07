@@ -27,7 +27,9 @@
     <ProjectReference Include="..\StudyDesk\StudyDesk.csproj" />
     <ProjectReference Include="..\StudyWeb\StudyWeb.csproj" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="StudyDeskTests\controller\" />
+  </ItemGroup>
   <PropertyGroup>
     <SsdtUnitTestVersion>3.1</SsdtUnitTestVersion>
   </PropertyGroup>

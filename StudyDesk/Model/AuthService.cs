@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using Azure.Identity;
+using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 
 namespace StudyDesk.Model;
@@ -55,7 +57,7 @@ public class AuthService
     ///     An AuthService object if successful, null if unsuccessful.
     /// </returns>
     /// <exception cref="Exception">Login failed with status code: response.StatusCode</exception>
-    public async Task<AuthService?> LoginAsync(string username, string password)
+    public virtual async Task<AuthService?> LoginAsync(string username, string password)
     {
         var loginDto = new LoginDto { Username = username, Password = password };
         var content = new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json");
