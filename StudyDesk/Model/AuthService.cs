@@ -55,7 +55,7 @@ public class AuthService
     ///     An AuthService object if successful, null if unsuccessful.
     /// </returns>
     /// <exception cref="Exception">Login failed with status code: response.StatusCode</exception>
-    public async Task<AuthService?> LoginAsync(string username, string password)
+    public virtual async Task<AuthService?> LoginAsync(string username, string password)
     {
         var loginDto = new LoginDto { Username = username, Password = password };
         var content = new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json");
@@ -85,7 +85,7 @@ public class AuthService
     ///     or
     ///     An error occurred while fetching sources: " + ex.Message
     /// </exception>
-    public async Task<IEnumerable<Source>> GetSources()
+    public virtual async Task<IEnumerable<Source>> GetSources()
     {
         try
         {

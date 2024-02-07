@@ -3,7 +3,7 @@ using Moq;
 using Moq.Protected;
 using StudyDesk.Model;
 
-namespace StudyHallTests.StudyDeskTests
+namespace StudyHallTests.StudyDeskTests.model
 {
     [TestFixture]
     public class AuthServiceTest

@@ -1,6 +1,6 @@
 ﻿using StudyDesk.Model;
 
-namespace StudyHallTests.StudyDeskTests;
+namespace StudyHallTests.StudyDeskTests.model;
 
 [TestFixture]
 public class NoteTest

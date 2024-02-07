@@ -1,6 +1,6 @@
 ﻿using StudyDesk.Model;
 
-namespace StudyHallTests.StudyDeskTests;
+namespace StudyHallTests.StudyDeskTests.model;
 
 [TestFixture]
 public class SourceTest
@@ -8,7 +8,7 @@ public class SourceTest
     [Test]
     public void TestSourceConstructor()
     {
-        var deskSource = new StudyDesk.Model.Source(1, "test", "test", SourceType.Pdf, "test");
+        var deskSource = new Source(1, "test", "test", SourceType.Pdf, "test");
         Assert.Multiple(() =>
         {
             Assert.That(deskSource.Id, Is.EqualTo(1));
@@ -23,10 +23,10 @@ public class SourceTest
     [Test]
     public void TestSourceTypeToString()
     {
-        var videoSource = new StudyDesk.Model.Source(1, "test", "test", SourceType.Video, "test");
-        var pdfLinkSource = new StudyDesk.Model.Source(1, "test", "test", SourceType.PdfLink, "test");
-        var videoLinkSource = new StudyDesk.Model.Source(1, "test", "test", SourceType.VideoLink, "test");
-        var imageSource = new StudyDesk.Model.Source(1, "test", "test", SourceType.Image, "test");
+        var videoSource = new Source(1, "test", "test", SourceType.Video, "test");
+        var pdfLinkSource = new Source(1, "test", "test", SourceType.PdfLink, "test");
+        var videoLinkSource = new Source(1, "test", "test", SourceType.VideoLink, "test");
+        var imageSource = new Source(1, "test", "test", SourceType.Image, "test");
         Assert.Multiple(() =>
         {
             Assert.That(videoSource.TypeString, Is.EqualTo("video"));

@@ -7,17 +7,25 @@ namespace StudyDesk.Controller;
 /// </summary>
 public class LoginController
 {
+    #region Data members
 
     private readonly AuthService authService;
 
+    #endregion
+
+    #region Constructors
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="LoginController"/> class.
+    ///     Initializes a new instance of the <see cref="LoginController" /> class.
     /// </summary>
     /// <param name="authService">The authentication service.</param>
     public LoginController(AuthService authService)
     {
         this.authService = authService;
     }
+
+    #endregion
+
     #region Methods
 
     /// <summary>
