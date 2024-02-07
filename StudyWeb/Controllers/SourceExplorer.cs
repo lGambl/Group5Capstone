@@ -1,308 +1,332 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StudyWeb.Data;
 using StudyWeb.Models;
-using System.Security.Claims;
 
-namespace StudyWeb.Controllers
+namespace StudyWeb.Controllers;
+
+/// <summary>The Source Explorer Controller</summary>
+[Route("[controller]")]
+public class SourceExplorer : Controller
 {
+    #region Data members
 
-    /// <summary>The Source Explorer Controller</summary>
-    [Route("[controller]")]
-    public class SourceExplorer : Controller
+    private readonly ApplicationDbContext context;
+
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="SourceExplorer" /> class.
+    /// </summary>
+    /// <param name="context">The context.</param>
+    public SourceExplorer(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        this.context = context;
+    }
 
+    #endregion
 
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="SourceExplorer" /> class.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        public SourceExplorer(ApplicationDbContext context)
+    #region Methods
+
+    /// <summary>
+    ///     Indexes this instance.
+    /// </summary>
+    /// <returns>
+    ///     Task
+    /// </returns>
+    [Authorize]
+    public async Task<IActionResult> Index()
+    {
+        if (Request.Headers["Accept"] == "application/json")
         {
-            _context = context;
-        }
-
-
-        /// <summary>
-        ///   Indexes this instance.
-        /// </summary>
-        /// <returns>
-        ///   Task
-        /// </returns>
-        [Authorize]
-        public async Task<IActionResult> Index()
-        {
-            if (Request.Headers["Accept"] == "application/json")
-            {
-                var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (owner == null)
-                {
-                    return Unauthorized(new { success = false, message = "User is not authenticated." });
-                }
-
-                var sources = await _context.Source.ToListAsync();
-
-                var ownerSources = sources.Where(s => s.Owner == owner).ToList();
-
-                foreach (var source in ownerSources)
-                {
-                    if (source.Type == SourceTypes.Pdf || source.Type == SourceTypes.Video)
-                    {
-                        source.Link = "https://localhost:7240/" + source.Link;
-                    }
-                }
-                return Ok(sources);
-            }   
-
-            return View(await _context.Source.ToListAsync());
-        }
-
-        [Authorize]
-        [Route("View/{id?}")]
-        public async Task<IActionResult> View(int? id)
-        {
-            
-            var source = RetreiveSource(id);
-
-            if (source == null)
-            {
-                return NotFound();
-            }
-
-            return View(source);
-            
-        }
-
-        [Authorize]
-        [HttpGet]
-        [Route("Source/{id?}")]
-        public Source? GetSource(int? id)
-        {
-
-            var source = RetreiveSource(id);
-            if (source == null)
-            {
-                return null;
-            }
-
-            return source;
-            
-        }
-
-        private Source? RetreiveSource(int? id)
-        {
-            if (id == null)
-            {
-                return null;
-            }
-
-            var source = _context.Source.FirstOrDefault(m => m.Id == id);
-
-            source.Notes = _context.Note.Where(n => n.SourceId == id).ToList();
-
-            if (source == null)
-            {
-                return null;
-            }
-            
-
-            return source;
-        }
-
-        [Authorize]
-        [Route("Create")]
-        public async Task<IActionResult> Create()
-        {
-            return View();
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("Create")]
-        public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string? link, IFormFile? pdfUpload, IFormFile? videoUpload, IFormFile? imageUpload, [Bind("Type")] SourceTypes? type)
-        {
-            var user = User.Claims.FirstOrDefault();
-            var owner = user?.Value;
-            
-
-            if (owner == null || title == null || type == null )
-            {
-                return BadRequest();
-            }
-
-            switch (type)
-            {
-                case SourceTypes.Pdf:
-                    if (pdfUpload == null)
-                    {
-                        return BadRequest();
-                    }
-
-                    if (!await saveFile(pdfUpload, title, owner, type))
-                    {
-                        return BadRequest();
-                    }
-                    break;
-                case SourceTypes.Video:
-                    if (videoUpload == null)
-                    {
-                        return BadRequest();
-                    }
-
-                    if (!await saveFile(videoUpload, title, owner, type))
-                    {
-                        return BadRequest();
-                    }
-                    break;
-                case SourceTypes.Image:
-                    if (imageUpload == null)
-                    {
-                        return BadRequest();
-                    }
-
-                    if (!await saveFile(imageUpload, title, owner, type))
-                    {
-                        return BadRequest();
-                    }
-                    break;
-                case SourceTypes.ImageLink:
-                    if (link == null)
-                    {
-                        return BadRequest();
-                    }
-
-                    if (!await this.AddLink(title, owner, link, type))
-                    {
-                        return BadRequest();
-                    }
-                    break;
-                case SourceTypes.PdfLink:
-                    await this.AddLink(title, owner, link, type);
-                    break;
-                case SourceTypes.VideoLink:
-                    if (link == null)
-                    {
-                        return BadRequest();
-                    }
-
-                    if (!await this.AddLink(title, owner, link, type))
-                    {
-                        return BadRequest();
-                    }
-                    break; 
-                default:
-                    return BadRequest();
-                    
-            }
-
-            if (Request.Headers["Accept"] == "application/json")
-            {
-                return Ok(new { success = true, message = "Source created successfully." });
-            }
-
-            return RedirectToAction("Index","SourceExplorer");
-
-        }
-
-        private async Task<bool> saveFile(IFormFile? file,string? title, string? owner, SourceTypes? type)
-        {
-            
-
-            var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-            // Ensure the upload folder exists
-            if (!Directory.Exists(uploadsFolderPath))
-            {
-                Directory.CreateDirectory(uploadsFolderPath);
-            }
-
-            string uniqueFileName = Guid.NewGuid() + "_" + file.FileName;
-            var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
-
-            try
-            {
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
-            }
-            catch
-            {
-                return false;
-            }
-
-            string relativePath = "uploads";
-
-            var relativeFilePath = Path.Combine(relativePath, uniqueFileName);
-
-            await this.AddLink(title, owner, relativeFilePath, type);
-
-            return true;
-        }
-
-        private async Task<bool> AddLink(string? title, string? owner, string? link, SourceTypes? type)
-        {
-            try
-            {
-                var insertSourceQuery = "INSERT INTO Source (title, owner, link, type) VALUES (@title, @owner, @link, @type);";
-                SqlParameter[] parameters =
-                {
-                    new SqlParameter("@title", title),
-                    new SqlParameter("@owner", owner),
-                    new SqlParameter("@link", link),
-                    new SqlParameter("@type", type)
-                };
-
-                await _context.Database.ExecuteSqlRawAsync(insertSourceQuery, parameters);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it as per your requirement
-                // For debugging: throw; or return false;
-                return false;
-            }
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("Note")]
-        public async Task<IActionResult> Note([FromForm] string text, [FromForm] int sourceId)
-        {
-             if (string.IsNullOrWhiteSpace(text) || sourceId == null)
-            {
-                return BadRequest(new { success = false, message = "Invalid note text or source ID." });
-            }
-
             var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (owner == null)
             {
                 return Unauthorized(new { success = false, message = "User is not authenticated." });
             }
 
-            try
+            var sources = await this.context.Source.ToListAsync();
+
+            var ownerSources = sources.Where(s => s.Owner == owner).ToList();
+
+            foreach (var source in ownerSources)
             {
-                var insertNoteQuery = "INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);";
-                SqlParameter[] parameters =
+                if (source.Type == SourceTypes.Pdf || source.Type == SourceTypes.Video)
                 {
-                    new SqlParameter("@Text", text),
-                    new SqlParameter("@Owner", owner),
-                    new SqlParameter("@SourceId", sourceId)
-                };
-
-                await _context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
-
+                    source.Link = "https://localhost:7240/" + source.Link;
+                }
             }
-            catch (Exception ex)
-            {
-                
+
+            return Ok(sources);
+        }
+
+        return View(await this.context.Source.ToListAsync());
+    }
+
+    /// <summary>
+    ///     Views the specified identifier source page
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [Authorize]
+    [Route("View/{id?}")]
+    public async Task<IActionResult> View(int? id)
+    {
+        var source = this.getSource(id);
+
+        if (source == null)
+        {
+            return NotFound();
+        }
+
+        return View(source);
+    }
+
+    private Source? getSource(int? id)
+    {
+        if (id == null)
+        {
+            return null;
+        }
+
+        var source = this.context.Source.FirstOrDefault(m => m.Id == id);
+
+        if (source != null)
+        {
+            source.Notes = this.context.Note.Where(n => n.SourceId == id).ToList();
+
+            return source;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    ///     Show view for creating a source
+    /// </summary>
+    /// <returns></returns>
+    [Authorize]
+    [Route("Create")]
+    public async Task<PartialViewResult> Create()
+    {
+        return PartialView();
+    }
+
+    /// <summary>
+    ///     Create a source. This is a endpoint for the form submission and the API.
+    /// </summary>
+    /// <param name="title"></param>
+    /// <param name="link"></param>
+    /// <param name="pdfUpload"></param>
+    /// <param name="videoUpload"></param>
+    /// <param name="imageUpload"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    [Authorize]
+    [HttpPost]
+    [Route("Create")]
+    public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string? link,
+        IFormFile? pdfUpload, IFormFile? videoUpload, IFormFile? imageUpload, [Bind("Type")] SourceTypes? type)
+    {
+        var user = User.Claims.FirstOrDefault();
+        var owner = user?.Value;
+
+        if (owner == null || title == null || type == null)
+        {
+            return BadRequest();
+        }
+
+        switch (type)
+        {
+            case SourceTypes.Pdf:
+                if (pdfUpload == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!await this.saveFile(pdfUpload, title, owner, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            case SourceTypes.Video:
+                if (videoUpload == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!await this.saveFile(videoUpload, title, owner, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            case SourceTypes.Image:
+                if (imageUpload == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!await this.saveFile(imageUpload, title, owner, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            case SourceTypes.ImageLink:
+                if (link == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!await this.addLink(title, owner, link, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            case SourceTypes.PdfLink:
+                await this.addLink(title, owner, link, type);
+                break;
+            case SourceTypes.VideoLink:
+                if (link == null)
+                {
+                    return BadRequest();
+                }
+
+                link = fixYoutubeLink(link);
+                if (!await this.addLink(title, owner, link, type))
+                {
+                    return BadRequest();
+                }
+
+                break;
+            default:
                 return BadRequest();
-            }
+        }
 
-            return Ok(new { success = true, message = "Note added successfully." });
+        if (Request.Headers["Accept"] == "application/json")
+        {
+            return Ok(new { success = true, message = "Source created successfully." });
+        }
+
+        return RedirectToAction("Index", "SourceExplorer");
+    }
+
+    private static string fixYoutubeLink(string link)
+    {
+        if (!link.Contains("youtube.com/watch?v="))
+        {
+            return link;
+        }
+
+        var split = link.Split("=");
+        return "https://www.youtube.com/embed/" + split[^1];
+    }
+
+    private async Task<bool> saveFile(IFormFile? file, string? title, string? owner, SourceTypes? type)
+    {
+        var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+        if (!Directory.Exists(uploadsFolderPath))
+        {
+            Directory.CreateDirectory(uploadsFolderPath);
+        }
+
+        var uniqueFileName = Guid.NewGuid() + "_" + file?.FileName;
+        var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+
+        try
+        {
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file?.CopyToAsync(stream);
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        var relativePath = "uploads";
+
+        var relativeFilePath = Path.Combine(relativePath, uniqueFileName);
+
+        await this.addLink(title, owner, relativeFilePath, type);
+
+        return true;
+    }
+
+    private async Task<bool> addLink(string? title, string? owner, string? link, SourceTypes? type)
+    {
+        try
+        {
+            var insertSourceQuery =
+                "INSERT INTO Source (title, owner, link, type) VALUES (@title, @owner, @link, @type);";
+            SqlParameter[] parameters =
+            {
+                new("@title", title),
+                new("@owner", owner),
+                new("@link", link),
+                new("@type", type)
+            };
+
+            await this.context.Database.ExecuteSqlRawAsync(insertSourceQuery, parameters);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
         }
     }
+
+    /// <summary>
+    ///     Route for adding a note to a source
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="sourceId"></param>
+    /// <returns></returns>
+    [Authorize]
+    [HttpPost]
+    [Route("Note")]
+    public async Task<IActionResult> Note([FromForm] string text, [FromForm] int sourceId)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return BadRequest(new { success = false, message = "Invalid note text or source ID." });
+        }
+
+        var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (owner == null)
+        {
+            return Unauthorized(new { success = false, message = "User is not authenticated." });
+        }
+
+        try
+        {
+            var insertNoteQuery = "INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);";
+            SqlParameter[] parameters =
+            {
+                new("@Text", text),
+                new("@Owner", owner),
+                new("@SourceId", sourceId)
+            };
+
+            await this.context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest();
+        }
+
+        return Ok(new { success = true, message = "Note added successfully." });
+    }
+
+    #endregion
 }
