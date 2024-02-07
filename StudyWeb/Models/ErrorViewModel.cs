@@ -1,6 +1,4 @@
-/// <summary>
-/// 
-/// </summary>
+
 namespace StudyWeb.Models
 {
 
@@ -13,11 +11,11 @@ namespace StudyWeb.Models
         /// <summary>
         ///   Request ID
         /// </summary>
-        public string? RequestId { get; set; }
+        public string? RequestId { get; init; }
 
         /// <summary>
         ///   Show request ID
         /// </summary>
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowRequestId => !string.IsNullOrEmpty(this.RequestId);
     }
 }
