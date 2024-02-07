@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using Azure.Identity;
-using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 
 namespace StudyDesk.Model;
@@ -87,7 +85,7 @@ public class AuthService
     ///     or
     ///     An error occurred while fetching sources: " + ex.Message
     /// </exception>
-    public async Task<IEnumerable<Source>> GetSources()
+    public virtual async Task<IEnumerable<Source>> GetSources()
     {
         try
         {

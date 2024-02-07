@@ -1,6 +1,5 @@
 ﻿using StudyDesk.Controller;
 using StudyDesk.Model;
-using StudyDesk.View.SourceControls;
 
 namespace StudyDesk.View
 {
@@ -19,7 +18,7 @@ namespace StudyDesk.View
         {
             this.InitializeComponent();
             this.controller = new SourceFormController(source);
-            this.StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterScreen;
             this.loadNotes();
             this.loadSource(source);
         }
