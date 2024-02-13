@@ -44,7 +44,7 @@ public partial class LoginForm : Form
         {
             var mainpage = new MainPageForm(auth);
             mainpage.Show();
-            mainpage.Closed += (_, _) => Show();
+            mainpage.Closed += (_, _) => Close();
             Hide();
         }
         else
@@ -58,7 +58,7 @@ public partial class LoginForm : Form
     {
         var registrationPage = new UserRegistrationForm();
         registrationPage.Show();
-        registrationPage.Closed += (_, _) => Close();
+        registrationPage.Closed += (_, _) => Show();
         Hide();
     }
 
