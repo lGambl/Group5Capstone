@@ -10,6 +10,7 @@ namespace StudyDesk.View
     public partial class MainPageForm : Form
     {
         private const string? NotImplementedYet = "Not implemented yet.";
+        private const string? LogoutFailed = "Logout failed";
         private readonly MainPageController controller;
         /// <summary>
         /// Initializes a new instance of the <see cref="MainPageForm"/> class.
@@ -56,6 +57,22 @@ namespace StudyDesk.View
             var source = this.controller.Sources[this.indexListView.SelectedIndices[0]];
             var sourceForm = new SourceForm(source);
             sourceForm.ShowDialog();
+        }
+
+        private void logoutButton_Click(object sender, EventArgs e)
+        {
+            if (this.controller.Logout())
+            {
+                var loginForm = new LoginForm();
+                loginForm.Show();
+                loginForm.Closed += (_, _) => Close();
+                Hide();
+            }
+
+            else
+            {
+                MessageBox.Show(LogoutFailed, LogoutFailed, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

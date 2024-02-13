@@ -10,8 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DAL\" />
-    <Folder Include="Resources\" />
+    <Compile Remove="DAL\**" />
+    <Compile Remove="Resources\**" />
+    <EmbeddedResource Remove="DAL\**" />
+    <EmbeddedResource Remove="Resources\**" />
+    <None Remove="DAL\**" />
+    <None Remove="Resources\**" />
   </ItemGroup>
 
   <ItemGroup>

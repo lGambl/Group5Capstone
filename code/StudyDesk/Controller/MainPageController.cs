@@ -17,7 +17,7 @@ public class MainPageController
     /// </value>
     public IList<Source> Sources { get; private set; }
 
-    private AuthService AuthService { get; set; }
+    private AuthService AuthService { get; }
 
     #endregion
 
@@ -36,6 +36,17 @@ public class MainPageController
 
     #region Methods
 
+    /// <summary>
+    ///     Logouts this instance.
+    /// </summary>
+    /// <returns>True if successful, false otherwise.</returns>
+    public bool Logout()
+    {
+        return this.AuthService.Logout();
+    }
+
+    #endregion
+
     // /// <summary>
     // ///     Adds as source under the logged-in user.
     // /// </summary>
@@ -52,6 +63,4 @@ public class MainPageController
     // {
     //     return true;
     // }
-
-    #endregion
 }
