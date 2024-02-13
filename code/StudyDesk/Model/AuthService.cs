@@ -33,8 +33,8 @@ public class AuthService
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AuthService"/> class.
-    /// Designed for testing purposes.
+    ///     Initializes a new instance of the <see cref="AuthService" /> class.
+    ///     Designed for testing purposes.
     /// </summary>
     /// <param name="httpClient">The HTTP client.</param>
     public AuthService(HttpClient httpClient)
@@ -114,6 +114,16 @@ public class AuthService
         {
             throw new Exception("An error occurred while fetching sources: " + ex.Message);
         }
+    }
+
+    /// <summary>
+    ///     Attempts to log out the user.
+    /// </summary>
+    /// <returns>True if successful, false otherwise.</returns>
+    public virtual bool Logout()
+    {
+        var response = this.httpClient.GetAsync("https://localhost:7240/Identity/Account/Logout?returnUrl=%2F").Result;
+        return response.IsSuccessStatusCode;
     }
 
     #endregion

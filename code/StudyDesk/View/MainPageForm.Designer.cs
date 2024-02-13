@@ -32,6 +32,7 @@
             titleHeader = new ColumnHeader();
             addButton = new Button();
             deleteButton = new Button();
+            logoutButton = new Button();
             SuspendLayout();
             // 
             // indexListView
@@ -71,11 +72,22 @@
             deleteButton.Text = "Delete";
             deleteButton.UseVisualStyleBackColor = true;
             // 
+            // logoutButton
+            // 
+            logoutButton.Location = new Point(133, 12);
+            logoutButton.Name = "logoutButton";
+            logoutButton.Size = new Size(94, 29);
+            logoutButton.TabIndex = 3;
+            logoutButton.Text = "Logout";
+            logoutButton.UseVisualStyleBackColor = true;
+            logoutButton.Click += logoutButton_Click;
+            // 
             // MainPageForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(357, 360);
+            Controls.Add(logoutButton);
             Controls.Add(deleteButton);
             Controls.Add(addButton);
             Controls.Add(indexListView);
@@ -90,5 +102,6 @@
         private ColumnHeader titleHeader;
         private Button addButton;
         private Button deleteButton;
+        private Button logoutButton;
     }
 }

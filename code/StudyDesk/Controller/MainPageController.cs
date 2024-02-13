@@ -36,6 +36,11 @@ public class MainPageController
 
     #region Methods
 
+    public bool Logout()
+    {
+        return this.AuthService.Logout();
+    }
+
     // /// <summary>
     // ///     Adds as source under the logged-in user.
     // /// </summary>

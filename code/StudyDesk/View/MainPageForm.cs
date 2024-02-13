@@ -57,5 +57,10 @@ namespace StudyDesk.View
             var sourceForm = new SourceForm(source);
             sourceForm.ShowDialog();
         }
+
+        private void logoutButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
