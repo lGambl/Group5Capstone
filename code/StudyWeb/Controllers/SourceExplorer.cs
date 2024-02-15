@@ -130,7 +130,8 @@ public class SourceExplorer : Controller
     [Authorize]
     [HttpPost]
     [Route("Create")]
-    public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string? link,
+    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
+    public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string link,
         IFormFile? pdfUpload, IFormFile? videoUpload, IFormFile? imageUpload, [Bind("Type")] SourceTypes? type)
     {
         var user = User.Claims.FirstOrDefault();
