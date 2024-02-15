@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# uploaded user files
+Code/StudyWeb/wwwroot/uploads/*
