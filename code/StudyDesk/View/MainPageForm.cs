@@ -74,5 +74,13 @@ namespace StudyDesk.View
                 MessageBox.Show(LogoutFailed, LogoutFailed, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            if (this.controller.DeleteSource(this.indexListView.SelectedItems[0].ToString()).Result)
+            {
+                this.indexListView.SelectedItems[0].Remove();
+            }
+        }
     }
 }

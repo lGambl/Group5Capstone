@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using StudyWeb.Data;
 using StudyWeb.Models;
 
@@ -130,8 +132,7 @@ public class SourceExplorer : Controller
     [Authorize]
     [HttpPost]
     [Route("Create")]
-    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
-    public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string link,
+    public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string? link,
         IFormFile? pdfUpload, IFormFile? videoUpload, IFormFile? imageUpload, [Bind("Type")] SourceTypes? type)
     {
         var user = User.Claims.FirstOrDefault();
@@ -327,6 +328,69 @@ public class SourceExplorer : Controller
         }
 
         return Ok(new { success = true, message = "Note added successfully." });
+    }
+
+    /// <summary>
+    ///   Deletes the specified source identifier.
+    /// </summary>
+    /// <param name="sourceId">The source identifier.</param>
+    /// <returns>
+    ///   Success message if successful, bad request if unsuccessful.
+    /// </returns>
+    [Authorize]
+    [HttpDelete]
+    [Route("Delete/{sourceId}")]
+    public async Task<IActionResult> Delete(int sourceId)
+    {
+        if (sourceId < 0)
+        {
+            return BadRequest(new { success = false, message = "Source Id not found. " });
+        }
+
+        var notesDeletedResult = this.deleteSourceNotes(sourceId);
+        if (notesDeletedResult.Result == Ok())
+        {
+            var id = this.context.Source.FirstOrDefault(m => m.Id == sourceId);
+            try
+            {
+                var deleteSourceQuery = "DELETE FROM source WHERE Id = @Id";
+                SqlParameter parameter = new SqlParameter("@Id", id);
+                await this.context.Database.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+
+            return Ok(new { success = true, message = "Source deleted successfully." });
+        }
+
+
+        return BadRequest();
+    }
+
+    private async Task<IActionResult> deleteSourceNotes(int sourceId)
+    {
+        var sourceNotes = this.context.Source.FirstOrDefault(m => m.Id == sourceId).Notes;
+        if (sourceNotes != null && sourceNotes.Count > 0)
+        {
+            try
+            {
+                foreach (var currNote in sourceNotes)
+                {
+                    var deleteNoteQuery = "DELETE FROM note WHERE Id = @Id";
+                    SqlParameter parameter = new SqlParameter("@Id", currNote.Id);
+                    await this.context.Database.ExecuteSqlRawAsync(deleteNoteQuery, parameter);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+            return Ok(new { success = true, message = "Notes removed successfully." });
+        }
+
+        return Ok(new { success = true, message = "The source has no notes to delete." });
     }
 
     #endregion
