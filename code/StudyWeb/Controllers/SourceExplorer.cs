@@ -36,10 +36,10 @@ public class SourceExplorer : Controller
     #region Methods
 
     /// <summary>
-    ///     Indexes this instance.
+    ///     Shows the index page for the source explorer
     /// </summary>
     /// <returns>
-    ///     Task
+    ///     A page with all the sources. 
     /// </returns>
     [Authorize]
     public async Task<IActionResult> Index()
@@ -394,4 +394,18 @@ public class SourceExplorer : Controller
     }
 
     #endregion
+
+    /// <summary>
+    /// Route for deleting a source.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <returns></returns>
+    /// <exception cref="System.NotImplementedException"></exception>
+    [Authorize]
+    [HttpDelete]
+    [Route("Delete/{id?}")]
+    public Task<IActionResult> Delete(int? id)
+    {
+        throw new NotImplementedException();
+    }
 }
