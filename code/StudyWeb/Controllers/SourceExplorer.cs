@@ -359,14 +359,14 @@ public class SourceExplorer : Controller
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(new {success = false, message = ex.Message});
             }
 
             return Ok(new { success = true, message = "Source deleted successfully." });
         }
 
 
-        return BadRequest();
+        return BadRequest(new {success = false, message = "Deletion Failed."});
     }
 
     private async Task<IActionResult> deleteSourceNotes(int sourceId)
@@ -395,17 +395,4 @@ public class SourceExplorer : Controller
 
     #endregion
 
-    /// <summary>
-    /// Route for deleting a source.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <returns></returns>
-    /// <exception cref="System.NotImplementedException"></exception>
-    [Authorize]
-    [HttpDelete]
-    [Route("Delete/{id?}")]
-    public Task<IActionResult> Delete(int? id)
-    {
-        throw new NotImplementedException();
-    }
 }

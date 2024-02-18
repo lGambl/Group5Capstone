@@ -46,7 +46,7 @@ public class MainPageController
     {
         this.AuthService = auth;
         this.Sources = this.AuthService.GetSources().Result.ToList();
-        this.Client = new HttpClient();
+        this.Client = this.AuthService.HttpClient;
     }
 
     public MainPageController(AuthService auth, HttpClient client)
@@ -92,25 +92,25 @@ public class MainPageController
             }
         }
 
-        //var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/delete/{sourceId}").ConfigureAwait(false);
-        //return response.IsSuccessStatusCode;
+        var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/Delete/{sourceId}").ConfigureAwait(false);
+        return response.IsSuccessStatusCode;
 
-        this.deleteSourceNotes(this.getSourceNotes(sourceId));
-        try
-        {
-            var connection = new SqlConnection(ConnectionString);
-            connection.Open();
-            var command = new SqlCommand("DELETE FROM source WHERE Id = @Id", connection);
-            command.Parameters.AddWithValue("@Id", sourceId);
-            command.ExecuteNonQuery();
-            connection.Close();
-            return true;
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(FailedToDeleteSourceFromDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false;
-        }
+        // this.deleteSourceNotes(this.getSourceNotes(sourceId));
+        // try
+        // {
+        //     var connection = new SqlConnection(ConnectionString);
+        //     connection.Open();
+        //     var command = new SqlCommand("DELETE FROM source WHERE Id = @Id", connection);
+        //     command.Parameters.AddWithValue("@Id", sourceId);
+        //     command.ExecuteNonQuery();
+        //     connection.Close();
+        //     return true;
+        // }
+        // catch (Exception ex)
+        // {
+        //     MessageBox.Show(FailedToDeleteSourceFromDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //     return false;
+        // }
 
     }
 
