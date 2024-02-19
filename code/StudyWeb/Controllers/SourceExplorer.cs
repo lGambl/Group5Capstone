@@ -34,10 +34,10 @@ public class SourceExplorer : Controller
     #region Methods
 
     /// <summary>
-    ///     Indexes this instance.
+    ///     Shows the index page for the source explorer
     /// </summary>
     /// <returns>
-    ///     Task
+    ///     A page with all the sources.
     /// </returns>
     [Authorize]
     public async Task<IActionResult> Index()
@@ -56,7 +56,7 @@ public class SourceExplorer : Controller
 
             foreach (var source in ownerSources)
             {
-                if (source.Type == SourceTypes.Pdf || source.Type == SourceTypes.Video)
+                if (source.Type is SourceTypes.Pdf or SourceTypes.Video)
                 {
                     source.Link = "https://localhost:7240/" + source.Link;
                 }
@@ -130,8 +130,7 @@ public class SourceExplorer : Controller
     [Authorize]
     [HttpPost]
     [Route("Create")]
-    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
-    public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string link,
+    public async Task<IActionResult> Create([Bind("Title")] string? title, [Bind("Link")] string? link,
         IFormFile? pdfUpload, IFormFile? videoUpload, IFormFile? imageUpload, [Bind("Type")] SourceTypes? type)
     {
         var user = User.Claims.FirstOrDefault();
@@ -327,6 +326,68 @@ public class SourceExplorer : Controller
         }
 
         return Ok(new { success = true, message = "Note added successfully." });
+    }
+
+    /// <summary>
+    ///     Deletes the specified source identifier.
+    /// </summary>
+    /// <param name="sourceId">The source identifier.</param>
+    /// <returns>
+    ///     Success message if successful, bad request if unsuccessful.
+    /// </returns>
+    [Authorize]
+    [HttpDelete]
+    [Route("Delete/{sourceId}")]
+    public async Task<IActionResult> Delete(int sourceId)
+    {
+        if (sourceId < 0)
+        {
+            return BadRequest(new { success = false, message = "Source Id not found. " });
+        }
+
+        var notesDeletedResult = this.deleteSourceNotes(sourceId);
+        if (notesDeletedResult.Result is OkObjectResult)
+        {
+            try
+            {
+                const string deleteSourceQuery = "DELETE FROM source WHERE Id = @Id";
+                var parameter = new SqlParameter("@Id", sourceId);
+                await this.context.Database.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
+            return Ok(new { success = true, message = "Source deleted successfully." });
+        }
+
+        return BadRequest(new { success = false, message = "Deletion Failed." });
+    }
+
+    private async Task<IActionResult> deleteSourceNotes(int sourceId)
+    {
+        var sourceNotes = this.context.Note.Where(n => n.SourceId == sourceId).ToListAsync();
+        if (sourceNotes.Result.Count > 0)
+        {
+            try
+            {
+                foreach (var currNote in sourceNotes.Result)
+                {
+                    const string deleteNoteQuery = "DELETE FROM note WHERE Id = @Id";
+                    var parameter = new SqlParameter("@Id", currNote.Id);
+                    await this.context.Database.ExecuteSqlRawAsync(deleteNoteQuery, parameter);
+                }
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+
+            return Ok(new { success = true, message = "Notes removed successfully." });
+        }
+
+        return Ok(new { success = true, message = "The source has no notes to delete." });
     }
 
     #endregion
