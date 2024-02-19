@@ -390,5 +390,37 @@ public class SourceExplorer : Controller
         return Ok(new { success = true, message = "The source has no notes to delete." });
     }
 
+    /// <summary>
+    /// Deletes the note.
+    /// </summary>
+    /// <param name="noteId">The note identifier.</param>
+    /// <returns>
+    ///   Ok, if the note was removed successfully.
+    ///   BadRequest if the note was not deleted.
+    /// </returns>
+    [Authorize]
+    [HttpDelete]
+    [Route("DeleteNote/{noteId}")]
+    public async Task<IActionResult> DeleteNote(int noteId)
+    {
+        if (noteId < 0)
+        {
+            return BadRequest(new { success = false, message = "Note Id not found. " });
+        }
+
+        try
+        {
+            const string deleteSourceQuery = "DELETE FROM note WHERE Id = @Id";
+            var parameter = new SqlParameter("@Id", noteId);
+            await this.context.Database.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
+
+        return Ok(new { success = true, message = "Note deleted successfully." });
+    }
+
     #endregion
 }
