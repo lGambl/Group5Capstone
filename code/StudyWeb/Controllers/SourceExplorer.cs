@@ -118,7 +118,7 @@ public class SourceExplorer : Controller
     }
 
     /// <summary>
-    ///     Create a source. This is a endpoint for the form submission and the API.
+    ///     Create a source. This is an endpoint for the form submission and the API.
     /// </summary>
     /// <param name="title"></param>
     /// <param name="link"></param>
