@@ -350,11 +350,10 @@ public class SourceExplorer : Controller
         var notesDeletedResult = this.deleteSourceNotes(sourceId);
         if (notesDeletedResult.Result is OkObjectResult okResult)
         {
-            var id = this.context.Source.FirstOrDefault(m => m.Id == sourceId).Id;
             try
             {
                 var deleteSourceQuery = "DELETE FROM source WHERE Id = @Id";
-                SqlParameter parameter = new SqlParameter("@Id", id);
+                SqlParameter parameter = new SqlParameter("@Id", sourceId);
                 await this.context.Database.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
             }
             catch (Exception ex)
