@@ -348,9 +348,9 @@ public class SourceExplorer : Controller
         }
 
         var notesDeletedResult = this.deleteSourceNotes(sourceId);
-        if (notesDeletedResult.Result == Ok())
+        if (notesDeletedResult.Result is OkObjectResult okResult)
         {
-            var id = this.context.Source.FirstOrDefault(m => m.Id == sourceId);
+            var id = this.context.Source.FirstOrDefault(m => m.Id == sourceId).Id;
             try
             {
                 var deleteSourceQuery = "DELETE FROM source WHERE Id = @Id";
@@ -371,12 +371,12 @@ public class SourceExplorer : Controller
 
     private async Task<IActionResult> deleteSourceNotes(int sourceId)
     {
-        var sourceNotes = this.context.Source.FirstOrDefault(m => m.Id == sourceId).Notes;
-        if (sourceNotes != null && sourceNotes.Count > 0)
+        var sourceNotes = this.context.Note.Where(n => n.SourceId == sourceId).ToListAsync();
+        if (sourceNotes.Result.Count > 0)
         {
             try
             {
-                foreach (var currNote in sourceNotes)
+                foreach (var currNote in sourceNotes.Result)
                 {
                     var deleteNoteQuery = "DELETE FROM note WHERE Id = @Id";
                     SqlParameter parameter = new SqlParameter("@Id", currNote.Id);

@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Microsoft.Data.SqlClient;
 using StudyDesk.Model;
 
 
@@ -94,64 +93,6 @@ public class MainPageController
 
         var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/Delete/{sourceId}").ConfigureAwait(false);
         return response.IsSuccessStatusCode;
-
-        // this.deleteSourceNotes(this.getSourceNotes(sourceId));
-        // try
-        // {
-        //     var connection = new SqlConnection(ConnectionString);
-        //     connection.Open();
-        //     var command = new SqlCommand("DELETE FROM source WHERE Id = @Id", connection);
-        //     command.Parameters.AddWithValue("@Id", sourceId);
-        //     command.ExecuteNonQuery();
-        //     connection.Close();
-        //     return true;
-        // }
-        // catch (Exception ex)
-        // {
-        //     MessageBox.Show(FailedToDeleteSourceFromDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //     return false;
-        // }
-
-    }
-
-    private bool deleteSourceNotes(List<int> noteIds)
-    {
-        try
-        {
-            var connection = new SqlConnection(ConnectionString);
-            connection.Open();
-            foreach (var currId in noteIds)
-            {
-
-                var command = new SqlCommand("DELETE FROM dbo.Note WHERE Id = @id", connection);
-                command.Parameters.AddWithValue("@id", currId);
-                command.ExecuteNonQuery();
-
-            }
-            connection.Close();
-            return true;
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(FailedToDeleteNotesFromDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false;
-        }
-    }
-
-    private List<int> getSourceNotes(int sourceId)
-    {
-        var notes = new List<int>();
-        var connection = new SqlConnection(ConnectionString);
-        connection.Open();
-        var command = new SqlCommand("SELECT * FROM dbo.Note where SourceId = @sourceId", connection);
-        command.Parameters.AddWithValue("@sourceId", sourceId);
-        var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            notes.Add(reader.GetInt32(0));
-        }
-        connection.Close();
-        return notes;
     }
 
     #endregion
