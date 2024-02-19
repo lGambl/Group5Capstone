@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Azure;
 using StudyDesk.Model;
 
 
@@ -92,7 +93,28 @@ public class MainPageController
         }
 
         var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/Delete/{sourceId}").ConfigureAwait(false);
+
+        this.deleteSourceFromSources(response, result);
+
         return response.IsSuccessStatusCode;
+    }
+
+    private void deleteSourceFromSources(HttpResponseMessage response, string result)
+    {
+        if (response.IsSuccessStatusCode)
+        {
+            Source sourceToRemove = null;
+            foreach (var currSource in this.Sources)
+            {
+                if (currSource.Title == result)
+                {
+                    sourceToRemove = currSource;
+                    break;
+                }
+            }
+
+            this.Sources.Remove(sourceToRemove);
+        }
     }
 
     #endregion

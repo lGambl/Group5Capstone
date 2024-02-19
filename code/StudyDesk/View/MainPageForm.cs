@@ -86,6 +86,7 @@ namespace StudyDesk.View
             {
                 if (this.controller.DeleteSource(this.indexListView.SelectedItems[0].ToString()).Result)
                 {
+                    
                     this.loadSources();
                 }
                 else
