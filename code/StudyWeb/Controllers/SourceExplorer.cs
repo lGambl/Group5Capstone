@@ -1,10 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using StudyWeb.Data;
 using StudyWeb.Models;
 
@@ -39,7 +37,7 @@ public class SourceExplorer : Controller
     ///     Shows the index page for the source explorer
     /// </summary>
     /// <returns>
-    ///     A page with all the sources. 
+    ///     A page with all the sources.
     /// </returns>
     [Authorize]
     public async Task<IActionResult> Index()
@@ -58,7 +56,7 @@ public class SourceExplorer : Controller
 
             foreach (var source in ownerSources)
             {
-                if (source.Type == SourceTypes.Pdf || source.Type == SourceTypes.Video)
+                if (source.Type is SourceTypes.Pdf or SourceTypes.Video)
                 {
                     source.Link = "https://localhost:7240/" + source.Link;
                 }
@@ -331,11 +329,11 @@ public class SourceExplorer : Controller
     }
 
     /// <summary>
-    ///   Deletes the specified source identifier.
+    ///     Deletes the specified source identifier.
     /// </summary>
     /// <param name="sourceId">The source identifier.</param>
     /// <returns>
-    ///   Success message if successful, bad request if unsuccessful.
+    ///     Success message if successful, bad request if unsuccessful.
     /// </returns>
     [Authorize]
     [HttpDelete]
@@ -348,24 +346,23 @@ public class SourceExplorer : Controller
         }
 
         var notesDeletedResult = this.deleteSourceNotes(sourceId);
-        if (notesDeletedResult.Result is OkObjectResult okResult)
+        if (notesDeletedResult.Result is OkObjectResult)
         {
             try
             {
-                var deleteSourceQuery = "DELETE FROM source WHERE Id = @Id";
-                SqlParameter parameter = new SqlParameter("@Id", sourceId);
+                const string deleteSourceQuery = "DELETE FROM source WHERE Id = @Id";
+                var parameter = new SqlParameter("@Id", sourceId);
                 await this.context.Database.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
             }
             catch (Exception ex)
             {
-                return BadRequest(new {success = false, message = ex.Message});
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             return Ok(new { success = true, message = "Source deleted successfully." });
         }
 
-
-        return BadRequest(new {success = false, message = "Deletion Failed."});
+        return BadRequest(new { success = false, message = "Deletion Failed." });
     }
 
     private async Task<IActionResult> deleteSourceNotes(int sourceId)
@@ -377,15 +374,16 @@ public class SourceExplorer : Controller
             {
                 foreach (var currNote in sourceNotes.Result)
                 {
-                    var deleteNoteQuery = "DELETE FROM note WHERE Id = @Id";
-                    SqlParameter parameter = new SqlParameter("@Id", currNote.Id);
+                    const string deleteNoteQuery = "DELETE FROM note WHERE Id = @Id";
+                    var parameter = new SqlParameter("@Id", currNote.Id);
                     await this.context.Database.ExecuteSqlRawAsync(deleteNoteQuery, parameter);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest();
             }
+
             return Ok(new { success = true, message = "Notes removed successfully." });
         }
 
@@ -393,5 +391,4 @@ public class SourceExplorer : Controller
     }
 
     #endregion
-
 }

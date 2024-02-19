@@ -1,7 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using Azure;
 using StudyDesk.Model;
-
 
 namespace StudyDesk.Controller;
 
@@ -10,17 +8,6 @@ namespace StudyDesk.Controller;
 /// </summary>
 public class MainPageController
 {
-    #region Data Members
-
-    private const string ConnectionString =
-        "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
-
-    private const string? ErrorCaption = "Error";
-    private const string? FailedToDeleteNotesFromDatabase = "Failed to delete notes from database";
-    private const string? FailedToDeleteSourceFromDatabase = "Failed to delete source from database";
-
-    #endregion
-
     #region Properties
 
     /// <summary>
@@ -29,7 +16,7 @@ public class MainPageController
     /// <value>
     ///     The sources as a collection of Source objects.
     /// </value>
-    public IList<Source> Sources { get; private set; }
+    public IList<Source> Sources { get; }
 
     private AuthService AuthService { get; }
 
@@ -49,6 +36,12 @@ public class MainPageController
         this.Client = this.AuthService.HttpClient;
     }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="MainPageController" /> class.
+    ///     Here for testing purposes.
+    /// </summary>
+    /// <param name="auth">The authentication.</param>
+    /// <param name="client">The client.</param>
     public MainPageController(AuthService auth, HttpClient client)
     {
         this.AuthService = auth;
@@ -70,16 +63,16 @@ public class MainPageController
     }
 
     /// <summary>
-    ///   Deletes the source.
+    ///     Deletes the source.
     /// </summary>
     /// <param name="title">The title.</param>
     /// <returns>
-    ///   True if the source was deleted, False if not deleted.
+    ///     True if the source was deleted, False if not deleted.
     /// </returns>
     public async Task<bool> DeleteSource(string title)
     {
-        var pattern = @"\{(.*?)\}";
-        Match match = Regex.Match(title, pattern);
+        const string pattern = @"\{(.*?)\}";
+        var match = Regex.Match(title, pattern);
         var result = match.Groups[1].Value;
 
         var sourceId = -1;
@@ -92,7 +85,8 @@ public class MainPageController
             }
         }
 
-        var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/Delete/{sourceId}").ConfigureAwait(false);
+        var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/Delete/{sourceId}")
+            .ConfigureAwait(false);
 
         this.deleteSourceFromSources(response, result);
 
@@ -103,7 +97,7 @@ public class MainPageController
     {
         if (response.IsSuccessStatusCode)
         {
-            Source sourceToRemove = null;
+            Source? sourceToRemove = null;
             foreach (var currSource in this.Sources)
             {
                 if (currSource.Title == result)
@@ -116,6 +110,13 @@ public class MainPageController
             this.Sources.Remove(sourceToRemove);
         }
     }
+
+    #endregion
+
+    #region Data Members
+
+    private const string ConnectionString =
+        "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
 
     #endregion
 
