@@ -11,6 +11,10 @@ namespace StudyDesk.View
     {
         private const string? NotImplementedYet = "Not implemented yet.";
         private const string? LogoutFailed = "Logout failed";
+        private const string? DeletionFailed = "Deletion Failed";
+        private const string? DeletionFailedPleaseTryAgainOrContactAdmin = "Deletion Failed. Please try again or contact admin.";
+        private const string? AreYouSureYouWantToDeleteThisSource = "Are you sure you want to delete this source?";
+        private const string? DeleteSource = "Delete Source";
         private readonly MainPageController controller;
         /// <summary>
         /// Initializes a new instance of the <see cref="MainPageForm"/> class.
@@ -77,9 +81,17 @@ namespace StudyDesk.View
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            if (this.controller.DeleteSource(this.indexListView.SelectedItems[0].ToString()).Result)
+            var result = MessageBox.Show(AreYouSureYouWantToDeleteThisSource, DeleteSource, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
             {
-                this.indexListView.SelectedItems[0].Remove();
+                if (this.controller.DeleteSource(this.indexListView.SelectedItems[0].ToString()).Result)
+                {
+                    this.loadSources();
+                }
+                else
+                {
+                    MessageBox.Show(DeletionFailedPleaseTryAgainOrContactAdmin, DeletionFailed, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } 
             }
         }
     }
