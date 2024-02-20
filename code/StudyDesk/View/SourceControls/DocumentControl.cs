@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
+﻿
 namespace StudyDesk.View.SourceControls;
 
 /// <summary>
@@ -25,12 +24,12 @@ public partial class DocumentControl : UserControl
     {
         try
         {
-            
+
             var trimmedFile = filename.Split("/")[^1];
             var trimmedFilename = trimmedFile.Substring(8);
-            
+
             var temp = Path.Combine(Path.GetTempPath(), trimmedFilename);
-            if (downloadFileAsync(filename, temp).Result)
+            if (DownloadFileAsync(filename, temp).Result)
             {
                 var stream = new FileStream(temp, FileMode.Open, FileAccess.Read);
                 this.documentViewer1.LoadDocument(stream);
@@ -46,7 +45,7 @@ public partial class DocumentControl : UserControl
         }
     }
 
-    private static async Task<bool> downloadFileAsync(string fileUrl, string destinationPath)
+    private static async Task<bool> DownloadFileAsync(string fileUrl, string destinationPath)
     {
         try
         {

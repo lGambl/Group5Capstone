@@ -21,6 +21,8 @@ namespace StudyDesk.View
             StartPosition = FormStartPosition.CenterScreen;
             this.loadNotes();
             this.loadSource(source);
+            this.documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.noteGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
 
         private void loadNotes()
