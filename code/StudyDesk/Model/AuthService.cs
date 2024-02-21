@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace StudyDesk.Model;
@@ -124,6 +125,30 @@ public class AuthService
     {
         var response = this.HttpClient.GetAsync("https://localhost:7240/Identity/Account/Logout?returnUrl=%2F").Result;
         return response.IsSuccessStatusCode;
+    }
+
+    public virtual void AddSource(string title, string filePath)
+    {
+        var formFile = this.loadFile(filePath);
+        var content = new MultipartFormDataContent
+        {
+            { new StringContent(title), "Title" },
+            { formFile, "File" }
+        };
+
+        var response = this.HttpClient.PostAsync("https://localhost:7240/SourceExplorer/Create", content).Result;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception("Failed to add source. Status code: " + response.StatusCode);
+        }
+    }
+
+    private IFormFile loadFile(string filePath)
+    {
+        var fileBytes = File.ReadAllBytes(filePath);
+        var fileName = Path.GetFileName(filePath);
+        return new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "File", fileName);
     }
 
     #endregion

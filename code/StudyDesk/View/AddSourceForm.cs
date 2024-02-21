@@ -1,84 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using StudyDesk.Controller;
+using StudyDesk.Model;
 
-namespace StudyDesk.View
+namespace StudyDesk.View;
+
+/// <summary>
+///     Form for adding a source.
+///     Designed to be used as a dialog.
+/// </summary>
+/// <seealso cref="System.Windows.Forms.Form" />
+public partial class AddSourceForm : Form
 {
+    #region Data members
+
+    private const string FileExtensionFilters = "PDF Files (*.pdf)|*.pdf";
+    private const string FileDialogTitle = "Select a PDF file";
+    private const string? PleaseEnterATitleForTheSource = "Please enter a title for the source.";
+    private const string? PleaseUploadAFile = "Please upload a file.";
+    private const string? PleaseFillInAllFields = "Please fill in all fields.";
+    private const string? FailedToAddSource = "Failed to add source.";
+
+    private AddSourceController controller;
+
+    #endregion
+
+    #region Constructors
+
     /// <summary>
-    /// Form for adding a source.
-    /// Designed to be used as a dialog.
+    ///     Initializes a new instance of the <see cref="AddSourceForm" /> class.
     /// </summary>
-    /// <seealso cref="System.Windows.Forms.Form" />
-    public partial class AddSourceForm : Form
+    public AddSourceForm(AuthService authService)
     {
-        private const string FileExtensionFilters = "PDF Files (*.pdf)|*.pdf";
-        private const string FileDialogTitle = "Select a PDF file";
-        private const string? PleaseEnterATitleForTheSource = "Please enter a title for the source.";
-        private const string? PleaseUploadAFile = "Please upload a file.";
-        private const string? PleaseFillInAllFields = "Please fill in all fields.";
+        this.InitializeComponent();
+        this.controller = new AddSourceController(authService);
+    }
 
-        private AddSourceController controller;
+    #endregion
 
-        public AddSourceForm()
+    #region Methods
+
+    private void uploadButton_Click(object sender, EventArgs e)
+    {
+        var openFileDialog = new OpenFileDialog
         {
-            this.InitializeComponent();
-            this.controller = new AddSourceController();
+            AddExtension = true,
+            CheckFileExists = true,
+            CheckPathExists = true,
+            DefaultExt = "pdf",
+            Filter = FileExtensionFilters,
+            Multiselect = false,
+            Title = FileDialogTitle
+        };
+
+        if (openFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            this.filePathTextBox.Text = openFileDialog.FileName;
         }
+    }
 
-        private void uploadButton_Click(object sender, EventArgs e)
+    private void addSourceButton_Click(object sender, EventArgs e)
+    {
+        var conditionsMet = this.checkFields();
+        if (conditionsMet)
         {
-            var openFileDialog = new OpenFileDialog
+            if (this.controller.AddSource(this.titleTextBox.Text, this.filePathTextBox.Text))
             {
-                AddExtension = true,
-                CheckFileExists = true,
-                CheckPathExists = true,
-                DefaultExt = "pdf",
-                Filter = FileExtensionFilters,
-                Multiselect = false,
-                Title = FileDialogTitle
-            };
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                this.filePathTextBox.Text = openFileDialog.FileName;
-            }
-
-        }
-
-        private void addSourceButton_Click(object sender, EventArgs e)
-        {
-            var conditionsMet = this.checkFields();
-            if (conditionsMet)
-            {
-                this.controller.AddSource(this.titleTextBox.Text, this.filePathTextBox.Text);
-                this.Close();
+                Close(); 
             }
             else
             {
-                MessageBox.Show(PleaseFillInAllFields);
+                MessageBox.Show(FailedToAddSource);
+                return;
             }
         }
-
-        private bool checkFields()
-        {
-            if (this.titleTextBox.Text == "")
-            {
-                MessageBox.Show(PleaseEnterATitleForTheSource);
-                return false;
-            }
-
-            if (this.filePathTextBox.Text == "")
-            {
-                MessageBox.Show(PleaseUploadAFile);
-                return false;
-            }
-            return true;
-        }
+        MessageBox.Show(PleaseFillInAllFields);
     }
+
+    private bool checkFields()
+    {
+        if (this.titleTextBox.Text == "")
+        {
+            MessageBox.Show(PleaseEnterATitleForTheSource);
+            return false;
+        }
+
+        if (this.filePathTextBox.Text == "")
+        {
+            MessageBox.Show(PleaseUploadAFile);
+            return false;
+        }
+
+        return true;
+    }
+
+    #endregion
 }
