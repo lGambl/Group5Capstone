@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace StudyDesk.Model;
@@ -11,7 +10,7 @@ namespace StudyDesk.Model;
 /// </summary>
 public class AuthService
 {
-    #region Data members
+    #region Properties
 
     public HttpClient HttpClient { get; }
 
@@ -127,13 +126,20 @@ public class AuthService
         return response.IsSuccessStatusCode;
     }
 
+    /// <summary>
+    ///     Adds the source.
+    /// </summary>
+    /// <param name="title">The title.</param>
+    /// <param name="filePath">The file path.</param>
+    /// <exception cref="System.Exception">Failed to add source. Status code: " + response.StatusCode</exception>
     public virtual void AddSource(string title, string filePath)
     {
-        var formFile = this.loadFile(filePath);
+        var fileContent = this.loadFile(filePath);
         var content = new MultipartFormDataContent
         {
             { new StringContent(title), "Title" },
-            { formFile, "File" }
+            { new StringContent(SourceType.Pdf.ToString()), "Type" },
+            { fileContent, "pdfUpload", Path.GetFileName(filePath) }
         };
 
         var response = this.HttpClient.PostAsync("https://localhost:7240/SourceExplorer/Create", content).Result;
@@ -144,11 +150,11 @@ public class AuthService
         }
     }
 
-    private IFormFile loadFile(string filePath)
+    private ByteArrayContent loadFile(string filePath)
     {
-        var fileBytes = File.ReadAllBytes(filePath);
-        var fileName = Path.GetFileName(filePath);
-        return new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "File", fileName);
+        var fileContent = new ByteArrayContent(File.ReadAllBytes(filePath));
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+        return fileContent;
     }
 
     #endregion

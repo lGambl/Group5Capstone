@@ -54,7 +54,9 @@ public partial class MainPageForm : Form
 
     private void addButton_Click(object sender, EventArgs e)
     {
-        MessageBox.Show(NotImplementedYet);
+        var addSourceForm = new AddSourceForm(this.controller.AuthService);
+        addSourceForm.ShowDialog();
+        this.loadSources();
     }
 
     private void indexListView_SelectedIndexChanged(object sender, EventArgs e)

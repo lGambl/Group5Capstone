@@ -31,6 +31,7 @@ public partial class AddSourceForm : Form
     public AddSourceForm(AuthService authService)
     {
         this.InitializeComponent();
+        this.CenterToScreen();
         this.controller = new AddSourceController(authService);
     }
 
