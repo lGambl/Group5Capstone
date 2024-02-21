@@ -2,6 +2,7 @@
 using StudyDesk.Controller;
 using StudyDesk.Model;
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace StudyHallTests.StudyDeskTests.controller;
 
@@ -34,26 +35,25 @@ public class MainPageControllerTest
         mockAuthService.Verify(service => service.Logout(), Times.Once);
     }
 
-    /*[Test]
+    [Test]
     public async Task DeleteSource_SuccessfulDeletion_ReturnsTrue()
     {
         var mockAuthService = new Mock<AuthService>();
-        var mockHttpClient = new Mock<HttpClient>();
-        var controller = new MainPageController(mockAuthService.Object, mockHttpClient.Object);
+        mockAuthService.Setup(service => service.DeleteSource(It.IsAny<int>()))
+            .Returns(true);
+        var controller = new MainPageController(mockAuthService.Object);
         controller.Sources.Add(new Source (400, "link", "{TestSource}", SourceType.PdfLink, "owner"));
-
-        var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
-        mockHttpClient.Setup(c => c.DeleteAsync(It.IsAny<string>())).ReturnsAsync(httpResponse);
         var result = await controller.DeleteSource("{TestSource}");
         Assert.IsTrue(result);
-    }*/
+    }
 
     [Test]
     public async Task DeleteSource_SourceNotFound_ReturnsFalse()
     {
         var mockAuthService = new Mock<AuthService>();
-        var mockHttpClient = new Mock<HttpClient>();
-        var controller = new MainPageController(mockAuthService.Object, mockHttpClient.Object);
+        mockAuthService.Setup(service => service.DeleteSource(It.IsAny<int>()))
+            .Returns(false);
+        var controller = new MainPageController(mockAuthService.Object);
         var result = await controller.DeleteSource("{NonExistentSource}");
         Assert.IsFalse(result);
     }

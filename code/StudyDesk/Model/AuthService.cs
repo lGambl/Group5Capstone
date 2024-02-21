@@ -150,6 +150,13 @@ public class AuthService
         }
     }
 
+    public virtual bool DeleteSource(int sourceId)
+    {
+        var response = this.HttpClient.DeleteAsync("https://localhost:7240/SourceExplorer/Delete/" + sourceId).Result;
+
+        return response.IsSuccessStatusCode;
+    }
+
     private ByteArrayContent loadFile(string filePath)
     {
         var fileContent = new ByteArrayContent(File.ReadAllBytes(filePath));
