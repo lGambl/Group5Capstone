@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyDesk\Model\AuthService.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
+using Newtonsoft.Json;
+
+namespace StudyDesk.Model;
+
+/// &lt;summary&gt;
+///     The Authorization Service class.
+/// &lt;/summary&gt;
+public class AuthService
+{
+    #region Properties
+
+    public HttpClient HttpClient { get; }
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;AuthService&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    public AuthService()
+    {
+        var handler = new HttpClientHandler
+        {
+            CookieContainer = new CookieContainer(),
+            UseCookies = true,
+            UseDefaultCredentials = false
+        };
+        this.HttpClient = new HttpClient(handler);
+    }
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;AuthService&quot; /&gt; class.
+    ///     Designed for testing purposes.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;httpClient&quot;&gt;The HTTP client.&lt;/param&gt;
+    public AuthService(HttpClient httpClient)
+    {
+        this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///     Logs in the user, and returns the AuthService object if successful.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;username&quot;&gt;The username.&lt;/param&gt;
+    /// &lt;param name=&quot;password&quot;&gt;The password.&lt;/param&gt;
+    /// &lt;returns&gt;
+    ///     An AuthService object if successful, null if unsuccessful.
+    /// &lt;/returns&gt;
+    /// &lt;exception cref=&quot;Exception&quot;&gt;Login failed with status code: response.StatusCode&lt;/exception&gt;
+    public virtual async Task&lt;AuthService?&gt; LoginAsync(string username, string password)
+    {
+        var loginDto = new LoginDto { Username = username, Password = password };
+        var content = new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, &quot;application/json&quot;);
+
+        var response = await this.HttpClient.PostAsync(&quot;https://localhost:7240/auth/login&quot;, content)
+            .ConfigureAwait(false);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return this;
+        }
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            return null;
+        }
+
+        throw new Exception(&quot;Login failed with status code: &quot; + response.StatusCode);
+    }
+
+    /// &lt;summary&gt;
+    ///     Gets the sources.
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;A list of sources from the DB.&lt;/returns&gt;
+    /// &lt;exception cref=&quot;System.Exception&quot;&gt;
+    ///     Request failed with status code: &quot; + response.StatusCode
+    ///     or
+    ///     An error occurred while fetching sources: &quot; + ex.Message
+    /// &lt;/exception&gt;
+    public virtual async Task&lt;IEnumerable&lt;Source&gt;&gt; GetSources()
+    {
+        try
+        {
+            this.HttpClient.DefaultRequestHeaders.Accept.Clear();
+            this.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(&quot;application/json&quot;));
+
+            var response = await this.HttpClient.GetAsync(&quot;https://localhost:7240/SourceExplorer&quot;)
+                .ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var contentString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                var sources = JsonConvert.DeserializeObject&lt;IEnumerable&lt;Source&gt;&gt;(contentString);
+                return sources ?? new List&lt;Source&gt;();
+            }
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return new List&lt;Source&gt;();
+            }
+
+            throw new Exception(&quot;Request failed with status code: &quot; + response.StatusCode);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(&quot;An error occurred while fetching sources: &quot; + ex.Message);
+        }
+    }
+
+    /// &lt;summary&gt;
+    ///     Attempts to log out the user.
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;True if successful, false otherwise.&lt;/returns&gt;
+    public virtual bool Logout()
+    {
+        var response = this.HttpClient.GetAsync(&quot;https://localhost:7240/Identity/Account/Logout?returnUrl=%2F&quot;).Result;
+        return response.IsSuccessStatusCode;
+    }
+
+    /// &lt;summary&gt;
+    ///     Adds the source.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;title&quot;&gt;The title.&lt;/param&gt;
+    /// &lt;param name=&quot;filePath&quot;&gt;The file path.&lt;/param&gt;
+    /// &lt;exception cref=&quot;System.Exception&quot;&gt;Failed to add source. Status code: &quot; + response.StatusCode&lt;/exception&gt;
+    public virtual Task&lt;bool&gt; AddSource(string title, string filePath)
+    {
+        var fileContent = this.loadFile(filePath);
+        var content = new MultipartFormDataContent
+        {
+            { new StringContent(title), &quot;Title&quot; },
+            { new StringContent(SourceType.Pdf.ToString()), &quot;Type&quot; },
+            { fileContent, &quot;pdfUpload&quot;, Path.GetFileName(filePath) }
+        };
+
+        var response = this.HttpClient.PostAsync(&quot;https://localhost:7240/SourceExplorer/Create&quot;, content).Result;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(&quot;Failed to add source. Status code: &quot; + response.StatusCode);
+        }
+
+        return Task.FromResult(true);
+    }
+
+    public virtual bool DeleteSource(int sourceId)
+    {
+        var response = this.HttpClient.DeleteAsync(&quot;https://localhost:7240/SourceExplorer/Delete/&quot; + sourceId).Result;
+
+        return response.IsSuccessStatusCode;
+    }
+
+    private ByteArrayContent loadFile(string filePath)
+    {
+        var fileContent = new ByteArrayContent(File.ReadAllBytes(filePath));
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(&quot;multipart/form-data&quot;);
+        return fileContent;
+    }
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,36,15,40,1],[24,5,24,25,1],[25,5,25,6,1],[26,9,31,11,1],[32,9,32,51,1],[33,5,33,6,1],[40,5,40,46,1],[41,5,41,6,1],[42,9,42,93,1],[43,5,43,6,1],[59,5,59,6,1],[60,9,60,82,1],[61,9,61,115,1],[63,9,64,36,1],[66,9,66,42,1],[67,9,67,10,1],[68,13,68,25,1],[71,9,71,64,1],[72,9,72,10,1],[73,13,73,25,1],[76,9,76,86,1],[77,5,77,6,1],[89,5,89,6,1],[91,9,91,10,1],[92,13,92,66,1],[93,13,93,119,1],[95,13,96,40,1],[98,13,98,46,1],[99,13,99,14,1],[100,17,100,102,1],[102,17,102,97,1],[103,17,103,54,1],[106,13,106,68,1],[107,13,107,14,1],[108,17,108,43,1],[111,13,111,92,1],[113,9,113,29,1],[114,9,114,10,1],[115,13,115,92,1],[117,5,117,6,1],[124,5,124,6,1],[125,9,125,120,1],[126,9,126,45,1],[127,5,127,6,1],[136,5,136,6,1],[137,9,137,51,1],[138,9,143,11,1],[145,9,145,114,1],[147,9,147,43,1],[148,9,148,10,0],[149,13,149,94,0],[152,9,152,38,1],[153,5,153,6,1],[156,5,156,6,0],[157,9,157,119,0],[159,9,159,45,0],[160,5,160,6,0],[163,5,163,6,1],[164,9,164,77,1],[165,9,165,93,1],[166,9,166,28,1],[167,5,167,6,1]]);
+    </script>
+  </body>
+</html>

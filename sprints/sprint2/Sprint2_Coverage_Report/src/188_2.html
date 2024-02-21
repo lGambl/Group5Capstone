@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\CapstoneProject\Group5Capstone\code\StudyDesk\Controller\MainPageController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Text.RegularExpressions;
+using StudyDesk.Model;
+
+namespace StudyDesk.Controller;
+
+/// &lt;summary&gt;
+///     Controller for the main page.
+/// &lt;/summary&gt;
+public class MainPageController
+{
+    #region Data members
+
+    #region Data Members
+
+    private const string ConnectionString =
+        &quot;Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true&quot;;
+
+    #endregion
+
+    #endregion
+
+    #region Properties
+
+    /// &lt;summary&gt;
+    ///     Gets or sets the sources of the logged-in user.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The sources as a collection of Source objects.
+    /// &lt;/value&gt;
+    public IList&lt;Source&gt; Sources { get; }
+
+    /// &lt;summary&gt;
+    ///     Gets the authentication service.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The authentication service.
+    /// &lt;/value&gt;
+    public AuthService AuthService { get; }
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;MainPageController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    public MainPageController(AuthService auth)
+    {
+        this.AuthService = auth;
+        this.Sources = this.AuthService.GetSources().Result.ToList();
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///     Logouts this instance.
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;True if successful, false otherwise.&lt;/returns&gt;
+    public bool Logout()
+    {
+        return this.AuthService.Logout();
+    }
+
+    /// &lt;summary&gt;
+    ///     Deletes the source.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;title&quot;&gt;The title.&lt;/param&gt;
+    /// &lt;returns&gt;
+    ///     True if the source was deleted, False if not deleted.
+    /// &lt;/returns&gt;
+    public async Task&lt;bool&gt; DeleteSource(string title)
+    {
+        const string pattern = @&quot;\{(.*?)\}&quot;;
+        var match = Regex.Match(title, pattern);
+        var result = match.Groups[1].Value;
+
+        var sourceId = -1;
+        foreach (var currSource in this.Sources)
+        {
+            if (currSource.Title == result)
+            {
+                sourceId = currSource.Id;
+                break;
+            }
+        }
+
+        var response = this.AuthService.DeleteSource(sourceId);
+
+        if (response)
+        {
+            this.deleteSourceFromSources(result);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void deleteSourceFromSources(string result)
+    {
+        Source? sourceToRemove = null;
+        foreach (var currSource in this.Sources)
+        {
+            if (currSource.Title == result)
+            {
+                sourceToRemove = currSource;
+                break;
+            }
+        }
+
+        this.Sources.Remove(sourceToRemove!);
+    }
+
+    #endregion
+
+    // /// &lt;summary&gt;
+    // ///     Initializes a new instance of the &lt;see cref=&quot;MainPageController&quot; /&gt; class.
+    // ///     Here for testing purposes.
+    // /// &lt;/summary&gt;
+    // /// &lt;param name=&quot;auth&quot;&gt;The authentication.&lt;/param&gt;
+    // /// &lt;param name=&quot;client&quot;&gt;The client.&lt;/param&gt;
+    // public MainPageController(AuthService auth, HttpClient client)
+    // {
+    //     this.AuthService = auth;
+    //     this.Sources = this.AuthService.GetSources().Result.ToList();
+    //     this.Client = client;
+    // }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[30,36,30,40,1],[38,38,38,42,1],[47,5,47,48,1],[48,5,48,6,1],[49,9,49,33,1],[50,9,50,70,1],[51,5,51,6,1],[62,5,62,6,1],[63,9,63,42,1],[64,5,64,6,1],[74,5,74,6,1],[76,9,76,49,1],[77,9,77,44,1],[79,9,79,27,1],[80,9,80,16,1],[80,18,80,32,1],[80,33,80,35,1],[80,36,80,48,1],[81,9,81,10,1],[82,13,82,44,1],[83,13,83,14,0],[84,17,84,42,0],[85,17,85,23,0],[87,9,87,10,1],[89,9,89,64,1],[91,9,91,22,1],[92,9,92,10,1],[93,13,93,50,1],[94,13,94,25,1],[97,9,97,22,1],[98,5,98,6,1],[101,5,101,6,1],[102,9,102,39,1],[103,9,103,16,1],[103,18,103,32,1],[103,33,103,35,1],[103,36,103,48,1],[104,9,104,10,1],[105,13,105,44,1],[106,13,106,14,0],[107,17,107,45,0],[108,17,108,23,0],[110,9,110,10,1],[112,9,112,46,1],[113,5,113,6,1]]);
+    </script>
+  </body>
+</html>
