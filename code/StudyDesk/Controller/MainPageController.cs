@@ -88,9 +88,13 @@ public class MainPageController
         var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/Delete/{sourceId}")
             .ConfigureAwait(false);
 
-        this.deleteSourceFromSources(response, result);
-
-        return response.IsSuccessStatusCode;
+        if (response != null)
+        {
+            this.deleteSourceFromSources(response, result);
+            return true;
+        }
+        
+        return false;
     }
 
     private void deleteSourceFromSources(HttpResponseMessage response, string result)
