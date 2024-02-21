@@ -109,6 +109,7 @@
         {
             <div class="note">
                 <p>@note.Text</p>
+                <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete</button>
             </div>
         }
     </div>
@@ -135,16 +136,40 @@
                     sourceId: sourceId
                 },
                 success: function (response) {
-                    
-                    $('#notes').append('<div class="note"><p>' + noteText + '</p></div>');
+                    var newNoteId = response.noteId;
+                    var newNoteHtml = '<div class="note">' +
+                        '<p>' + noteText + '</p>' +
+                        '<button class="delete-note-btn btn-secondary" data-note-id="' + newNoteId + '">Delete</button>' +
+                        '</div>';
 
+                    $('#notes').append(newNoteHtml);
                     
                     $('#noteText').val('');
+                    location.reload();
                 },
                 error: function () {
                     alert('There was an error adding your note. Please try again.');
                 }
             });
+        });
+    });
+
+    $(document).on('click', '.delete-note-btn', function () {
+        var noteId = $(this).data('note-id');
+        var noteDiv = $(this).closest('.note');
+
+        $.ajax({
+            url: '/SourceExplorer/DeleteNote/' + noteId,
+            type: 'DELETE',
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (response) {
+                noteDiv.remove();
+            },
+            error: function () {
+                alert('There was an error deleting the note. Please try again.');
+            }
         });
     });
 </script>

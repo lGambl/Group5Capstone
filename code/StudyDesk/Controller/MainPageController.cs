@@ -8,6 +8,17 @@ namespace StudyDesk.Controller;
 /// </summary>
 public class MainPageController
 {
+    #region Data members
+
+    #region Data Members
+
+    private const string ConnectionString =
+        "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+    #endregion
+
+    #endregion
+
     #region Properties
 
     /// <summary>
@@ -18,7 +29,13 @@ public class MainPageController
     /// </value>
     public IList<Source> Sources { get; }
 
-    private AuthService AuthService { get; }
+    /// <summary>
+    ///     Gets the authentication service.
+    /// </summary>
+    /// <value>
+    ///     The authentication service.
+    /// </value>
+    public AuthService AuthService { get; }
 
     private HttpClient Client { get; }
 
@@ -88,9 +105,13 @@ public class MainPageController
         var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/Delete/{sourceId}")
             .ConfigureAwait(false);
 
-        this.deleteSourceFromSources(response, result);
-
-        return response.IsSuccessStatusCode;
+        if (response != null)
+        {
+            this.deleteSourceFromSources(response, result);
+            return true;
+        }
+        
+        return false;
     }
 
     private void deleteSourceFromSources(HttpResponseMessage response, string result)
@@ -107,33 +128,9 @@ public class MainPageController
                 }
             }
 
-            this.Sources.Remove(sourceToRemove);
+            this.Sources.Remove(sourceToRemove!);
         }
     }
 
     #endregion
-
-    #region Data Members
-
-    private const string ConnectionString =
-        "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
-
-    #endregion
-
-    // /// <summary>
-    // ///     Adds as source under the logged-in user.
-    // /// </summary>
-    // /// <param name="name">The name.</param>
-    // /// <param name="type">The type.</param>
-    // /// <param name="link">The link.</param>
-    // /// <precondition>
-    // ///     name != null AND !name.isEmptyOrBlank
-    // ///     sourceType.isOfTypeEnum<see cref="SourceType" />() AND
-    // ///     link != null AND !link.isEmptyOrBlank
-    // /// </precondition>
-    // /// <returns>True if addition is successful, false otherwise.</returns>
-    // public bool AddSource(string name, SourceType type, string link)
-    // {
-    //     return true;
-    // }
 }
