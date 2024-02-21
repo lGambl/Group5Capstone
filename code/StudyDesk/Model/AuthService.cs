@@ -132,7 +132,7 @@ public class AuthService
     /// <param name="title">The title.</param>
     /// <param name="filePath">The file path.</param>
     /// <exception cref="System.Exception">Failed to add source. Status code: " + response.StatusCode</exception>
-    public virtual void AddSource(string title, string filePath)
+    public virtual Task<bool> AddSource(string title, string filePath)
     {
         var fileContent = this.loadFile(filePath);
         var content = new MultipartFormDataContent
@@ -148,6 +148,8 @@ public class AuthService
         {
             throw new Exception("Failed to add source. Status code: " + response.StatusCode);
         }
+
+        return Task.FromResult(true);
     }
 
     public virtual bool DeleteSource(int sourceId)
