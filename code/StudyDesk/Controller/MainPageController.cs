@@ -37,8 +37,6 @@ public class MainPageController
     /// </value>
     public AuthService AuthService { get; }
 
-    private HttpClient Client { get; }
-
     #endregion
 
     #region Constructors
@@ -50,20 +48,6 @@ public class MainPageController
     {
         this.AuthService = auth;
         this.Sources = this.AuthService.GetSources().Result.ToList();
-        this.Client = this.AuthService.HttpClient;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="MainPageController" /> class.
-    ///     Here for testing purposes.
-    /// </summary>
-    /// <param name="auth">The authentication.</param>
-    /// <param name="client">The client.</param>
-    public MainPageController(AuthService auth, HttpClient client)
-    {
-        this.AuthService = auth;
-        this.Sources = this.AuthService.GetSources().Result.ToList();
-        this.Client = client;
     }
 
     #endregion
@@ -102,35 +86,44 @@ public class MainPageController
             }
         }
 
-        var response = await this.Client.DeleteAsync($"https://localhost:7240/SourceExplorer/Delete/{sourceId}")
-            .ConfigureAwait(false);
+        var response = this.AuthService.DeleteSource(sourceId);
 
-        if (response != null)
+        if (response)
         {
-            this.deleteSourceFromSources(response, result);
+            this.deleteSourceFromSources(result);
             return true;
         }
-        
+
         return false;
     }
 
-    private void deleteSourceFromSources(HttpResponseMessage response, string result)
+    private void deleteSourceFromSources(string result)
     {
-        if (response.IsSuccessStatusCode)
+        Source? sourceToRemove = null;
+        foreach (var currSource in this.Sources)
         {
-            Source? sourceToRemove = null;
-            foreach (var currSource in this.Sources)
+            if (currSource.Title == result)
             {
-                if (currSource.Title == result)
-                {
-                    sourceToRemove = currSource;
-                    break;
-                }
+                sourceToRemove = currSource;
+                break;
             }
-
-            this.Sources.Remove(sourceToRemove!);
         }
+
+        this.Sources.Remove(sourceToRemove!);
     }
 
     #endregion
+
+    // /// <summary>
+    // ///     Initializes a new instance of the <see cref="MainPageController" /> class.
+    // ///     Here for testing purposes.
+    // /// </summary>
+    // /// <param name="auth">The authentication.</param>
+    // /// <param name="client">The client.</param>
+    // public MainPageController(AuthService auth, HttpClient client)
+    // {
+    //     this.AuthService = auth;
+    //     this.Sources = this.AuthService.GetSources().Result.ToList();
+    //     this.Client = client;
+    // }
 }
