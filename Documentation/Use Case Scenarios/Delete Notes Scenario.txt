@@ -1,0 +1,15 @@
+Context: User is viewing a source with some notes added
+Primary Flow:
+1.  The user selects a note from the list of notes
+2.  The user clears the text or presses the delete button
+3.  The user is prompted to confirm their deletion
+4.  The user confirms and the note is deleted. 
+
+Alternative Flow(s):
+User cancels deletion:
+    4a.  The user cancels the deletion
+    5a.  The prompt disappears and text is returned.
+
+Error occurs when deleting note:
+    4b.  An alert appears to inform the user of the error
+    5b.  The alert disappears after being confirmed and the page is refreshed. 
