@@ -19,11 +19,13 @@ namespace StudyDesk.View
             this.InitializeComponent();
             this.controller = new SourceFormController(source);
             StartPosition = FormStartPosition.CenterScreen;
-            this.loadNotes();
-            this.loadSource(source);
+            this.LoadNotes();
+            this.LoadSource(source);
+            this.documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.noteGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
 
-        private void loadNotes()
+        private void LoadNotes()
         {
             this.noteGridView.Rows.Clear();
             this.controller.RefreshNotes();
@@ -33,7 +35,7 @@ namespace StudyDesk.View
             }
         }
 
-        private void  loadSource(Source source)
+        private void  LoadSource(Source source)
         {
             _=this.documentControl1.SetDocument(source.Link).Result;
         }
@@ -102,7 +104,7 @@ namespace StudyDesk.View
                     this.noteGridView.Rows.RemoveAt(noteIndex);
                 }
             }
-            this.loadNotes();
+            this.LoadNotes();
         }
     }
 }
