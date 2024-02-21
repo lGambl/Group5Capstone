@@ -12,6 +12,7 @@ public class AuthServiceTest
 
     private Mock<HttpMessageHandler>? handlerMock;
     private AuthService? authService;
+    private string tempFilePath;
 
     #endregion
 
@@ -26,6 +27,18 @@ public class AuthServiceTest
             BaseAddress = new Uri("https://localhost:7240/")
         };
         this.authService = new AuthService(httpClient);
+
+        tempFilePath = Path.GetTempFileName();
+        File.WriteAllText(tempFilePath, "Test file content");
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        if (File.Exists(tempFilePath))
+        {
+            File.Delete(tempFilePath);
+        }
     }
 
     [Test]
@@ -224,6 +237,50 @@ public class AuthServiceTest
             ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get && req.RequestUri == expectedUri),
             ItExpr.IsAny<CancellationToken>());
     }
+
+    [Test]
+    public async Task AddSource_SuccessfulCall_DoesNotThrowException()
+    {
+        var expectedUri = new Uri("https://localhost:7240/SourceExplorer/Create");
+        this.handlerMock!.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync",
+                ItExpr.Is<HttpRequestMessage>(
+                    req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("...")
+            })
+            .Verifiable();
+        Assert.DoesNotThrowAsync(() => this.authService!.AddSource("Test Title", tempFilePath));
+        this.handlerMock!.Protected().Verify("SendAsync", Times.Once(),
+            ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri),
+            ItExpr.IsAny<CancellationToken>());
+    }
+
+    /*[Test]
+    public void AddSource_FailedCall_ThrowsException()
+    {
+        var expectedUri = new Uri("https://localhost:7240/SourceExplorer/Create");
+
+        this.handlerMock!.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync",
+                ItExpr.Is<HttpRequestMessage>(
+                    req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Content = new StringContent("...")
+            })
+            .Verifiable();
+
+        Assert.ThrowsAsync<Exception>(() => this.authService!.AddSource("Test Title", tempFilePath));
+        this.handlerMock!.Protected().Verify("SendAsync", Times.Once(),
+            ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri),
+            It.Expr.IsAny<CancellationToken>());
+    }*/
 
     #endregion
 }
