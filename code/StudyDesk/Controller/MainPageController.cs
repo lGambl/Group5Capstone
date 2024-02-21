@@ -107,7 +107,7 @@ public class MainPageController
                 }
             }
 
-            this.Sources.Remove(sourceToRemove);
+            this.Sources.Remove(sourceToRemove!);
         }
     }
 
