@@ -32,14 +32,16 @@
             titleHeader = new ColumnHeader();
             addButton = new Button();
             deleteButton = new Button();
+            logoutButton = new Button();
             SuspendLayout();
             // 
             // indexListView
             // 
             indexListView.Columns.AddRange(new ColumnHeader[] { titleHeader });
-            indexListView.Location = new Point(12, 48);
+            indexListView.Location = new Point(10, 36);
+            indexListView.Margin = new Padding(3, 2, 3, 2);
             indexListView.Name = "indexListView";
-            indexListView.Size = new Size(333, 300);
+            indexListView.Size = new Size(292, 226);
             indexListView.TabIndex = 0;
             indexListView.UseCompatibleStateImageBehavior = false;
             indexListView.View = System.Windows.Forms.View.Details;
@@ -53,9 +55,10 @@
             // 
             // addButton
             // 
-            addButton.Location = new Point(12, 12);
+            addButton.Location = new Point(10, 9);
+            addButton.Margin = new Padding(3, 2, 3, 2);
             addButton.Name = "addButton";
-            addButton.Size = new Size(94, 29);
+            addButton.Size = new Size(82, 22);
             addButton.TabIndex = 1;
             addButton.Text = "Add";
             addButton.UseVisualStyleBackColor = true;
@@ -64,21 +67,36 @@
             // deleteButton
             // 
             deleteButton.Enabled = false;
-            deleteButton.Location = new Point(251, 12);
+            deleteButton.Location = new Point(220, 9);
+            deleteButton.Margin = new Padding(3, 2, 3, 2);
             deleteButton.Name = "deleteButton";
-            deleteButton.Size = new Size(94, 29);
+            deleteButton.Size = new Size(82, 22);
             deleteButton.TabIndex = 2;
             deleteButton.Text = "Delete";
             deleteButton.UseVisualStyleBackColor = true;
+            deleteButton.Click += deleteButton_Click;
+            // 
+            // logoutButton
+            // 
+            logoutButton.Location = new Point(116, 9);
+            logoutButton.Margin = new Padding(3, 2, 3, 2);
+            logoutButton.Name = "logoutButton";
+            logoutButton.Size = new Size(82, 22);
+            logoutButton.TabIndex = 3;
+            logoutButton.Text = "Logout";
+            logoutButton.UseVisualStyleBackColor = true;
+            logoutButton.Click += logoutButton_Click;
             // 
             // MainPageForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(357, 360);
+            ClientSize = new Size(312, 270);
+            Controls.Add(logoutButton);
             Controls.Add(deleteButton);
             Controls.Add(addButton);
             Controls.Add(indexListView);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "MainPageForm";
             Text = "MainPageForm";
             ResumeLayout(false);
@@ -90,5 +108,6 @@
         private ColumnHeader titleHeader;
         private Button addButton;
         private Button deleteButton;
+        private Button logoutButton;
     }
 }

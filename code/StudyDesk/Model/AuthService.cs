@@ -12,7 +12,7 @@ public class AuthService
 {
     #region Data members
 
-    private readonly HttpClient httpClient;
+    public HttpClient HttpClient { get; }
 
     #endregion
 
@@ -29,17 +29,17 @@ public class AuthService
             UseCookies = true,
             UseDefaultCredentials = false
         };
-        this.httpClient = new HttpClient(handler);
+        this.HttpClient = new HttpClient(handler);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AuthService"/> class.
-    /// Designed for testing purposes.
+    ///     Initializes a new instance of the <see cref="AuthService" /> class.
+    ///     Designed for testing purposes.
     /// </summary>
     /// <param name="httpClient">The HTTP client.</param>
     public AuthService(HttpClient httpClient)
     {
-        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
     #endregion
@@ -60,7 +60,7 @@ public class AuthService
         var loginDto = new LoginDto { Username = username, Password = password };
         var content = new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json");
 
-        var response = await this.httpClient.PostAsync("https://localhost:7240/auth/login", content)
+        var response = await this.HttpClient.PostAsync("https://localhost:7240/auth/login", content)
             .ConfigureAwait(false);
 
         if (response.IsSuccessStatusCode)
@@ -89,10 +89,10 @@ public class AuthService
     {
         try
         {
-            this.httpClient.DefaultRequestHeaders.Accept.Clear();
-            this.httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            this.HttpClient.DefaultRequestHeaders.Accept.Clear();
+            this.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await this.httpClient.GetAsync("https://localhost:7240/SourceExplorer")
+            var response = await this.HttpClient.GetAsync("https://localhost:7240/SourceExplorer")
                 .ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
@@ -114,6 +114,16 @@ public class AuthService
         {
             throw new Exception("An error occurred while fetching sources: " + ex.Message);
         }
+    }
+
+    /// <summary>
+    ///     Attempts to log out the user.
+    /// </summary>
+    /// <returns>True if successful, false otherwise.</returns>
+    public virtual bool Logout()
+    {
+        var response = this.HttpClient.GetAsync("https://localhost:7240/Identity/Account/Logout?returnUrl=%2F").Result;
+        return response.IsSuccessStatusCode;
     }
 
     #endregion
