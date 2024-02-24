@@ -159,6 +159,11 @@
     });
 
     $(document).on('click', '.delete-note-btn', function () {
+        var confirmed = confirm("Are you sure you want to delete this note?");
+        if (!confirmed) {
+            return;
+        }
+
         var noteId = $(this).data('note-id');
         var noteDiv = $(this).closest('.note');
 
