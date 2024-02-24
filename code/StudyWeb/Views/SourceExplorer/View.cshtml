@@ -60,6 +60,10 @@
         background-color: #d3d3d3; /* Color of the margin line */
         z-index: -1;
     }
+
+    .submit-note-btn-margin {
+        margin: 10px; /* This adds 10px margin on all sides of the button */
+    }
 </style>
 
 <button onclick="goBack()">Go Back</button>
@@ -103,7 +107,7 @@
                 <textarea name="text" id="noteText" class="form-control" rows="3" required placeholder="Enter your note here..."></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit Note</button>
+            <button type="submit" class="btn btn-primary submit-note-btn-margin">Submit Note</button>
         }
         @foreach (var note in Model.Notes)
         {
