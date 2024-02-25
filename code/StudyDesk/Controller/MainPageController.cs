@@ -27,7 +27,7 @@ public class MainPageController
     /// <value>
     ///     The sources as a collection of Source objects.
     /// </value>
-    public IList<Source> Sources { get; }
+    public IList<Source> Sources => this.AuthService.GetSources().Result.ToList();
 
     /// <summary>
     ///     Gets the authentication service.
@@ -47,7 +47,6 @@ public class MainPageController
     public MainPageController(AuthService auth)
     {
         this.AuthService = auth;
-        this.Sources = this.AuthService.GetSources().Result.ToList();
     }
 
     #endregion
@@ -62,6 +61,7 @@ public class MainPageController
     {
         return this.AuthService.Logout();
     }
+
 
     /// <summary>
     ///     Deletes the source.
