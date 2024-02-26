@@ -13,11 +13,13 @@ public partial class AddSourceForm : Form
     #region Data members
 
     private const string FileExtensionFilters = "PDF Files (*.pdf)|*.pdf";
-    private const string FileDialogTitle = "Select a PDF file";
+    private const string FileDialogTitle = "Select a file";
     private const string? PleaseEnterATitleForTheSource = "Please enter a title for the source.";
     private const string? PleaseUploadAFile = "Please upload a file.";
     private const string? PleaseFillInAllFields = "Please fill in all fields.";
     private const string? FailedToAddSource = "Failed to add source.";
+    private const string? InvalidSourceType = "Invalid Source Type";
+    private const string? PleaseSelectASourceType = "Please select a source type.";
 
     private AddSourceController controller;
 
@@ -33,12 +35,17 @@ public partial class AddSourceForm : Form
         this.InitializeComponent();
         this.CenterToScreen();
         this.controller = new AddSourceController(authService);
+        this.populateSourceTypeBox();
     }
 
     #endregion
 
     #region Methods
 
+    private void populateSourceTypeBox()
+    {
+        this.sourceTypeComboBox.Items.Add("Pdf");
+    }
     private void uploadButton_Click(object sender, EventArgs e)
     {
         var openFileDialog = new OpenFileDialog
@@ -46,11 +53,20 @@ public partial class AddSourceForm : Form
             AddExtension = true,
             CheckFileExists = true,
             CheckPathExists = true,
-            DefaultExt = "pdf",
-            Filter = FileExtensionFilters,
             Multiselect = false,
             Title = FileDialogTitle
         };
+
+        switch (this.sourceTypeComboBox.SelectedItem)
+        {
+            case "Pdf":
+                openFileDialog.Filter = FileExtensionFilters;
+                break;
+            default:
+                MessageBox.Show(PleaseSelectASourceType, InvalidSourceType);
+                return;
+        }
+
 
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
@@ -73,7 +89,10 @@ public partial class AddSourceForm : Form
                 return;
             }
         }
-        MessageBox.Show(PleaseFillInAllFields);
+        else
+        {
+            MessageBox.Show(PleaseFillInAllFields); 
+        }
     }
 
     private bool checkFields()
