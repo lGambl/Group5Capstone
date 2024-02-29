@@ -1,4 +1,5 @@
-﻿using StudyDesk.Controller;
+﻿using Gnostice.Core.Viewer;
+using StudyDesk.Controller;
 using StudyDesk.Model;
 using StudyDesk.View.SourceControls;
 
@@ -30,19 +31,21 @@ namespace StudyDesk.View
         {
             this.notesFlowLayoutPanel.Controls.Clear();
             this.controller.RefreshNotes();
+            var index = 0;
             foreach (var note in this.controller.Notes)
             {
-                var noteControl = new NoteControl();
+                var noteControl = new NoteControl(index);
                 noteControl.BorderStyle = BorderStyle.Fixed3D;
                 noteControl.setNoteText(note.Text);
                 this.setupNoteControlButtons(noteControl);
                 this.notesFlowLayoutPanel.Controls.Add(noteControl);
+                index++;
             }
         }
 
-        private void  LoadSource(Source source)
+        private void LoadSource(Source source)
         {
-            _=this.documentControl1.SetDocument(source.Link).Result;
+            _ = this.documentControl1.SetDocument(source.Link).Result;
         }
 
         private void setupNoteControlButtons(NoteControl noteControl)
@@ -53,9 +56,17 @@ namespace StudyDesk.View
             noteControl.SaveNotesChangesButtonClick += NoteControl_SaveChangesButtonClicked;
         }
 
-        private void NoteControl_DeleteNoteButtonClicked(object sender, EventArgs e)
+        private void NoteControl_DeleteNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
         {
-            MessageBox.Show("delete note");
+            var result = MessageBox.Show("Are you sure you want to delete this note?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                if (this.controller.DeleteNoteAt(e.NoteIndex))
+                {
+                    this.notesFlowLayoutPanel.Controls.RemoveAt(e.NoteIndex);
+                }
+            }
         }
 
         private void NoteControl_DeleteTagButtonClicked(object sender, EventArgs e)
@@ -68,9 +79,26 @@ namespace StudyDesk.View
             MessageBox.Show("add tag");
         }
 
-        private void NoteControl_SaveChangesButtonClicked(object sender, EventArgs e)
+        private void NoteControl_SaveChangesButtonClicked(object sender, NoteControl.NoteEventArgs e)
         {
-            MessageBox.Show("save changes");
+            var result = MessageBox.Show("Are you sure you want to save the changes to this note?", "Confirm Changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                if (this.controller.EditNote(e.NoteIndex, e.NoteText))
+                {
+                    this.notesFlowLayoutPanel.Refresh();
+                }
+            }
+        }
+
+        private void addNoteButton_Click(object sender, EventArgs e)
+        {
+            using (var addNoteForm = new AddNoteForm())
+            {
+                addNoteForm.StartPosition = FormStartPosition.CenterParent;
+                var result = addNoteForm.ShowDialog();
+            }
         }
 
         // private void handleType(SourceType type)

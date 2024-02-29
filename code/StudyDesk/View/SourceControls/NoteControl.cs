@@ -12,16 +12,21 @@ namespace StudyDesk.View.SourceControls
 {
     public partial class NoteControl : UserControl
     {
-        public event EventHandler DeleteNoteButtonClicked;
+        public int NoteIndex;
+
+        public delegate void NoteEventHandler(object sender, NoteEventArgs e);
+
+        public event NoteEventHandler DeleteNoteButtonClicked;
 
         public event EventHandler DeleteTagButtonClicked;
 
         public event EventHandler AddTagButtonClicked;
 
-        public event EventHandler SaveNotesChangesButtonClick;
+        public event NoteEventHandler SaveNotesChangesButtonClick;
 
-        public NoteControl()
+        public NoteControl(int index)
         {
+            this.NoteIndex = index;
             InitializeComponent();
             this.initializeButtons();
         }
@@ -41,22 +46,35 @@ namespace StudyDesk.View.SourceControls
 
         protected virtual void OnDeleteNoteButtonClicked()
         {
-            DeleteNoteButtonClicked?.Invoke(this, EventArgs.Empty);
+            DeleteNoteButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));
         }
 
         protected virtual void OnDeleteTagButtonClicked()
         {
-            DeleteTagButtonClicked?.Invoke(this, EventArgs.Empty);
+            DeleteTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));
         }
 
         protected virtual void OnAddTagButtonClicked()
         {
-            AddTagButtonClicked?.Invoke(this, EventArgs.Empty);
+            AddTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));
         }
 
         protected virtual void OnSaveChangesButtonClick()
         {
-            SaveNotesChangesButtonClick?.Invoke(this, EventArgs.Empty);
+            SaveNotesChangesButtonClick?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));
+        }
+
+        public class NoteEventArgs : EventArgs
+        {
+            public int NoteIndex { get; }
+
+            public string NoteText { get; }
+
+            public NoteEventArgs(int noteIndex, string noteText)
+            {
+                NoteIndex = noteIndex;
+                NoteText = noteText;
+            }
         }
     }
 }
