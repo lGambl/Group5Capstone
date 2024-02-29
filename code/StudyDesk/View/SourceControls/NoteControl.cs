@@ -46,17 +46,17 @@ namespace StudyDesk.View.SourceControls
 
         protected virtual void OnDeleteNoteButtonClicked()
         {
-            DeleteNoteButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));
+            DeleteNoteButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex));
         }
 
         protected virtual void OnDeleteTagButtonClicked()
         {
-            DeleteTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));
+            DeleteTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex));
         }
 
         protected virtual void OnAddTagButtonClicked()
         {
-            AddTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));
+            AddTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex));
         }
 
         protected virtual void OnSaveChangesButtonClick()
@@ -70,10 +70,29 @@ namespace StudyDesk.View.SourceControls
 
             public string NoteText { get; }
 
+            public List<string> Tags { get; }
+
+            public NoteEventArgs(int noteIndex)
+            {
+                NoteIndex = noteIndex;
+            }
+
             public NoteEventArgs(int noteIndex, string noteText)
             {
                 NoteIndex = noteIndex;
                 NoteText = noteText;
+            }
+
+            public NoteEventArgs(string noteText)
+            {
+                NoteText = noteText;
+            }
+
+            public NoteEventArgs(string noteText, List<string> tags)
+            {
+                NoteText = noteText;
+                Tags = tags;
+
             }
         }
     }

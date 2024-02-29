@@ -31,7 +31,13 @@ namespace StudyDesk.View
         {
             this.notesFlowLayoutPanel.Controls.Clear();
             this.controller.RefreshNotes();
-            var index = 0;
+
+            var addNoteControl = new AddNoteControl();
+            addNoteControl.BorderStyle = BorderStyle.Fixed3D;
+            this.setupAddnoteControlButtons(addNoteControl);
+            this.notesFlowLayoutPanel.Controls.Add(addNoteControl);
+
+            var index = 1;
             foreach (var note in this.controller.Notes)
             {
                 var noteControl = new NoteControl(index);
@@ -56,13 +62,30 @@ namespace StudyDesk.View
             noteControl.SaveNotesChangesButtonClick += NoteControl_SaveChangesButtonClicked;
         }
 
+        private void setupAddnoteControlButtons(AddNoteControl addNoteControl)
+        {
+            addNoteControl.AddNoteButtonClicked += AddNoteControl_AddNoteButtonClicked;
+        }
+
+        private void AddNoteControl_AddNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
+        {
+            this.controller.AddNote(e.NoteText);
+
+            if (e.Tags is { Count: > 0 })
+            {
+                MessageBox.Show("Note with tags");
+            }
+
+            this.LoadNotes();
+        }
+
         private void NoteControl_DeleteNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to delete this note?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
-                if (this.controller.DeleteNoteAt(e.NoteIndex))
+                if (this.controller.DeleteNoteAt(e.NoteIndex - 1))
                 {
                     this.notesFlowLayoutPanel.Controls.RemoveAt(e.NoteIndex);
                 }
@@ -85,19 +108,10 @@ namespace StudyDesk.View
 
             if (result == DialogResult.Yes)
             {
-                if (this.controller.EditNote(e.NoteIndex, e.NoteText))
+                if (this.controller.EditNote(e.NoteIndex - 1, e.NoteText))
                 {
                     this.notesFlowLayoutPanel.Refresh();
                 }
-            }
-        }
-
-        private void addNoteButton_Click(object sender, EventArgs e)
-        {
-            using (var addNoteForm = new AddNoteForm())
-            {
-                addNoteForm.StartPosition = FormStartPosition.CenterParent;
-                var result = addNoteForm.ShowDialog();
             }
         }
 

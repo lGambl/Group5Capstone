@@ -31,7 +31,6 @@
             splitContainer1 = new SplitContainer();
             documentControl1 = new SourceControls.DocumentControl();
             notesFlowLayoutPanel = new FlowLayoutPanel();
-            addNoteButton = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -51,7 +50,6 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(addNoteButton);
             splitContainer1.Panel2.Controls.Add(notesFlowLayoutPanel);
             splitContainer1.Size = new Size(892, 410);
             splitContainer1.SplitterDistance = 613;
@@ -68,20 +66,10 @@
             // notesFlowLayoutPanel
             // 
             notesFlowLayoutPanel.AutoScroll = true;
-            notesFlowLayoutPanel.Location = new Point(3, 32);
+            notesFlowLayoutPanel.Location = new Point(3, 3);
             notesFlowLayoutPanel.Name = "notesFlowLayoutPanel";
-            notesFlowLayoutPanel.Size = new Size(269, 374);
+            notesFlowLayoutPanel.Size = new Size(269, 403);
             notesFlowLayoutPanel.TabIndex = 0;
-            // 
-            // addNoteButton
-            // 
-            addNoteButton.Location = new Point(100, 3);
-            addNoteButton.Name = "addNoteButton";
-            addNoteButton.Size = new Size(75, 23);
-            addNoteButton.TabIndex = 1;
-            addNoteButton.Text = "Add Note";
-            addNoteButton.UseVisualStyleBackColor = true;
-            addNoteButton.Click += addNoteButton_Click;
             // 
             // SourceForm
             // 
@@ -104,6 +92,5 @@
         private SplitContainer splitContainer1;
         private SourceControls.DocumentControl documentControl1;
         private FlowLayoutPanel notesFlowLayoutPanel;
-        private Button addNoteButton;
     }
 }
