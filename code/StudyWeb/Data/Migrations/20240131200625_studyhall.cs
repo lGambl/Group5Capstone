@@ -85,15 +85,23 @@ namespace StudyWeb.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("ALTER TABLE [dbo].[AspNetUsers] NOCHECK CONSTRAINT ALL");
+            migrationBuilder.Sql("ALTER TABLE [dbo].[Source] NOCHECK CONSTRAINT ALL");
+            migrationBuilder.Sql("ALTER TABLE [dbo].[sourceType] NOCHECK CONSTRAINT ALL");
+            migrationBuilder.Sql("ALTER TABLE [dbo].[Note] NOCHECK CONSTRAINT ALL");
+
             // Drop the 'Note' table if it exists
             migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Note') DROP TABLE [dbo].[Note]");
-
-            // Drop the 'sourceType' table if it exists
-            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'sourceType') DROP TABLE [dbo].[sourceType]");
-
+            
             // Drop the 'Source' table if it exists
             migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Source') DROP TABLE [dbo].[Source]");
 
+            // Drop the 'sourceType' table if it exists
+            migrationBuilder.Sql(
+                    @"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'sourceType') DROP TABLE [dbo].[sourceType]");
+            
+
+            migrationBuilder.Sql("ALTER TABLE [dbo].[AspNetUsers] WITH CHECK CHECK CONSTRAINT ALL");
         }
     }
 }
