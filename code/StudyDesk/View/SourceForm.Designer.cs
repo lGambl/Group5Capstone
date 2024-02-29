@@ -30,13 +30,11 @@
         {
             splitContainer1 = new SplitContainer();
             documentControl1 = new SourceControls.DocumentControl();
-            noteGridView = new DataGridView();
-            noteColumn = new DataGridViewTextBoxColumn();
+            notesFlowLayoutPanel = new FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)noteGridView).BeginInit();
             SuspendLayout();
             // 
             // splitContainer1
@@ -52,7 +50,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(noteGridView);
+            splitContainer1.Panel2.Controls.Add(notesFlowLayoutPanel);
             splitContainer1.Size = new Size(892, 410);
             splitContainer1.SplitterDistance = 613;
             splitContainer1.TabIndex = 1;
@@ -65,25 +63,13 @@
             documentControl1.Size = new Size(607, 406);
             documentControl1.TabIndex = 0;
             // 
-            // noteGridView
+            // notesFlowLayoutPanel
             // 
-            noteGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            noteGridView.Columns.AddRange(new DataGridViewColumn[] { noteColumn });
-            noteGridView.Location = new Point(3, 0);
-            noteGridView.Margin = new Padding(3, 2, 3, 2);
-            noteGridView.Name = "noteGridView";
-            noteGridView.RowHeadersVisible = false;
-            noteGridView.RowHeadersWidth = 51;
-            noteGridView.Size = new Size(272, 406);
-            noteGridView.TabIndex = 0;
-            noteGridView.CellValueChanged += noteGridView_CellValueChanged;
-            // 
-            // noteColumn
-            // 
-            noteColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            noteColumn.HeaderText = "Note";
-            noteColumn.MinimumWidth = 6;
-            noteColumn.Name = "noteColumn";
+            notesFlowLayoutPanel.AutoScroll = true;
+            notesFlowLayoutPanel.Location = new Point(3, 3);
+            notesFlowLayoutPanel.Name = "notesFlowLayoutPanel";
+            notesFlowLayoutPanel.Size = new Size(269, 403);
+            notesFlowLayoutPanel.TabIndex = 0;
             // 
             // SourceForm
             // 
@@ -98,15 +84,13 @@
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)noteGridView).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
         private SplitContainer splitContainer1;
-        private DataGridView noteGridView;
-        private DataGridViewTextBoxColumn noteColumn;
         private SourceControls.DocumentControl documentControl1;
+        private FlowLayoutPanel notesFlowLayoutPanel;
     }
 }

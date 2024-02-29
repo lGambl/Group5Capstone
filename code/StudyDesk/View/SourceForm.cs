@@ -1,5 +1,6 @@
 ﻿using StudyDesk.Controller;
 using StudyDesk.Model;
+using StudyDesk.View.SourceControls;
 
 namespace StudyDesk.View
 {
@@ -22,22 +23,54 @@ namespace StudyDesk.View
             this.LoadNotes();
             this.LoadSource(source);
             this.documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            this.noteGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.notesFlowLayoutPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
 
         private void LoadNotes()
         {
-            this.noteGridView.Rows.Clear();
+            this.notesFlowLayoutPanel.Controls.Clear();
             this.controller.RefreshNotes();
             foreach (var note in this.controller.Notes)
             {
-                this.noteGridView.Rows.Add(note.Text);
+                var noteControl = new NoteControl();
+                noteControl.BorderStyle = BorderStyle.Fixed3D;
+                noteControl.setNoteText(note.Text);
+                this.setupNoteControlButtons(noteControl);
+                this.notesFlowLayoutPanel.Controls.Add(noteControl);
             }
         }
 
         private void  LoadSource(Source source)
         {
             _=this.documentControl1.SetDocument(source.Link).Result;
+        }
+
+        private void setupNoteControlButtons(NoteControl noteControl)
+        {
+            noteControl.DeleteTagButtonClicked += NoteControl_DeleteTagButtonClicked;
+            noteControl.AddTagButtonClicked += NoteControl_AddTagButtonClicked;
+            noteControl.DeleteNoteButtonClicked += NoteControl_DeleteNoteButtonClicked;
+            noteControl.SaveNotesChangesButtonClick += NoteControl_SaveChangesButtonClicked;
+        }
+
+        private void NoteControl_DeleteNoteButtonClicked(object sender, EventArgs e)
+        {
+            MessageBox.Show("delete note");
+        }
+
+        private void NoteControl_DeleteTagButtonClicked(object sender, EventArgs e)
+        {
+            MessageBox.Show("Delete tag");
+        }
+
+        private void NoteControl_AddTagButtonClicked(object sender, EventArgs e)
+        {
+            MessageBox.Show("add tag");
+        }
+
+        private void NoteControl_SaveChangesButtonClicked(object sender, EventArgs e)
+        {
+            MessageBox.Show("save changes");
         }
 
         // private void handleType(SourceType type)
@@ -77,7 +110,11 @@ namespace StudyDesk.View
         //     this.splitContainer1.Panel2.Controls.Add(imageControl);
         // }
 
-        private void noteGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+
+
+
+
+        /*private void noteGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             var noteIndex = e.RowIndex;
             if (noteIndex < 0)
@@ -105,6 +142,6 @@ namespace StudyDesk.View
                 }
             }
             this.LoadNotes();
-        }
+        }*/
     }
 }
