@@ -38,46 +38,49 @@
             // 
             // noteTextBox
             // 
-            noteTextBox.Location = new Point(3, 4);
-            noteTextBox.Margin = new Padding(3, 4, 3, 4);
+            noteTextBox.ForeColor = SystemColors.WindowFrame;
+            noteTextBox.Location = new Point(3, 3);
             noteTextBox.Multiline = true;
             noteTextBox.Name = "noteTextBox";
-            noteTextBox.Size = new Size(270, 115);
+            noteTextBox.Size = new Size(237, 87);
             noteTextBox.TabIndex = 0;
+            noteTextBox.Text = "Enter your note here...";
+            noteTextBox.Enter += noteTextBox_Enter;
+            noteTextBox.Leave += noteTextBox_Leave;
             // 
             // tagsListView
             // 
-            tagsListView.Location = new Point(3, 180);
-            tagsListView.Margin = new Padding(3, 4, 3, 4);
+            tagsListView.Location = new Point(3, 135);
             tagsListView.Name = "tagsListView";
-            tagsListView.Size = new Size(270, 84);
+            tagsListView.Size = new Size(237, 64);
             tagsListView.TabIndex = 1;
             tagsListView.UseCompatibleStateImageBehavior = false;
             // 
             // addNoteButton
             // 
-            addNoteButton.Location = new Point(94, 127);
-            addNoteButton.Margin = new Padding(3, 4, 3, 4);
+            addNoteButton.Location = new Point(82, 95);
             addNoteButton.Name = "addNoteButton";
-            addNoteButton.Size = new Size(86, 31);
+            addNoteButton.Size = new Size(75, 23);
             addNoteButton.TabIndex = 2;
             addNoteButton.Text = "Add Note";
             addNoteButton.UseVisualStyleBackColor = true;
             // 
             // tagTextBox
             // 
-            tagTextBox.Location = new Point(3, 305);
-            tagTextBox.Margin = new Padding(3, 4, 3, 4);
+            tagTextBox.ForeColor = SystemColors.WindowFrame;
+            tagTextBox.Location = new Point(3, 229);
             tagTextBox.Name = "tagTextBox";
-            tagTextBox.Size = new Size(270, 27);
+            tagTextBox.Size = new Size(237, 23);
             tagTextBox.TabIndex = 3;
+            tagTextBox.Text = "Enter your tag here...";
+            tagTextBox.Enter += tagTextBox_Enter;
+            tagTextBox.Leave += tagTextBox_Leave;
             // 
             // addTagButton
             // 
-            addTagButton.Location = new Point(94, 340);
-            addTagButton.Margin = new Padding(3, 4, 3, 4);
+            addTagButton.Location = new Point(82, 255);
             addTagButton.Name = "addTagButton";
-            addTagButton.Size = new Size(86, 31);
+            addTagButton.Size = new Size(75, 23);
             addTagButton.TabIndex = 4;
             addTagButton.Text = "Add Tag";
             addTagButton.UseVisualStyleBackColor = true;
@@ -85,15 +88,15 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(99, 281);
+            label1.Location = new Point(87, 211);
             label1.Name = "label1";
-            label1.Size = new Size(70, 20);
+            label1.Size = new Size(55, 15);
             label1.TabIndex = 5;
             label1.Text = "Add Tags";
             // 
             // AddNoteControl
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(label1);
             Controls.Add(addTagButton);
@@ -101,9 +104,8 @@
             Controls.Add(addNoteButton);
             Controls.Add(tagsListView);
             Controls.Add(noteTextBox);
-            Margin = new Padding(3, 4, 3, 4);
             Name = "AddNoteControl";
-            Size = new Size(276, 375);
+            Size = new Size(242, 281);
             ResumeLayout(false);
             PerformLayout();
         }

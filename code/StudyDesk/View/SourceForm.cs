@@ -152,38 +152,5 @@ namespace StudyDesk.View
         //     this.splitContainer1.Panel2.Controls.Add(imageControl);
         // }
 
-
-
-
-
-        /*private void noteGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            var noteIndex = e.RowIndex;
-            if (noteIndex < 0)
-            {
-                return;
-            }
-            if (this.noteGridView.Rows[noteIndex].Cells[0].Value is null)
-            {
-                if (this.controller.DeleteNoteAt(noteIndex))
-                {
-                    this.noteGridView.Rows.RemoveAt(noteIndex);
-                    return;
-                }
-            }
-            var noteText = this.noteGridView.Rows[noteIndex].Cells[0].Value.ToString();
-            if (noteIndex < this.controller.Notes.Count)
-            {
-                _ = this.controller.EditNote(noteIndex, noteText!);
-            }
-            else
-            {
-                if (!this.controller.AddNote(noteText!))
-                {
-                    this.noteGridView.Rows.RemoveAt(noteIndex);
-                }
-            }
-            this.LoadNotes();
-        }*/
     }
 }
