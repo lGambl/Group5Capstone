@@ -19,13 +19,13 @@ namespace StudyDesk.View
             this.InitializeComponent();
             this.controller = new SourceFormController(source);
             StartPosition = FormStartPosition.CenterScreen;
-            this.LoadNotes();
-            this.LoadSource(source);
+            this.loadNotes();
+            this.loadSource(source);
             this.documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.noteGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
 
-        private void LoadNotes()
+        private void loadNotes()
         {
             this.noteGridView.Rows.Clear();
             this.controller.RefreshNotes();
@@ -35,9 +35,28 @@ namespace StudyDesk.View
             }
         }
 
-        private void  LoadSource(Source source)
+        private void loadSource(Source source)
         {
-            _=this.documentControl1.SetDocument(source.Link).Result;
+            this.videoControl1.Visible = false;
+            this.documentControl1.Visible = false;
+
+            switch (source.Type)
+            {
+                case SourceType.VideoLink:
+                    this.videoControl1.SetVideo(source.Link);
+                    this.videoControl1.Visible = true;
+                    break;
+                case SourceType.PdfLink:
+                case SourceType.Pdf:
+                    _ = this.documentControl1.SetDocument(source.Link).Result;
+                    this.documentControl1.Visible = true;
+                    break;
+                case SourceType.Image:
+                case SourceType.Video:
+                default:
+                    throw new NotImplementedException();
+            }
+            
         }
 
         // private void handleType(SourceType type)
@@ -104,7 +123,7 @@ namespace StudyDesk.View
                     this.noteGridView.Rows.RemoveAt(noteIndex);
                 }
             }
-            this.LoadNotes();
+            this.loadNotes();
         }
     }
 }

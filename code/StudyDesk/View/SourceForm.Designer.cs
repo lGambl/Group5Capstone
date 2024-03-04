@@ -32,6 +32,7 @@
             documentControl1 = new SourceControls.DocumentControl();
             noteGridView = new DataGridView();
             noteColumn = new DataGridViewTextBoxColumn();
+            videoControl1 = new SourceControls.VideoControl();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -43,26 +44,26 @@
             // 
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Location = new Point(0, 0);
-            splitContainer1.Margin = new Padding(3, 2, 3, 2);
             splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(videoControl1);
             splitContainer1.Panel1.Controls.Add(documentControl1);
             // 
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(noteGridView);
-            splitContainer1.Size = new Size(892, 410);
-            splitContainer1.SplitterDistance = 613;
+            splitContainer1.Size = new Size(1019, 547);
+            splitContainer1.SplitterDistance = 700;
+            splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 1;
             // 
             // documentControl1
             // 
             documentControl1.Location = new Point(3, 0);
-            documentControl1.Margin = new Padding(3, 2, 3, 2);
             documentControl1.Name = "documentControl1";
-            documentControl1.Size = new Size(607, 406);
+            documentControl1.Size = new Size(694, 541);
             documentControl1.TabIndex = 0;
             // 
             // noteGridView
@@ -70,11 +71,10 @@
             noteGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             noteGridView.Columns.AddRange(new DataGridViewColumn[] { noteColumn });
             noteGridView.Location = new Point(3, 0);
-            noteGridView.Margin = new Padding(3, 2, 3, 2);
             noteGridView.Name = "noteGridView";
             noteGridView.RowHeadersVisible = false;
             noteGridView.RowHeadersWidth = 51;
-            noteGridView.Size = new Size(272, 406);
+            noteGridView.Size = new Size(311, 541);
             noteGridView.TabIndex = 0;
             noteGridView.CellValueChanged += noteGridView_CellValueChanged;
             // 
@@ -85,13 +85,19 @@
             noteColumn.MinimumWidth = 6;
             noteColumn.Name = "noteColumn";
             // 
+            // videoControl1
+            // 
+            videoControl1.Location = new Point(3, 0);
+            videoControl1.Name = "videoControl1";
+            videoControl1.Size = new Size(681, 494);
+            videoControl1.TabIndex = 1;
+            // 
             // SourceForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(892, 410);
+            ClientSize = new Size(1019, 547);
             Controls.Add(splitContainer1);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "SourceForm";
             Text = "SourceForm";
             splitContainer1.Panel1.ResumeLayout(false);
@@ -108,5 +114,6 @@
         private DataGridView noteGridView;
         private DataGridViewTextBoxColumn noteColumn;
         private SourceControls.DocumentControl documentControl1;
+        private SourceControls.VideoControl videoControl1;
     }
 }
