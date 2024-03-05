@@ -28,6 +28,9 @@ namespace StudyDesk.View.SourceControls
             this.initializeButtons();
         }
 
+        /// <summary>
+        ///   Called when [add note button clicked].
+        /// </summary>
         protected virtual void OnAddNoteButtonClicked()
         {
             if (this.tagsListView.Items.Count == 0)
@@ -41,6 +44,9 @@ namespace StudyDesk.View.SourceControls
             }
         }
 
+        /// <summary>
+        ///   Called when [add tag button clicked].
+        /// </summary>
         protected virtual void OnAddTagButtonClicked()
         {
             this.tagsListView.Items.Add("<" + this.tagTextBox.Text + ">");

@@ -29,6 +29,8 @@
         /// <value>The owner.</value>
         public string Owner { get; set; }
 
+        public List<string> NoteTags { get; set; }
+
         /// <summary>
         ///   Initializes a new instance of the <see cref="Note" /> class.
         /// </summary>
@@ -42,6 +44,7 @@
             this.Text = text;
             this.SourceId = sourceId;
             this.Owner = owner;
+            this.NoteTags = new List<string>();
         }
 
     }

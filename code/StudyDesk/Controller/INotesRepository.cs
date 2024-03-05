@@ -33,5 +33,9 @@ namespace StudyDesk.Controller
         /// <param name="note">The note.</param>
         /// <returns>True if successful, false otherwise</returns>
         public bool DeleteNoteFromDatabase(Note note);
+
+        public bool AddTagToDatabase(NoteTag noteTag);
+
+        public bool DeleteTagFromDatabase(NoteTag noteTag);
     }
 }

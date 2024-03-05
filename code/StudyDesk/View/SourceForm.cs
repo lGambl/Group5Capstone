@@ -69,11 +69,13 @@ namespace StudyDesk.View
 
         private void AddNoteControl_AddNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
         {
-            this.controller.AddNote(e.NoteText);
-
             if (e.Tags is { Count: > 0 })
             {
                 MessageBox.Show("Note with tags");
+            }
+            else
+            {
+                this.controller.AddNote(e.NoteText);
             }
 
             this.LoadNotes();

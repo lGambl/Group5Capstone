@@ -58,21 +58,33 @@
             this.noteTextBox.Text = noteText;
         }
 
+        /// <summary>
+        ///   Called when [delete note button clicked].
+        /// </summary>
         protected virtual void OnDeleteNoteButtonClicked()
         {
             DeleteNoteButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex));
         }
 
+        /// <summary>
+        ///   Called when [delete tag button clicked].
+        /// </summary>
         protected virtual void OnDeleteTagButtonClicked()
         {
             DeleteTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex));
         }
 
+        /// <summary>
+        ///   Called when [add tag button clicked].
+        /// </summary>
         protected virtual void OnAddTagButtonClicked()
         {
             AddTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex));
         }
 
+        /// <summary>
+        ///   Called when [save changes button click].
+        /// </summary>
         protected virtual void OnSaveChangesButtonClick()
         {
             SaveNotesChangesButtonClick?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));

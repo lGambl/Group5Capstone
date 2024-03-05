@@ -15,9 +15,11 @@ public class SourceFormController
         "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
 
     private const string? FailedToAddNoteToDatabase = "Failed to add note to database";
+    private const string? FailedToAddNoteTagToDatabase = "Failed to add note tag to database";
     private const string? ErrorCaption = "Error";
     private const string? FailedToUpdateNoteInDatabase = "Failed to update note in database";
     private const string? FailedToDeleteNoteFromDatabase = "Failed to delete note from database";
+    private const string? FailedToDeleteNoteTagFromDatabase = "Failed to delete note tag from database";
 
     private readonly Source source;
 
@@ -89,6 +91,51 @@ public class SourceFormController
         return false;
     }
 
+    public bool AddNoteWithTags(string noteText, List<string> tags)
+    {
+        var note = new Note(0, noteText, this.source.Id, this.source.Owner);
+        if (this.NotesRepository.AddNoteToDatabase(note))
+        {
+            var tagsAdded = true;
+            foreach (var currTag in tags)
+            {
+                var noteTag = new NoteTag();
+                tagsAdded = this.NotesRepository.AddTagToDatabase(noteTag);
+                note.NoteTags.Add(noteText);
+            }
+
+            this.Notes.Add(note);
+
+            if (tagsAdded)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool AddTagToExistingNote(int noteId, string tag)
+    {
+        var noteTag = new NoteTag();
+        noteTag.Name = tag;
+        noteTag.NoteId = noteId;
+
+        if (this.NotesRepository.AddTagToDatabase(noteTag))
+        {
+            foreach (var currNote in this.Notes)
+            {
+                if (currNote.Id == noteId)
+                {
+                    currNote.NoteTags.Add(tag);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>
     ///     Edits the note at a given index.
     /// </summary>
@@ -118,10 +165,21 @@ public class SourceFormController
         var note = this.Notes[noteIndex];
         if (this.NotesRepository.DeleteNoteFromDatabase(note))
         {
+            if (this.Notes[noteIndex].NoteTags.Count > 0)
+            {
+                var noteTag = new NoteTag();
+                noteTag.NoteId = this.Notes[noteIndex].Id;
+                this.NotesRepository.DeleteTagFromDatabase(noteTag);
+            }
             this.Notes.RemoveAt(noteIndex);
             return true;
         }
 
+        return false;
+    }
+
+    public bool DeleteNoteTag(int noteIndex)
+    {
         return false;
     }
 
@@ -192,6 +250,56 @@ public class SourceFormController
             }
         }
 
+        public bool AddTagToDatabase(NoteTag noteTag)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand("INSERT INTO dbo.Tags (Name) OUTPUT INSERTED.TagId VALUES (@name)", connection);
+                command.Parameters.AddWithValue("@name", noteTag.Name);
+                var result = command.ExecuteScalar();
+                connection.Close();
+
+                var noteTagAdded = false;
+                if (result != null)
+                {
+                    var tagId = Convert.ToInt32(result);
+                    if (tagId > -1)
+                    {
+                        noteTagAdded = this.AddNoteTagToDatabase(tagId, noteTag.NoteId);
+                    }
+                }
+
+                return noteTagAdded;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToAddNoteTagToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        private bool AddNoteTagToDatabase(int tagId, int noteId)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand("INSERT INTO dbo.NoteTags (TagId, NoteId) VALUES (@tagId, @noteId)", connection);
+                command.Parameters.AddWithValue("@tagId", tagId);
+                command.Parameters.AddWithValue("@noteId", noteId);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToAddNoteTagToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
         public bool UpdateNoteInDatabase(Note note)
         {
             try
@@ -227,6 +335,52 @@ public class SourceFormController
             catch (Exception)
             {
                 MessageBox.Show(FailedToDeleteNoteFromDatabase, ErrorCaption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool DeleteTagFromDatabase(NoteTag noteTag)
+        {
+            try
+            {
+                var connection = new SqlConnection(connectionString);
+                connection.Open();
+                var command = new SqlCommand("DELETE FROM dbo.Tags WHERE Id = @id", connection);
+                command.Parameters.AddWithValue("@id", noteTag.Id);
+                command.ExecuteNonQuery();
+                connection.Close();
+
+                if (this.DeleteNoteTagsFromDatabase(noteTag.NoteId))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToDeleteNoteTagFromDatabase, ErrorCaption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        private bool DeleteNoteTagsFromDatabase(int noteId)
+        {
+            try
+            {
+                var connection = new SqlConnection(connectionString);
+                connection.Open();
+                var command = new SqlCommand("DELETE FROM dbo.NoteTags WHERE NoteId = @noteId");
+                command.Parameters.AddWithValue("@noteId", noteId);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToDeleteNoteTagFromDatabase, ErrorCaption, MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return false;
             }
