@@ -253,7 +253,8 @@ public class AuthServiceTest
                 Content = new StringContent("...")
             })
             .Verifiable();
-        Assert.DoesNotThrowAsync(() => this.authService!.AddSource("Test Title", tempFilePath));
+        const SourceType sourceType = SourceType.Pdf;
+        Assert.DoesNotThrowAsync(() => this.authService!.AddSource("Test Title", this.tempFilePath, sourceType));
         this.handlerMock!.Protected().Verify("SendAsync", Times.Once(),
             ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post && req.RequestUri == expectedUri),
             ItExpr.IsAny<CancellationToken>());

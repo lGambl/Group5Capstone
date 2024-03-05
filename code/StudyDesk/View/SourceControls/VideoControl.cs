@@ -11,6 +11,7 @@ namespace StudyDesk.View.SourceControls
     /// <seealso cref="System.Windows.Forms.UserControl" />
     public partial class VideoControl : UserControl
     {
+        private string? videoLink;
         /// <summary>
         /// Initializes a new instance of the <see cref="VideoControl"/> class.
         /// </summary>
@@ -26,12 +27,22 @@ namespace StudyDesk.View.SourceControls
         /// <param name="link">The link.</param>
         public async Task SetVideo(string link)
         {
+            this.videoLink = link;
             var stream = await this.getVideoStream(link);
 
             var mediaInput = new StreamMediaInput(stream);
             var media = new Media(new LibVLC(), mediaInput);
 
             this.videoView1.MediaPlayer = new MediaPlayer(media);
+
+            this.enableButtons();
+            this.videoView1.MediaPlayer.EndReached += (sender, args) => this.restartButton.Enabled = true;
+        }
+
+        private void enableButtons()
+        {
+            this.playPauseButton.Enabled = true;
+            this.back10SecondsButton.Enabled = true;
         }
 
         private async Task<Stream> getVideoStream(string link)
@@ -51,7 +62,7 @@ namespace StudyDesk.View.SourceControls
         {
             if (this.videoView1.MediaPlayer!.IsPlaying)
             {
-                this.videoView1.MediaPlayer!.Pause(); 
+                this.videoView1.MediaPlayer!.Pause();
             }
             else
             {
@@ -68,6 +79,22 @@ namespace StudyDesk.View.SourceControls
         private void back10SecondsButton_Click(object sender, EventArgs e)
         {
             this.videoView1.MediaPlayer!.Time -= 10000;
+        }
+
+        private void restartButton_Click(object sender, EventArgs e)
+        {
+            if (this.videoLink != null)
+            {
+                this.disableButtons();
+                _ = this.SetVideo(this.videoLink);
+            }
+        }
+
+        private void disableButtons()
+        {
+            this.playPauseButton.Enabled = false;
+            this.back10SecondsButton.Enabled = false;
+            this.restartButton.Enabled = false;
         }
     }
 }

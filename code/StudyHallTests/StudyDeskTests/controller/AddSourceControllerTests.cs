@@ -12,15 +12,16 @@ public class AddSourceControllerTests
     public void AddSourceTestOk()
     {
         var mockAuthService = new Mock<AuthService>();
-        mockAuthService.Setup(service => service.AddSource("title", "filePath"));
+        mockAuthService.Setup(service => service.AddSource("title", "filePath", SourceType.Pdf));
         
         
         var addSourceController = new AddSourceController(mockAuthService.Object);
         const string title = "title";
         const string filePath = "filePath";
+        const SourceType sourceType = SourceType.Pdf;
 
         
-        var result = addSourceController.AddSource(title, filePath);
+        var result = addSourceController.AddSource(title, filePath, sourceType);
 
         
         Assert.That(result);
@@ -30,14 +31,15 @@ public class AddSourceControllerTests
     public void AddSourceThrowsException()
     {
         var mockAuthService = new Mock<AuthService>();
-        mockAuthService.Setup(service => service.AddSource("title", "filePath"))
+        mockAuthService.Setup(service => service.AddSource("title", "filePath", SourceType.Pdf))
             .Throws<Exception>();
 
         var addSourceController = new AddSourceController(mockAuthService.Object);
         const string title = "title";
         const string filePath = "filePath";
+        const SourceType sourceType = SourceType.Pdf;
 
-        var result = addSourceController.AddSource(title, filePath);
+        var result = addSourceController.AddSource(title, filePath, sourceType);
 
         Assert.That(!result);
     }

@@ -20,6 +20,7 @@ public partial class AddSourceForm : Form
     private const string? FailedToAddSource = "Failed to add source.";
     private const string? InvalidSourceType = "Invalid Source Type";
     private const string? PleaseSelectASourceType = "Please select a source type.";
+    private const string? PleaseEnterTheLinkInTheFilePathBox = "Please enter the link in the file path box.";
 
     private AddSourceController controller;
 
@@ -45,8 +46,34 @@ public partial class AddSourceForm : Form
     private void populateSourceTypeBox()
     {
         this.sourceTypeComboBox.Items.Add("Pdf");
+        this.sourceTypeComboBox.Items.Add("Video Link");
     }
     private void uploadButton_Click(object sender, EventArgs e)
+    {
+        switch (this.sourceTypeComboBox.SelectedItem)
+        {
+            case "Pdf":
+                this.fileUpload(SourceType.Pdf);
+                break;
+            case "Video Link":
+                this.setupLinkHandling();
+                return;
+            default:
+                MessageBox.Show(PleaseSelectASourceType, InvalidSourceType);
+                return;
+        }
+
+    }
+
+    private void setupLinkHandling()
+    {
+        this.filePathTextBox.Text = "";
+        this.filePathTextBox.Enabled = true;
+
+        MessageBox.Show(PleaseEnterTheLinkInTheFilePathBox);
+    }
+
+    private void fileUpload(SourceType type)
     {
         var openFileDialog = new OpenFileDialog
         {
@@ -56,17 +83,6 @@ public partial class AddSourceForm : Form
             Multiselect = false,
             Title = FileDialogTitle
         };
-
-        switch (this.sourceTypeComboBox.SelectedItem)
-        {
-            case "Pdf":
-                openFileDialog.Filter = FileExtensionFilters;
-                break;
-            default:
-                MessageBox.Show(PleaseSelectASourceType, InvalidSourceType);
-                return;
-        }
-
 
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
@@ -79,7 +95,13 @@ public partial class AddSourceForm : Form
         var conditionsMet = this.checkFields();
         if (conditionsMet)
         {
-            if (this.controller.AddSource(this.titleTextBox.Text, this.filePathTextBox.Text))
+            var type = this.sourceTypeComboBox.SelectedItem switch
+            {
+                "Pdf" => SourceType.Pdf,
+                "Video Link" => SourceType.VideoLink,
+                _ => throw new NotImplementedException()
+            };
+            if (this.controller.AddSource(this.titleTextBox.Text, this.filePathTextBox.Text, type))
             {
                 Close(); 
             }

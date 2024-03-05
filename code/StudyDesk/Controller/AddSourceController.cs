@@ -32,13 +32,14 @@ public class AddSourceController
     ///     Adds the source.
     /// </summary>
     /// <param name="title">The title.</param>
-    /// <param name="filePath">The file path.</param>
+    /// <param name="filePath">The file path or link in the case of links.</param>
+    /// <param name="type">The type.</param>
     /// <returns>True if successful, false otherwise.</returns>
-    public bool AddSource(string title, string filePath)
+    public bool AddSource(string title, string filePath, SourceType type)
     {
         try
         {
-            this.authService.AddSource(title, filePath);
+            this.authService.AddSource(title, filePath, type);
             return true;
         }
         catch (Exception)

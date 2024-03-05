@@ -130,9 +130,27 @@ public class AuthService
     ///     Adds the source.
     /// </summary>
     /// <param name="title">The title.</param>
-    /// <param name="filePath">The file path.</param>
+    /// <param name="filePath">The file path or Link in the case of links.</param>
+    /// <param name="type">The file type.</param>
     /// <exception cref="System.Exception">Failed to add source. Status code: " + response.StatusCode</exception>
-    public virtual Task<bool> AddSource(string title, string filePath)
+    public virtual Task<bool> AddSource(string title, string filePath, SourceType type)
+    {
+        return type switch
+        {
+            SourceType.Pdf => this.addPdfSource(title, filePath),
+            SourceType.VideoLink => this.addVideoLinkSource(title, filePath),
+            _ => throw new NotImplementedException()
+        };
+    }
+
+    public virtual bool DeleteSource(int sourceId)
+    {
+        var response = this.HttpClient.DeleteAsync("https://localhost:7240/SourceExplorer/Delete/" + sourceId).Result;
+
+        return response.IsSuccessStatusCode;
+    }
+
+    private Task<bool> addPdfSource(string title, string filePath)
     {
         var fileContent = this.loadFile(filePath);
         var content = new MultipartFormDataContent
@@ -141,22 +159,25 @@ public class AuthService
             { new StringContent(SourceType.Pdf.ToString()), "Type" },
             { fileContent, "pdfUpload", Path.GetFileName(filePath) }
         };
-
-        var response = this.HttpClient.PostAsync("https://localhost:7240/SourceExplorer/Create", content).Result;
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception("Failed to add source. Status code: " + response.StatusCode);
-        }
-
-        return Task.FromResult(true);
+        return this.sendRequest(content);
     }
 
-    public virtual bool DeleteSource(int sourceId)
+    private Task<bool> addVideoLinkSource(string title, string filePath)
     {
-        var response = this.HttpClient.DeleteAsync("https://localhost:7240/SourceExplorer/Delete/" + sourceId).Result;
+        var content = new MultipartFormDataContent
+        {
+            { new StringContent(title), "Title" },
+            { new StringContent(SourceType.VideoLink.ToString()), "Type" },
+            { new StringContent(filePath), "Link" }
+        };
+        return this.sendRequest(content);
+    }
 
-        return response.IsSuccessStatusCode;
+    private Task<bool> sendRequest(HttpContent content)
+    {
+        var response = this.HttpClient.PostAsync("https://localhost:7240/SourceExplorer/Create", content).Result;
+
+        return Task.FromResult(response.IsSuccessStatusCode);
     }
 
     private ByteArrayContent loadFile(string filePath)

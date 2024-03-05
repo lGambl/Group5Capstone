@@ -31,6 +31,7 @@
             videoView1 = new LibVLCSharp.WinForms.VideoView();
             playPauseButton = new Button();
             back10SecondsButton = new Button();
+            restartButton = new Button();
             ((System.ComponentModel.ISupportInitialize)videoView1).BeginInit();
             SuspendLayout();
             // 
@@ -48,6 +49,7 @@
             // playPauseButton
             // 
             playPauseButton.Anchor = AnchorStyles.Bottom;
+            playPauseButton.Enabled = false;
             playPauseButton.Location = new Point(356, 337);
             playPauseButton.Name = "playPauseButton";
             playPauseButton.Size = new Size(94, 29);
@@ -59,6 +61,7 @@
             // back10SecondsButton
             // 
             back10SecondsButton.Anchor = AnchorStyles.Bottom;
+            back10SecondsButton.Enabled = false;
             back10SecondsButton.Location = new Point(81, 337);
             back10SecondsButton.Name = "back10SecondsButton";
             back10SecondsButton.Size = new Size(107, 29);
@@ -67,10 +70,22 @@
             back10SecondsButton.UseVisualStyleBackColor = true;
             back10SecondsButton.Click += back10SecondsButton_Click;
             // 
+            // restartButton
+            // 
+            restartButton.Enabled = false;
+            restartButton.Location = new Point(224, 337);
+            restartButton.Name = "restartButton";
+            restartButton.Size = new Size(94, 29);
+            restartButton.TabIndex = 5;
+            restartButton.Text = "Restart";
+            restartButton.UseVisualStyleBackColor = true;
+            restartButton.Click += restartButton_Click;
+            // 
             // VideoControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(restartButton);
             Controls.Add(back10SecondsButton);
             Controls.Add(playPauseButton);
             Controls.Add(videoView1);
@@ -88,5 +103,6 @@
         private Button fwrd10SecButton;
         private Button back10SecondsButton;
         private Button playPauseButton;
+        private Button restartButton;
     }
 }
