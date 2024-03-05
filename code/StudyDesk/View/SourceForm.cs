@@ -43,7 +43,7 @@ namespace StudyDesk.View
             switch (source.Type)
             {
                 case SourceType.VideoLink:
-                    this.videoControl1.SetVideo(source.Link);
+                    _ = this.videoControl1.SetVideo(source.Link);
                     this.videoControl1.Visible = true;
                     break;
                 case SourceType.PdfLink:

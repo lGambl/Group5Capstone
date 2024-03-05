@@ -29,9 +29,7 @@
         private void InitializeComponent()
         {
             videoView1 = new LibVLCSharp.WinForms.VideoView();
-            playButton = new Button();
-            pauseButton = new Button();
-            fwrd10SecButton = new Button();
+            playPauseButton = new Button();
             back10SecondsButton = new Button();
             ((System.ComponentModel.ISupportInitialize)videoView1).BeginInit();
             SuspendLayout();
@@ -47,42 +45,21 @@
             videoView1.TabIndex = 0;
             videoView1.Text = "videoView1";
             // 
-            // playButton
+            // playPauseButton
             // 
-            playButton.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            playButton.Location = new Point(3, 337);
-            playButton.Name = "playButton";
-            playButton.Size = new Size(94, 29);
-            playButton.TabIndex = 1;
-            playButton.Text = "Play";
-            playButton.UseVisualStyleBackColor = true;
-            playButton.Click += playButton_Click;
-            // 
-            // pauseButton
-            // 
-            pauseButton.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pauseButton.Location = new Point(448, 337);
-            pauseButton.Name = "pauseButton";
-            pauseButton.Size = new Size(94, 29);
-            pauseButton.TabIndex = 2;
-            pauseButton.Text = "Pause";
-            pauseButton.UseVisualStyleBackColor = true;
-            pauseButton.Click += pauseButton_Click;
-            // 
-            // fwrd10SecButton
-            // 
-            fwrd10SecButton.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            fwrd10SecButton.Location = new Point(296, 337);
-            fwrd10SecButton.Name = "fwrd10SecButton";
-            fwrd10SecButton.Size = new Size(96, 29);
-            fwrd10SecButton.TabIndex = 3;
-            fwrd10SecButton.Text = "Fwrd 10 Sec";
-            fwrd10SecButton.UseVisualStyleBackColor = true;
+            playPauseButton.Anchor = AnchorStyles.Bottom;
+            playPauseButton.Location = new Point(356, 337);
+            playPauseButton.Name = "playPauseButton";
+            playPauseButton.Size = new Size(94, 29);
+            playPauseButton.TabIndex = 2;
+            playPauseButton.Text = "Play/Pause";
+            playPauseButton.UseVisualStyleBackColor = true;
+            playPauseButton.Click += pauseButton_Click;
             // 
             // back10SecondsButton
             // 
-            back10SecondsButton.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            back10SecondsButton.Location = new Point(136, 337);
+            back10SecondsButton.Anchor = AnchorStyles.Bottom;
+            back10SecondsButton.Location = new Point(81, 337);
             back10SecondsButton.Name = "back10SecondsButton";
             back10SecondsButton.Size = new Size(107, 29);
             back10SecondsButton.TabIndex = 4;
@@ -95,9 +72,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(back10SecondsButton);
-            Controls.Add(fwrd10SecButton);
-            Controls.Add(pauseButton);
-            Controls.Add(playButton);
+            Controls.Add(playPauseButton);
             Controls.Add(videoView1);
             Name = "VideoControl";
             Size = new Size(545, 395);
@@ -112,5 +87,6 @@
         private Button pauseButton;
         private Button fwrd10SecButton;
         private Button back10SecondsButton;
+        private Button playPauseButton;
     }
 }

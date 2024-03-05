@@ -1,5 +1,7 @@
 ﻿using LibVLCSharp.Shared;
 using Microsoft.Identity.Client;
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
 
 namespace StudyDesk.View.SourceControls
 {
@@ -15,16 +17,29 @@ namespace StudyDesk.View.SourceControls
         public VideoControl()
         {
             this.InitializeComponent();
+            Core.Initialize();
         }
 
         /// <summary>
         /// Sets the video link. 
         /// </summary>
         /// <param name="link">The link.</param>
-        public void SetVideo(string link)
+        public async Task SetVideo(string link)
         {
-            Core.Initialize();
-            this.videoView1.MediaPlayer = new MediaPlayer(new Media(new LibVLC(), link, FromType.FromLocation));
+            var stream = await this.getVideoStream(link);
+
+            var mediaInput = new StreamMediaInput(stream);
+            var media = new Media(new LibVLC(), mediaInput);
+
+            this.videoView1.MediaPlayer = new MediaPlayer(media);
+        }
+
+        private async Task<Stream> getVideoStream(string link)
+        {
+            var youtubeClient = new YoutubeClient();
+            var video = await youtubeClient.Videos.Streams.GetManifestAsync(link);
+            var streamInfo = video.GetMuxedStreams().GetWithHighestVideoQuality();
+            return await youtubeClient.Videos.Streams.GetAsync(streamInfo);
         }
 
         private void playButton_Click(object sender, EventArgs e)
@@ -34,7 +49,14 @@ namespace StudyDesk.View.SourceControls
 
         private void pauseButton_Click(object sender, EventArgs e)
         {
-            this.videoView1.MediaPlayer!.Pause();
+            if (this.videoView1.MediaPlayer!.IsPlaying)
+            {
+                this.videoView1.MediaPlayer!.Pause(); 
+            }
+            else
+            {
+                this.videoView1.MediaPlayer!.Play();
+            }
         }
 
 
