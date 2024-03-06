@@ -1,5 +1,6 @@
 ﻿using StudyDesk.Controller;
 using StudyDesk.Model;
+using StudyDesk.View.SourceControls;
 
 namespace StudyDesk.View
 {
@@ -22,16 +23,29 @@ namespace StudyDesk.View
             this.loadNotes();
             this.loadSource(source);
             this.documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            this.noteGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.notesFlowLayoutPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
 
         private void loadNotes()
         {
-            this.noteGridView.Rows.Clear();
+            this.notesFlowLayoutPanel.Controls.Clear();
             this.controller.RefreshNotes();
+
+            var addNoteControl = new AddNoteControl();
+            addNoteControl.BorderStyle = BorderStyle.Fixed3D;
+            this.setupAddnoteControlButtons(addNoteControl);
+            this.notesFlowLayoutPanel.Controls.Add(addNoteControl);
+
+            var index = 1;
             foreach (var note in this.controller.Notes)
             {
-                this.noteGridView.Rows.Add(note.Text);
+                var noteControl = new NoteControl(index);
+                noteControl.BorderStyle = BorderStyle.Fixed3D;
+                noteControl.setNoteText(note.Text);
+                noteControl.SetNoteTags(note.NoteTags);
+                this.setupNoteControlButtons(noteControl);
+                this.notesFlowLayoutPanel.Controls.Add(noteControl);
+                index++;
             }
         }
 
@@ -57,6 +71,66 @@ namespace StudyDesk.View
                     throw new NotImplementedException();
             }
             
+        private void LoadSource(Source source)
+        {
+            _ = this.documentControl1.SetDocument(source.Link).Result;
+        }
+
+        private void setupNoteControlButtons(NoteControl noteControl)
+        {
+            noteControl.AddTagButtonClicked += NoteControl_AddTagButtonClicked;
+            noteControl.DeleteNoteButtonClicked += NoteControl_DeleteNoteButtonClicked;
+            noteControl.SaveNotesChangesButtonClick += NoteControl_SaveChangesButtonClicked;
+        }
+
+        private void setupAddnoteControlButtons(AddNoteControl addNoteControl)
+        {
+            addNoteControl.AddNoteButtonClicked += AddNoteControl_AddNoteButtonClicked;
+        }
+
+        private void AddNoteControl_AddNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
+        {
+            if (e.Tags is { Count: > 0 })
+            {
+                this.controller.AddNoteWithTags(e.NoteText, e.Tags);
+            }
+            else
+            {
+                this.controller.AddNote(e.NoteText);
+            }
+
+            this.LoadNotes();
+        }
+
+        private void NoteControl_DeleteNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
+        {
+            var result = MessageBox.Show("Are you sure you want to delete this note?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                if (this.controller.DeleteNoteAt(e.NoteIndex - 1))
+                {
+                    this.notesFlowLayoutPanel.Controls.RemoveAt(e.NoteIndex);
+                }
+            }
+        }
+
+        private void NoteControl_AddTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
+        {
+            this.controller.AddTagToExistingNote(e.NoteIndex, e.Tags[0]);
+        }
+
+        private void NoteControl_SaveChangesButtonClicked(object sender, NoteControl.NoteEventArgs e)
+        {
+            var result = MessageBox.Show("Are you sure you want to save the changes to this note?", "Confirm Changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                if (this.controller.EditNote(e.NoteIndex - 1, e.NoteText))
+                {
+                    this.notesFlowLayoutPanel.Refresh();
+                }
+            }
         }
 
         // private void handleType(SourceType type)

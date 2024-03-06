@@ -33,5 +33,32 @@ namespace StudyDesk.Controller
         /// <param name="note">The note.</param>
         /// <returns>True if successful, false otherwise</returns>
         public bool DeleteNoteFromDatabase(Note note);
+
+        /// <summary>
+        ///   Adds the tag to database.
+        /// </summary>
+        /// <param name="noteTag">The note tag.</param>
+        /// <returns>
+        ///   True if successful, false otherwise
+        /// </returns>
+        public bool AddTagToDatabase(NoteTag noteTag);
+
+        /// <summary>
+        ///   Deletes the tag from database.
+        /// </summary>
+        /// <param name="noteTag">The note tag.</param>
+        /// <returns>
+        ///   True if successful, false otherwise
+        /// </returns>
+        public bool DeleteTagFromDatabase(NoteTag noteTag);
+
+        /// <summary>
+        ///   Gets the note tags.
+        /// </summary>
+        /// <param name="noteId">The note identifier.</param>
+        /// <returns>
+        ///   True if successful, false otherwise
+        /// </returns>
+        public IList<NoteTag> GetNoteTags(int noteId);
     }
 }
