@@ -70,10 +70,6 @@ namespace StudyDesk.View
                 default:
                     throw new NotImplementedException();
             }
-            
-        private void LoadSource(Source source)
-        {
-            _ = this.documentControl1.SetDocument(source.Link).Result;
         }
 
         private void setupNoteControlButtons(NoteControl noteControl)
@@ -99,7 +95,7 @@ namespace StudyDesk.View
                 this.controller.AddNote(e.NoteText);
             }
 
-            this.LoadNotes();
+            this.loadNotes();
         }
 
         private void NoteControl_DeleteNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
@@ -170,34 +166,5 @@ namespace StudyDesk.View
         //     this.splitContainer1.Panel2.Controls.Add(imageControl);
         // }
 
-        private void noteGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            var noteIndex = e.RowIndex;
-            if (noteIndex < 0)
-            {
-                return;
-            }
-            if (this.noteGridView.Rows[noteIndex].Cells[0].Value is null)
-            {
-                if (this.controller.DeleteNoteAt(noteIndex))
-                {
-                    this.noteGridView.Rows.RemoveAt(noteIndex);
-                    return;
-                }
-            }
-            var noteText = this.noteGridView.Rows[noteIndex].Cells[0].Value.ToString();
-            if (noteIndex < this.controller.Notes.Count)
-            {
-                _ = this.controller.EditNote(noteIndex, noteText!);
-            }
-            else
-            {
-                if (!this.controller.AddNote(noteText!))
-                {
-                    this.noteGridView.Rows.RemoveAt(noteIndex);
-                }
-            }
-            this.loadNotes();
-        }
     }
 }

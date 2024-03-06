@@ -30,8 +30,6 @@
         {
             splitContainer1 = new SplitContainer();
             documentControl1 = new SourceControls.DocumentControl();
-            noteGridView = new DataGridView();
-            noteColumn = new DataGridViewTextBoxColumn();
             videoControl1 = new SourceControls.VideoControl();
             notesFlowLayoutPanel = new FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -53,7 +51,6 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(noteGridView);
             splitContainer1.Size = new Size(1019, 547);
             splitContainer1.SplitterDistance = 700;
             splitContainer1.SplitterWidth = 5;
@@ -71,22 +68,6 @@
             // 
             // notesFlowLayoutPanel
             // 
-            noteGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            noteGridView.Columns.AddRange(new DataGridViewColumn[] { noteColumn });
-            noteGridView.Location = new Point(3, 0);
-            noteGridView.Name = "noteGridView";
-            noteGridView.RowHeadersVisible = false;
-            noteGridView.RowHeadersWidth = 51;
-            noteGridView.Size = new Size(311, 541);
-            noteGridView.TabIndex = 0;
-            noteGridView.CellValueChanged += noteGridView_CellValueChanged;
-            // 
-            // noteColumn
-            // 
-            noteColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            noteColumn.HeaderText = "Note";
-            noteColumn.MinimumWidth = 6;
-            noteColumn.Name = "noteColumn";
             notesFlowLayoutPanel.AutoScroll = true;
             notesFlowLayoutPanel.Location = new Point(3, 3);
             notesFlowLayoutPanel.Name = "notesFlowLayoutPanel";
