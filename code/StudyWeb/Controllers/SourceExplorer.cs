@@ -98,12 +98,31 @@ public class SourceExplorer : Controller
 
         if (source != null)
         {
-            source.Notes = this.context.Note.Where(n => n.SourceId == id).ToList();
-
+            this.loadNotes(source);
             return source;
         }
 
         return null;
+    }
+
+    private void loadNotes(Source source)
+    {
+        source.Notes = this.context.Note.Where(n => n.SourceId == source.Id).ToList();
+        foreach (var note in source.Notes)
+        {
+            this.getNoteTags(note);
+        }
+    }
+
+    private void getNoteTags(Note note)
+    {
+        note.Tags = this.queryTags(note.Id);
+    }
+
+    private IList<Tags> queryTags(int noteId)
+    {
+        var tagIds = this.context.NoteTags.Where(nt => nt.NoteId == noteId).Select(nt => nt.TagId).ToList();
+        return this.context.Tags.Where(t => tagIds.Contains(t.Id)).ToList();
     }
 
     /// <summary>

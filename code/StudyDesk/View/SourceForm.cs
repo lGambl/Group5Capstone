@@ -68,7 +68,9 @@ namespace StudyDesk.View
                 case SourceType.Image:
                 case SourceType.Video:
                 default:
-                    throw new NotImplementedException();
+                    MessageBox.Show("This source type is not supported", "Unsupported Source Type", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Close();
+                    break;
             }
         }
 

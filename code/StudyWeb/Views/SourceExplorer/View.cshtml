@@ -19,6 +19,13 @@
         font-family: 'Courier New', Courier, monospace; /* Gives a typewritten or handwritten feel */
         max-height: 700px; /* Adjust based on your layout */
         height: 700px; /* Adjust based on your layout */
+        display: flex;
+        flex-direction: column;
+    }
+
+    #notesList {
+        overflow-y: auto;
+        max-height: 500px; /* Adjust as needed */
     }
 
     .note {
@@ -64,6 +71,11 @@
     .submit-note-btn-margin {
         margin: 10px; /* This adds 10px margin on all sides of the button */
     }
+
+    .note-tags {
+        font-style: italic;
+        color: #666;
+    }
 </style>
 
 <button onclick="goBack()">Go Back</button>
@@ -100,23 +112,39 @@
         {
             @Html.AntiForgeryToken()
 
-            <p style="display:none" id="Id" >@Html.DisplayFor(note => note.Id)</p>
+            <p style="display:none" id="Id">@Html.DisplayFor(note => note.Id)</p>
 
             <div class="form-group">
-                <label for="text" class="control-label">Add Note</label>
-                <textarea name="text" id="noteText" class="form-control" rows="3" required placeholder="Enter your note here..."></textarea>
+                <label for="noteText" class="control-label">Add Note</label>
+                <textarea name="noteText" id="noteText" class="form-control" rows="3" required placeholder="Enter your note here..."></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary submit-note-btn-margin">Submit Note</button>
-        }
-        @foreach (var note in Model.Notes)
-        {
-            <div class="note">
-                <p>@note.Text</p>
-                <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete</button>
+
+            <div class="form-group">
+                <label for="noteTagEditor" class="control-label">Add Tags</label>
+                <textarea name="noteTags" id="noteTagEditor" class="form-control" rows="2" placeholder="Enter your tag here..."></textarea>
+            </div>
+
+            <button type="button" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
+
+            <div id="tags">
+                <label for="noteTags">Tags</label>
+                <textarea name="noteTags" id="noteTags" class="form-control" disabled rows="3" placeholder="No tags yet."></textarea>
+            </div>
+            <div id="notesList">
+                @foreach (var note in Model.Notes)
+                {
+                    <div class="note">
+                        <p>@note.Text</p>
+                        <p class="note-tags">@note.Tags (comma-separated)</p>
+                        <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete</button>
+                    </div>
+                }
             </div>
         }
     </div>
+    
 </div>
 <script>
 
