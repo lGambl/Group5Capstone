@@ -55,6 +55,7 @@
             tagsListView.Size = new Size(237, 64);
             tagsListView.TabIndex = 1;
             tagsListView.UseCompatibleStateImageBehavior = false;
+            tagsListView.View = System.Windows.Forms.View.List;
             // 
             // addNoteButton
             // 

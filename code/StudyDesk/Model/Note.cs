@@ -29,6 +29,10 @@
         /// <value>The owner.</value>
         public string Owner { get; set; }
 
+        /// <summary>
+        ///   Gets or sets the note tags.
+        /// </summary>
+        /// <value>The note tags.</value>
         public List<string> NoteTags { get; set; }
 
         /// <summary>

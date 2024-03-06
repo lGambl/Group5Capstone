@@ -30,7 +30,6 @@
         {
             noteTextBox = new TextBox();
             addTagButton = new Button();
-            deleteTagButton = new Button();
             tagsLlistView = new ListView();
             deleteNoteButton = new Button();
             saveChangesButton = new Button();
@@ -47,23 +46,13 @@
             // 
             // addTagButton
             // 
-            addTagButton.Location = new Point(11, 251);
+            addTagButton.Location = new Point(78, 251);
             addTagButton.Margin = new Padding(3, 2, 3, 2);
             addTagButton.Name = "addTagButton";
             addTagButton.Size = new Size(82, 32);
             addTagButton.TabIndex = 2;
             addTagButton.Text = "Add Tag";
             addTagButton.UseVisualStyleBackColor = true;
-            // 
-            // deleteTagButton
-            // 
-            deleteTagButton.Location = new Point(150, 251);
-            deleteTagButton.Margin = new Padding(3, 2, 3, 2);
-            deleteTagButton.Name = "deleteTagButton";
-            deleteTagButton.Size = new Size(82, 32);
-            deleteTagButton.TabIndex = 3;
-            deleteTagButton.Text = "Delete Tag";
-            deleteTagButton.UseVisualStyleBackColor = true;
             // 
             // tagsLlistView
             // 
@@ -73,6 +62,7 @@
             tagsLlistView.Size = new Size(221, 72);
             tagsLlistView.TabIndex = 4;
             tagsLlistView.UseCompatibleStateImageBehavior = false;
+            tagsLlistView.View = System.Windows.Forms.View.List;
             // 
             // deleteNoteButton
             // 
@@ -100,7 +90,6 @@
             Controls.Add(saveChangesButton);
             Controls.Add(deleteNoteButton);
             Controls.Add(tagsLlistView);
-            Controls.Add(deleteTagButton);
             Controls.Add(addTagButton);
             Controls.Add(noteTextBox);
             Margin = new Padding(3, 2, 3, 2);
@@ -114,7 +103,6 @@
 
         private TextBox noteTextBox;
         private Button addTagButton;
-        private Button deleteTagButton;
         private ListView tagsLlistView;
         private Button deleteNoteButton;
         private Button saveChangesButton;

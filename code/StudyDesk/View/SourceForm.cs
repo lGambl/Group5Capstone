@@ -1,5 +1,4 @@
-﻿using Gnostice.Core.Viewer;
-using StudyDesk.Controller;
+﻿using StudyDesk.Controller;
 using StudyDesk.Model;
 using StudyDesk.View.SourceControls;
 
@@ -43,6 +42,7 @@ namespace StudyDesk.View
                 var noteControl = new NoteControl(index);
                 noteControl.BorderStyle = BorderStyle.Fixed3D;
                 noteControl.setNoteText(note.Text);
+                noteControl.SetNoteTags(note.NoteTags);
                 this.setupNoteControlButtons(noteControl);
                 this.notesFlowLayoutPanel.Controls.Add(noteControl);
                 index++;
@@ -56,7 +56,6 @@ namespace StudyDesk.View
 
         private void setupNoteControlButtons(NoteControl noteControl)
         {
-            noteControl.DeleteTagButtonClicked += NoteControl_DeleteTagButtonClicked;
             noteControl.AddTagButtonClicked += NoteControl_AddTagButtonClicked;
             noteControl.DeleteNoteButtonClicked += NoteControl_DeleteNoteButtonClicked;
             noteControl.SaveNotesChangesButtonClick += NoteControl_SaveChangesButtonClicked;
@@ -71,7 +70,7 @@ namespace StudyDesk.View
         {
             if (e.Tags is { Count: > 0 })
             {
-                MessageBox.Show("Note with tags");
+                this.controller.AddNoteWithTags(e.NoteText, e.Tags);
             }
             else
             {
@@ -94,14 +93,9 @@ namespace StudyDesk.View
             }
         }
 
-        private void NoteControl_DeleteTagButtonClicked(object sender, EventArgs e)
+        private void NoteControl_AddTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
         {
-            MessageBox.Show("Delete tag");
-        }
-
-        private void NoteControl_AddTagButtonClicked(object sender, EventArgs e)
-        {
-            MessageBox.Show("add tag");
+            this.controller.AddTagToExistingNote(e.NoteIndex, e.Tags[0]);
         }
 
         private void NoteControl_SaveChangesButtonClicked(object sender, NoteControl.NoteEventArgs e)

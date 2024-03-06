@@ -24,14 +24,9 @@
         public event NoteEventHandler DeleteNoteButtonClicked;
 
         /// <summary>
-        ///   Occurs when [delete tag button clicked].
-        /// </summary>
-        public event EventHandler DeleteTagButtonClicked;
-
-        /// <summary>
         ///   Occurs when [add tag button clicked].
         /// </summary>
-        public event EventHandler AddTagButtonClicked;
+        public event NoteEventHandler AddTagButtonClicked;
 
         /// <summary>
         ///   Occurs when [save notes changes button click].
@@ -59,6 +54,19 @@
         }
 
         /// <summary>
+        ///   Sets the note tags.
+        /// </summary>
+        /// <param name="tags">The tags.</param>
+        public void SetNoteTags(List<string> tags)
+        {
+            this.tagsLlistView.Items.Clear();
+            foreach (var currTag in tags)
+            {
+                this.tagsLlistView.Items.Add(new ListViewItem(currTag));
+            }
+        }
+
+        /// <summary>
         ///   Called when [delete note button clicked].
         /// </summary>
         protected virtual void OnDeleteNoteButtonClicked()
@@ -67,19 +75,22 @@
         }
 
         /// <summary>
-        ///   Called when [delete tag button clicked].
-        /// </summary>
-        protected virtual void OnDeleteTagButtonClicked()
-        {
-            DeleteTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex));
-        }
-
-        /// <summary>
         ///   Called when [add tag button clicked].
         /// </summary>
         protected virtual void OnAddTagButtonClicked()
         {
-            AddTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex));
+            using (AddTagForm addTagForm = new AddTagForm())
+            {
+                var dialogResult = addTagForm.ShowDialog();
+                if (dialogResult == DialogResult.OK)
+                {
+                    string newTag = addTagForm.EnteredTagName;
+                    this.tagsLlistView.Items.Add(new ListViewItem("<" + newTag + ">"));
+                    List<string> tags = new List<string>();
+                    tags.Add("<" + newTag + ">");
+                    AddTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex, tags));
+                }
+            }
         }
 
         /// <summary>
@@ -93,7 +104,6 @@
         private void initializeButtons()
         {
             this.deleteNoteButton.Click += (sender, e) => OnDeleteNoteButtonClicked();
-            this.deleteTagButton.Click += (sender, e) => OnDeleteTagButtonClicked();
             this.addTagButton.Click += (sender, e) => OnAddTagButtonClicked();
             this.saveChangesButton.Click += (sender, e) => OnSaveChangesButtonClick();
         }
@@ -113,13 +123,13 @@
             ///   Gets the note text.
             /// </summary>
             /// <value>The note text.</value>
-            public string NoteText { get; }
+            public string? NoteText { get; }
 
             /// <summary>
             ///   Gets the tags.
             /// </summary>
             /// <value>The tags.</value>
-            public List<string> Tags { get; }
+            public List<string>? Tags { get; }
 
             /// <summary>
             ///   Initializes a new instance of the <see cref="NoteEventArgs" /> class.
@@ -158,6 +168,17 @@
             public NoteEventArgs(string noteText, List<string> tags)
             {
                 NoteText = noteText;
+                Tags = tags;
+            }
+
+            /// <summary>
+            ///   Initializes a new instance of the <see cref="NoteEventArgs" /> class.
+            /// </summary>
+            /// <param name="noteIndex">Index of the note.</param>
+            /// <param name="tags">The tags.</param>
+            public NoteEventArgs(int noteIndex, List<string> tags)
+            {
+                NoteIndex= noteIndex;
                 Tags = tags;
             }
         }

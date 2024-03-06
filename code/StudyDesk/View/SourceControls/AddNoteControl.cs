@@ -17,7 +17,7 @@ namespace StudyDesk.View.SourceControls
         /// <summary>
         ///   Occurs when [add note button clicked].
         /// </summary>
-        public event NoteEventHandler AddNoteButtonClicked;
+        public event NoteEventHandler? AddNoteButtonClicked;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="AddNoteControl" /> class.
@@ -39,7 +39,7 @@ namespace StudyDesk.View.SourceControls
             }
             else
             {
-                List<string> tags = this.tagsListView.Items.Cast<string>().ToList();
+                List<string> tags = this.tagsListView.Items.Cast<ListViewItem>().Select(item => item.Text).ToList();
                 AddNoteButtonClicked?.Invoke(this, new NoteEventArgs(this.noteTextBox.Text, tags));
             }
         }
@@ -64,6 +64,7 @@ namespace StudyDesk.View.SourceControls
             if (this.noteTextBox.Text == "Enter your note here...")
             {
                 this.noteTextBox.Text = string.Empty;
+                this.noteTextBox.ForeColor = Color.Black;
             }
         }
 
@@ -72,6 +73,7 @@ namespace StudyDesk.View.SourceControls
             if (this.tagTextBox.Text == "Enter your tag here...")
             {
                 this.tagTextBox.Text = string.Empty;
+                this.tagTextBox.ForeColor = Color.Black;
             }
         }
 
@@ -80,6 +82,7 @@ namespace StudyDesk.View.SourceControls
             if (string.IsNullOrWhiteSpace(this.noteTextBox.Text))
             {
                 this.noteTextBox.Text = "Enter your note here...";
+                this.noteTextBox.ForeColor = Color.Gray;
             }
         }
 
@@ -88,6 +91,7 @@ namespace StudyDesk.View.SourceControls
             if (string.IsNullOrWhiteSpace(this.tagTextBox.Text))
             {
                 this.tagTextBox.Text = "Enter your tag here...";
+                this.tagTextBox.ForeColor = Color.Gray;
             }
         }
     }
