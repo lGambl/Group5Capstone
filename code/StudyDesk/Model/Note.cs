@@ -30,6 +30,12 @@
         public string Owner { get; set; }
 
         /// <summary>
+        ///   Gets or sets the note tags.
+        /// </summary>
+        /// <value>The note tags.</value>
+        public List<string> NoteTags { get; set; }
+
+        /// <summary>
         ///   Initializes a new instance of the <see cref="Note" /> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
@@ -42,6 +48,7 @@
             this.Text = text;
             this.SourceId = sourceId;
             this.Owner = owner;
+            this.NoteTags = new List<string>();
         }
 
     }
