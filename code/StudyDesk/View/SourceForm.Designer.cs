@@ -30,6 +30,7 @@
         {
             splitContainer1 = new SplitContainer();
             documentControl1 = new SourceControls.DocumentControl();
+            videoControl1 = new SourceControls.VideoControl();
             notesFlowLayoutPanel = new FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -41,15 +42,18 @@
             // 
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Location = new Point(0, 0);
-            splitContainer1.Margin = new Padding(3, 2, 3, 2);
             splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(videoControl1);
             splitContainer1.Panel1.Controls.Add(documentControl1);
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Size = new Size(1019, 547);
+            splitContainer1.SplitterDistance = 700;
+            splitContainer1.SplitterWidth = 5;
             splitContainer1.Panel2.Controls.Add(notesFlowLayoutPanel);
             splitContainer1.Size = new Size(892, 410);
             splitContainer1.SplitterDistance = 613;
@@ -58,9 +62,8 @@
             // documentControl1
             // 
             documentControl1.Location = new Point(3, 0);
-            documentControl1.Margin = new Padding(3, 2, 3, 2);
             documentControl1.Name = "documentControl1";
-            documentControl1.Size = new Size(607, 406);
+            documentControl1.Size = new Size(694, 541);
             documentControl1.TabIndex = 0;
             // 
             // notesFlowLayoutPanel
@@ -71,13 +74,19 @@
             notesFlowLayoutPanel.Size = new Size(269, 403);
             notesFlowLayoutPanel.TabIndex = 0;
             // 
+            // videoControl1
+            // 
+            videoControl1.Location = new Point(3, 0);
+            videoControl1.Name = "videoControl1";
+            videoControl1.Size = new Size(681, 494);
+            videoControl1.TabIndex = 1;
+            // 
             // SourceForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(892, 410);
+            ClientSize = new Size(1019, 547);
             Controls.Add(splitContainer1);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "SourceForm";
             Text = "SourceForm";
             splitContainer1.Panel1.ResumeLayout(false);
@@ -91,6 +100,7 @@
 
         private SplitContainer splitContainer1;
         private SourceControls.DocumentControl documentControl1;
+        private SourceControls.VideoControl videoControl1;
         private FlowLayoutPanel notesFlowLayoutPanel;
     }
 }
