@@ -30,7 +30,7 @@ public class Note
     /// <summary>
     ///     Gets the tags.
     /// </summary>
-    public IList<Tags> Tags { get; set; } = new List<Tags>();
+    public ICollection<Tags> Tags { get; set; } = new List<Tags>();
 
     #endregion
 }

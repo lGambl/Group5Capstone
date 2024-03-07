@@ -236,7 +236,7 @@ namespace StudyHallTests.StudyWebTests.controller
         public async Task NoteInvalidInput_ReturnsBadRequest()
         {
             var controller = SetupControllerWithAuthenticatedUser();
-            var result = await controller.Note("", 1);
+            var result = await controller.Note("", 1, string.Empty);
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
@@ -248,7 +248,7 @@ namespace StudyHallTests.StudyWebTests.controller
             {
                 HttpContext = new DefaultHttpContext()
             };
-            var result = await controller.Note("Note text", 1);
+            var result = await controller.Note("Note text", 1, string.Empty);
             Assert.That(result, Is.InstanceOf<UnauthorizedObjectResult>());
         }
 
@@ -267,7 +267,7 @@ namespace StudyHallTests.StudyWebTests.controller
         public async Task NoteExceptionOccurs_ReturnsBadRequest()
         {
             var controller = SetupControllerWithAuthenticatedUser();
-            var result = await controller.Note("Note text", -1);
+            var result = await controller.Note("Note text", -1, string.Empty);
             Assert.That(result, Is.InstanceOf<BadRequestResult>());
         }
 

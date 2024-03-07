@@ -89,7 +89,6 @@
         <div>
             <iframe width="1000" height="700" src="@Html.DisplayFor(model => model.Link)"></iframe>
         </div>
-    
     }
     else if (Model.Type == SourceTypes.Video)
     {
@@ -126,25 +125,29 @@
                 <textarea name="noteTags" id="noteTagEditor" class="form-control" rows="2" placeholder="Enter your tag here..."></textarea>
             </div>
 
-            <button type="button" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
-
             <div id="tags">
                 <label for="noteTags">Tags</label>
                 <textarea name="noteTags" id="noteTags" class="form-control" disabled rows="3" placeholder="No tags yet."></textarea>
             </div>
+
+            <button type="button" id="addTagNewNote" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
+
             <div id="notesList">
                 @foreach (var note in Model.Notes)
                 {
                     <div class="note">
                         <p>@note.Text</p>
-                        <p class="note-tags">@note.Tags (comma-separated)</p>
+                        <div id="tags">
+                            <label for="noteTags">Tags</label>
+                            <textarea disabled rows="3" placeholder="No tags yet.">@note.Tags.Select(t => t.Name).ToString()</textarea>
+                        </div>
                         <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete</button>
                     </div>
                 }
             </div>
         }
     </div>
-    
+
 </div>
 <script>
 
@@ -158,6 +161,7 @@
 
             var sourceId = $("#Id").text();
             var noteText = $('#noteText').val();
+            var noteTags = $('#noteTags').val();
 
             $.ajax({
                 url: '/SourceExplorer/Note', 
@@ -165,18 +169,10 @@
                 data: {
                     __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
                     text: noteText,
-                    sourceId: sourceId
+                    sourceId: sourceId,
+                    tags: noteTags
                 },
                 success: function (response) {
-                    var newNoteId = response.noteId;
-                    var newNoteHtml = '<div class="note">' +
-                        '<p>' + noteText + '</p>' +
-                        '<button class="delete-note-btn btn-secondary" data-note-id="' + newNoteId + '">Delete</button>' +
-                        '</div>';
-
-                    $('#notes').append(newNoteHtml);
-                    
-                    $('#noteText').val('');
                     location.reload();
                 },
                 error: function () {
@@ -206,6 +202,37 @@
             },
             error: function () {
                 alert('There was an error deleting the note. Please try again.');
+            }
+        });
+    });
+
+    $(document).on('click', '#addTagNewNote', function () {
+        var tagText = $('#noteTagEditor').val();
+        var noteTags = $('#noteTags').val();
+        var newTag = "<" + tagText + ">";
+
+        $('#noteTags').val(newTag + "," + noteTags);
+        $('#noteTagEditor').val('');
+    });
+
+    $(document).on('click', '#addTagNote', function () {
+        var noteId = $(this).data('note-id');
+        var tagText = $('#noteTagEditor').val();
+
+        $.ajax({
+            url: '/SourceExplorer/AddTag',
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                text: tagText,
+                noteId: noteId
+            },
+            success: function (response) {
+                var newTagId = response.tagId;
+                
+            },
+            error: function () {
+                alert('There was an error adding your tag. Please try again.');
             }
         });
     });

@@ -87,6 +87,68 @@ public class SourceExplorer : Controller
         return View(source);
     }
 
+    /// <summary>
+    /// Adds the tag.
+    /// </summary>
+    /// <param name="noteId">The note identifier.</param>
+    /// <param name="tagName">Name of the tag.</param>
+    /// <returns></returns>
+    [Authorize]
+    [HttpPost]
+    [Route("SourceExplorer/AddTag")]
+    public async Task<IActionResult> AddTag([FromForm] int noteId, [FromForm] string tagName)
+    {
+        if (string.IsNullOrWhiteSpace(tagName))
+        {
+            return BadRequest(new { success = false, message = "Invalid tag name." });
+        }
+
+        var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (owner == null)
+        {
+            return Unauthorized(new { success = false, message = "User is not authenticated." });
+        }
+
+        try
+        {
+            var insertTagQuery = "INSERT INTO Tags (Name) VALUES (@Name);";
+            SqlParameter[] parameters =
+            {
+                new("@Name", tagName)
+            };
+
+            await this.context.Database.ExecuteSqlRawAsync(insertTagQuery, parameters);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest();
+        }
+
+        var tag = this.context.Tags.FirstOrDefault(t => t.Name == tagName);
+        if (tag == null)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            var insertNoteTagQuery = "INSERT INTO NoteTags (NoteId, TagId) VALUES (@NoteId, @TagId);";
+            SqlParameter[] parameters =
+            {
+                new("@NoteId", noteId),
+                new("@TagId", tag.Id)
+            };
+
+            await this.context.Database.ExecuteSqlRawAsync(insertNoteTagQuery, parameters);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest();
+        }
+
+        return Ok(new { success = true, message = "Tag added successfully." });
+    }
+
     private Source? getSource(int? id)
     {
         if (id == null)
@@ -122,7 +184,8 @@ public class SourceExplorer : Controller
     private IList<Tags> queryTags(int noteId)
     {
         var tagIds = this.context.NoteTags.Where(nt => nt.NoteId == noteId).Select(nt => nt.TagId).ToList();
-        return this.context.Tags.Where(t => tagIds.Contains(t.Id)).ToList();
+        var tags = this.context.Tags.ToList();
+        return tags.Where(t => tagIds.Contains(t.Id)).ToList();
     }
 
     /// <summary>
@@ -310,11 +373,12 @@ public class SourceExplorer : Controller
     /// </summary>
     /// <param name="text"></param>
     /// <param name="sourceId"></param>
+    /// <param name="tags"></param>
     /// <returns></returns>
     [Authorize]
     [HttpPost]
     [Route("Note")]
-    public async Task<IActionResult> Note([FromForm] string text, [FromForm] int sourceId)
+    public async Task<IActionResult> Note([FromForm] string text, [FromForm] int sourceId, [FromForm] string tags)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -329,15 +393,22 @@ public class SourceExplorer : Controller
 
         try
         {
-            var insertNoteQuery = "INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);";
-            SqlParameter[] parameters =
+            if (this.noTags(tags))
             {
-                new("@Text", text),
-                new("@Owner", owner),
-                new("@SourceId", sourceId)
-            };
-
-            await this.context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+                var insertNoteQuery = "INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);";
+                SqlParameter[] parameters =
+                {
+                    new("@Text", text),
+                    new("@Owner", owner),
+                    new("@SourceId", sourceId)
+                };
+                await this.context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+            }
+            else
+            {
+                await this.addNoteWithTags(text, owner, sourceId, tags);
+            }
+            
         }
         catch (Exception ex)
         {
@@ -345,6 +416,72 @@ public class SourceExplorer : Controller
         }
 
         return Ok(new { success = true, message = "Note added successfully." });
+    }
+
+    private bool noTags(string tags)
+    {
+        if (!string.IsNullOrWhiteSpace(tags))
+        {
+            if (tags.Contains(','))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private async Task addNoteWithTags(string text, string owner, int sourceId, string tags)
+    {
+        var insertNoteQuery = "INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);";
+        SqlParameter[] parameters =
+        {
+            new("@Text", text),
+            new("@Owner", owner),
+            new("@SourceId", sourceId)
+        };
+        var noteId = await this.context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+
+        var note = this.context.Note.FirstOrDefault(n => n.Text == text && n.Owner == owner && n.SourceId == sourceId) ?? throw new Exception();
+
+        var tagList = tags.Split(',');
+        await this.addTagsIfNew(tagList);
+        await this.addNoteTags(note, tagList);
+    }
+
+    private async Task addNoteTags(Note note, IEnumerable<string> tagList)
+    {
+        foreach (var tag in tagList)
+        {
+            var tagId = this.context.Tags.FirstOrDefault(t => t.Name == tag)?.Id ?? throw new Exception();
+            var insertNoteTagQuery = "INSERT INTO NoteTags (NoteId, TagId) VALUES (@NoteId, @TagId);";
+            SqlParameter[] parameters =
+            {
+                new("@NoteId", note.Id),
+                new("@TagId", tagId)
+            };
+            await this.context.Database.ExecuteSqlRawAsync(insertNoteTagQuery, parameters);
+        }
+    }
+
+    private async Task addTagsIfNew(IEnumerable<string> tagList)
+    {
+        foreach (var tag in tagList)
+        {
+            if (string.IsNullOrWhiteSpace(tag))
+            {
+                continue;
+            }
+            var tagExists = this.context.Tags.FirstOrDefault(t => t.Name == tag);
+            if (tagExists == null)
+            {
+                var insertTagQuery = "INSERT INTO Tags (Name) VALUES (@Name);";
+                SqlParameter[] parameters =
+                {
+                    new("@Name", tag)
+                };
+                await this.context.Database.ExecuteSqlRawAsync(insertTagQuery, parameters);
+            }
+        }
     }
 
     /// <summary>
