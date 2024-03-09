@@ -27,5 +27,10 @@ public class Note
     /// </summary>
     public string Owner { get; init; } = "";
 
+    /// <summary>
+    ///     Gets the tags.
+    /// </summary>
+    public ICollection<Tags> Tags { get; set; } = new List<Tags>();
+
     #endregion
 }

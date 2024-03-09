@@ -30,5 +30,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// </summary>
     public DbSet<SourceType> SourceType { get; init; } = default!;
 
+    /// <summary>
+    ///     Gets the tags.
+    /// </summary>
+    public DbSet<Tags> Tags { get; init; } = default!;
+
+    /// <summary>
+    ///     Gets the note tag.
+    /// </summary>
+    public DbSet<NoteTags> NoteTags { get; init; } = default!;
+
     #endregion
 }

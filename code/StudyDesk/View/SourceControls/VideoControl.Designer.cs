@@ -72,6 +72,7 @@
             // 
             // restartButton
             // 
+            restartButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             restartButton.Enabled = false;
             restartButton.Location = new Point(224, 337);
             restartButton.Name = "restartButton";

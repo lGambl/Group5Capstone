@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudyWeb.Data;
 
@@ -11,9 +12,11 @@ using StudyWeb.Data;
 namespace StudyWeb.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240228174733_Note-Tags")]
+    partial class NoteTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -250,25 +253,6 @@ namespace StudyWeb.Data.Migrations
                     b.ToTable("Note");
                 });
 
-            modelBuilder.Entity("StudyWeb.Models.NoteTags", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("NoteId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TagId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NoteTags");
-                });
-
             modelBuilder.Entity("StudyWeb.Models.Source", b =>
                 {
                     b.Property<int>("Id")
@@ -312,28 +296,6 @@ namespace StudyWeb.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SourceType");
-                });
-
-            modelBuilder.Entity("StudyWeb.Models.Tags", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NoteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NoteId");
-
-                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -394,18 +356,6 @@ namespace StudyWeb.Data.Migrations
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("StudyWeb.Models.Tags", b =>
-                {
-                    b.HasOne("StudyWeb.Models.Note", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("NoteId");
-                });
-
-            modelBuilder.Entity("StudyWeb.Models.Note", b =>
-                {
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("StudyWeb.Models.Source", b =>
