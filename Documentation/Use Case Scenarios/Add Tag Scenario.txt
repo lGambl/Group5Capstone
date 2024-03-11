@@ -1,0 +1,8 @@
+Context: User is viewing a source 
+Primary Flow:
+	1. User selects tag
+	2. User selects add tag
+	3. Tag is added to note
+Alternate Flow:
+User deselects tag
+	2. user deselects tag

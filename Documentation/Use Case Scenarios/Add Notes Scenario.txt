@@ -8,3 +8,7 @@ Alternative Flow(s):
 User closes/goes back:
     2/3a.  The user selects the back button or closes the window
     3/4a.  The user is returned back to the source explorer and any unsaved note is lost.   
+
+User adds Tag:
+    2a. The user adds a tag to the note
+    2b. The user presses enter.

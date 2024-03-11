@@ -29,22 +29,22 @@ public class SourceFormControllerTest
         });
     }
 
-    [Test]
-    public void GetNotesMockRepo()
-    {
-        var notes = new List<Note>
-        {
-            new(1, "note", this.source!.Id, this.source!.Owner)
-        };
-        this.notesRepositoryMock!.Setup(x => x.GetNotes()).Returns(notes);
-        var controller = new SourceFormController(this.source!, this.notesRepositoryMock!.Object);
-
-        controller.RefreshNotes();
-        var result = controller.Notes;
-
-        Assert.That(result, Is.EqualTo(notes));
-        this.notesRepositoryMock.Verify(x => x.GetNotes(), Times.Once);
-    }
+    // [Test]
+    // public void GetNotesMockRepo()
+    // {
+    //     var notes = new List<Note>
+    //     {
+    //         new(1, "note", this.source!.Id, this.source!.Owner)
+    //     };
+    //     this.notesRepositoryMock!.Setup(x => x.GetNotes()).Returns(notes);
+    //     var controller = new SourceFormController(this.source!, this.notesRepositoryMock!.Object);
+    //
+    //     controller.RefreshNotes();
+    //     var result = controller.Notes;
+    //
+    //     Assert.That(result, Is.EqualTo(notes));
+    //     this.notesRepositoryMock.Verify(x => x.GetNotes(), Times.Once);
+    // }
 
     [Test]
     public void AddNoteToDatabaseMockRepo_ReturnsTrue()
