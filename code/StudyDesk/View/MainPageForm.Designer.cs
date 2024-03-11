@@ -33,12 +33,19 @@
             addButton = new Button();
             deleteButton = new Button();
             logoutButton = new Button();
+            label1 = new Label();
+            searchNoteTagButton = new Button();
+            searchNoteTagTextBox = new TextBox();
+            label2 = new Label();
+            resetSourcesButton = new Button();
+            searchNoteTagPanel = new Panel();
+            searchNoteTagPanel.SuspendLayout();
             SuspendLayout();
             // 
             // indexListView
             // 
             indexListView.Columns.AddRange(new ColumnHeader[] { titleHeader });
-            indexListView.Location = new Point(10, 36);
+            indexListView.Location = new Point(8, 127);
             indexListView.Margin = new Padding(3, 2, 3, 2);
             indexListView.Name = "indexListView";
             indexListView.Size = new Size(292, 226);
@@ -55,7 +62,7 @@
             // 
             // addButton
             // 
-            addButton.Location = new Point(10, 9);
+            addButton.Location = new Point(8, 357);
             addButton.Margin = new Padding(3, 2, 3, 2);
             addButton.Name = "addButton";
             addButton.Size = new Size(82, 22);
@@ -67,7 +74,7 @@
             // deleteButton
             // 
             deleteButton.Enabled = false;
-            deleteButton.Location = new Point(220, 9);
+            deleteButton.Location = new Point(218, 357);
             deleteButton.Margin = new Padding(3, 2, 3, 2);
             deleteButton.Name = "deleteButton";
             deleteButton.Size = new Size(82, 22);
@@ -78,20 +85,83 @@
             // 
             // logoutButton
             // 
-            logoutButton.Location = new Point(116, 9);
+            logoutButton.Location = new Point(218, 11);
             logoutButton.Margin = new Padding(3, 2, 3, 2);
             logoutButton.Name = "logoutButton";
-            logoutButton.Size = new Size(82, 22);
+            logoutButton.Size = new Size(82, 26);
             logoutButton.TabIndex = 3;
             logoutButton.Text = "Logout";
             logoutButton.UseVisualStyleBackColor = true;
             logoutButton.Click += logoutButton_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(4, 6);
+            label1.Name = "label1";
+            label1.Size = new Size(100, 15);
+            label1.TabIndex = 4;
+            label1.Text = "Search Note Tags:";
+            // 
+            // searchNoteTagButton
+            // 
+            searchNoteTagButton.Location = new Point(106, 53);
+            searchNoteTagButton.Name = "searchNoteTagButton";
+            searchNoteTagButton.Size = new Size(73, 30);
+            searchNoteTagButton.TabIndex = 5;
+            searchNoteTagButton.Text = "Search Tag";
+            searchNoteTagButton.UseVisualStyleBackColor = true;
+            searchNoteTagButton.Click += searchNoteTagButton_Click;
+            // 
+            // searchNoteTagTextBox
+            // 
+            searchNoteTagTextBox.ForeColor = SystemColors.InactiveCaption;
+            searchNoteTagTextBox.Location = new Point(3, 29);
+            searchNoteTagTextBox.Name = "searchNoteTagTextBox";
+            searchNoteTagTextBox.Size = new Size(176, 23);
+            searchNoteTagTextBox.TabIndex = 6;
+            searchNoteTagTextBox.Text = "Enter tag to search...";
+            searchNoteTagTextBox.Enter += searchNoteTagTextBox_Enter;
+            searchNoteTagTextBox.Leave += searchNoteTagTextBox_Leave;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(8, 110);
+            label2.Name = "label2";
+            label2.Size = new Size(51, 15);
+            label2.TabIndex = 7;
+            label2.Text = "Sources:";
+            // 
+            // resetSourcesButton
+            // 
+            resetSourcesButton.Location = new Point(115, 357);
+            resetSourcesButton.Name = "resetSourcesButton";
+            resetSourcesButton.Size = new Size(73, 22);
+            resetSourcesButton.TabIndex = 8;
+            resetSourcesButton.Text = "Reset";
+            resetSourcesButton.UseVisualStyleBackColor = true;
+            resetSourcesButton.Click += resetSourcesButton_Click;
+            // 
+            // searchNoteTagPanel
+            // 
+            searchNoteTagPanel.BorderStyle = BorderStyle.FixedSingle;
+            searchNoteTagPanel.Controls.Add(searchNoteTagButton);
+            searchNoteTagPanel.Controls.Add(searchNoteTagTextBox);
+            searchNoteTagPanel.Controls.Add(label1);
+            searchNoteTagPanel.Location = new Point(8, 11);
+            searchNoteTagPanel.Name = "searchNoteTagPanel";
+            searchNoteTagPanel.Size = new Size(188, 86);
+            searchNoteTagPanel.TabIndex = 9;
+            // 
             // MainPageForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(312, 270);
+            ClientSize = new Size(312, 385);
+            Controls.Add(searchNoteTagPanel);
+            Controls.Add(resetSourcesButton);
+            Controls.Add(label2);
             Controls.Add(logoutButton);
             Controls.Add(deleteButton);
             Controls.Add(addButton);
@@ -99,7 +169,10 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "MainPageForm";
             Text = "MainPageForm";
+            searchNoteTagPanel.ResumeLayout(false);
+            searchNoteTagPanel.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -109,5 +182,11 @@
         private Button addButton;
         private Button deleteButton;
         private Button logoutButton;
+        private Label label1;
+        private Button searchNoteTagButton;
+        private TextBox searchNoteTagTextBox;
+        private Label label2;
+        private Button resetSourcesButton;
+        private Panel searchNoteTagPanel;
     }
 }

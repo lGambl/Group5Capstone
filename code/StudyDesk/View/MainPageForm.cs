@@ -112,5 +112,33 @@ public partial class MainPageForm : Form
         }
     }
 
+    private void resetSourcesButton_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void searchNoteTagButton_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void searchNoteTagTextBox_Leave(object sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(this.searchNoteTagTextBox.Text))
+        {
+            this.searchNoteTagTextBox.Text = "Enter tag to search...";
+            this.searchNoteTagTextBox.ForeColor = Color.Gray;
+        }
+    }
+
+    private void searchNoteTagTextBox_Enter(object sender, EventArgs e)
+    {
+        if (this.searchNoteTagTextBox.Text == "Enter tag to search...")
+        {
+            this.searchNoteTagTextBox.Text = string.Empty;
+            this.searchNoteTagTextBox.ForeColor = Color.Black;
+        }
+    }
+
     #endregion
 }
