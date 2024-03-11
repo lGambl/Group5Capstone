@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>D:\C#Projects\Group5Capstone\code\StudyDesk\Controller\SourceFormController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.Data.SqlClient;
+using StudyDesk.Model;
+
+namespace StudyDesk.Controller;
+
+/// &lt;summary&gt;
+///     Controller for the Source Form. Pushes changes from the form to the database
+///     and vice versa.
+/// &lt;/summary&gt;
+public class SourceFormController
+{
+    #region Data members
+
+    private const string ConnectionString =
+        &quot;Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true&quot;;
+
+    private const string? FailedToAddNoteToDatabase = &quot;Failed to add note to database&quot;;
+    private const string? FailedToAddNoteTagToDatabase = &quot;Failed to add note tag to database&quot;;
+    private const string? ErrorCaption = &quot;Error&quot;;
+    private const string? FailedToUpdateNoteInDatabase = &quot;Failed to update note in database&quot;;
+    private const string? FailedToDeleteNoteFromDatabase = &quot;Failed to delete note from database&quot;;
+    private const string? FailedToDeleteNoteTagFromDatabase = &quot;Failed to delete note tag from database&quot;;
+
+    private readonly Source source;
+
+    #endregion
+
+    #region Properties
+
+    /// &lt;summary&gt;
+    ///     Gets or sets the notes.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The notes.
+    /// &lt;/value&gt;
+    public IList&lt;Note&gt; Notes { get; private set; }
+
+    /// &lt;summary&gt;
+    ///     Gets the notes repository.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The notes repository.
+    /// &lt;/value&gt;
+    public INotesRepository NotesRepository { get; }
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;SourceFormController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;source&quot;&gt;The source.&lt;/param&gt;
+    public SourceFormController(Source source)
+    {
+        this.source = source;
+        this.Notes = new List&lt;Note&gt;();
+        this.NotesRepository = new DbNotesRepository(ConnectionString, this.source);
+    }
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;SourceFormController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;source&quot;&gt;The source.&lt;/param&gt;
+    /// &lt;param name=&quot;notesRepository&quot;&gt;The notes repository.&lt;/param&gt;
+    public SourceFormController(Source source, INotesRepository notesRepository)
+    {
+        this.source = source;
+        this.Notes = new List&lt;Note&gt;();
+        this.NotesRepository = notesRepository;
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///     Adds a note to the source.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;noteText&quot;&gt;The note text.&lt;/param&gt;
+    /// &lt;returns&gt;True if successfully added, false otherwise.&lt;/returns&gt;
+    public bool AddNote(string noteText)
+    {
+        var note = new Note(0, noteText, this.source.Id, this.source.Owner);
+        if (this.NotesRepository.AddNoteToDatabase(note))
+        {
+            this.Notes.Add(note);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///   Adds the note with tags.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;noteText&quot;&gt;The note text.&lt;/param&gt;
+    /// &lt;param name=&quot;tags&quot;&gt;The tags.&lt;/param&gt;
+    /// &lt;returns&gt;
+    ///   true if successful, false otherwise
+    /// &lt;/returns&gt;
+    public bool AddNoteWithTags(string noteText, List&lt;string&gt; tags)
+    {
+        var note = new Note(0, noteText, this.source.Id, this.source.Owner);
+        if (this.NotesRepository.AddNoteToDatabase(note))
+        {
+            var tagsAdded = true;
+            foreach (var currTag in tags)
+            {
+                var noteTag = new NoteTag();
+                noteTag.Name = currTag;
+                noteTag.NoteId = note.Id;
+                tagsAdded = this.NotesRepository.AddTagToDatabase(noteTag);
+                note.NoteTags.Add(noteText);
+            }
+
+            this.Notes.Add(note);
+
+            if (tagsAdded)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///   Adds the tag to existing note.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;noteIndex&quot;&gt;Index of the note.&lt;/param&gt;
+    /// &lt;param name=&quot;tag&quot;&gt;The tag.&lt;/param&gt;
+    /// &lt;returns&gt;
+    ///   true if successful, false otherwise
+    /// &lt;/returns&gt;
+    public bool AddTagToExistingNote(int noteIndex, string tag)
+    {
+        var noteId = this.Notes[noteIndex - 1].Id;
+        var noteTag = new NoteTag();
+        noteTag.Name = tag;
+        noteTag.NoteId = noteId;
+
+        if (this.NotesRepository.AddTagToDatabase(noteTag))
+        {
+            foreach (var currNote in this.Notes)
+            {
+                if (currNote.Id == noteId)
+                {
+                    currNote.NoteTags.Add(tag);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///     Edits the note at a given index.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;noteIndex&quot;&gt;Index of the note.&lt;/param&gt;
+    /// &lt;param name=&quot;noteText&quot;&gt;The new text to add.&lt;/param&gt;
+    /// &lt;returns&gt;True if successfully edited, false otherwise.&lt;/returns&gt;
+    public bool EditNote(int noteIndex, string noteText)
+    {
+        var note = this.Notes[noteIndex];
+        var newNote = new Note(note.Id, noteText, note.SourceId, note.Owner);
+        if (this.NotesRepository.UpdateNoteInDatabase(newNote))
+        {
+            this.Notes[noteIndex] = newNote;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///     Deletes the note at a given index.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;noteIndex&quot;&gt;Index of the note.&lt;/param&gt;
+    /// &lt;returns&gt;True if successfully removed, false otherwise.&lt;/returns&gt;
+    public bool DeleteNoteAt(int noteIndex)
+    {
+        if (this.Notes[noteIndex].NoteTags.Count &gt; 0)
+        {
+            var noteTag = new NoteTag();
+            noteTag.NoteId = this.Notes[noteIndex].Id;
+            this.NotesRepository.DeleteTagFromDatabase(noteTag);
+        }
+        var note = this.Notes[noteIndex];
+        if (this.NotesRepository.DeleteNoteFromDatabase(note))
+        {
+            this.Notes.RemoveAt(noteIndex);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///     Refreshes the notes.
+    /// &lt;/summary&gt;
+    public void RefreshNotes()
+    {
+        this.Notes = this.NotesRepository.GetNotes();
+        this.addTagsToNotes();
+    }
+
+    private void addTagsToNotes()
+    {
+        foreach (var currNote in this.Notes)
+        {
+            foreach (var currTag in this.NotesRepository.GetNoteTags(currNote.Id))
+            {
+                currNote.NoteTags.Add(currTag.Name);
+            }
+        }
+    }
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;DbNotesRepository&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;connectionString&quot;&gt;The connection string.&lt;/param&gt;
+    private class DbNotesRepository(string connectionString, Source source) : INotesRepository
+    {
+        #region Data members
+
+        private readonly string connectionString = connectionString;
+        private readonly Source source = source;
+
+        #endregion
+
+        #region Methods
+
+        public IList&lt;Note&gt; GetNotes()
+        {
+            var notes = new List&lt;Note&gt;();
+            var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = new SqlCommand(&quot;SELECT * FROM dbo.Note WHERE SourceId = @sourceId&quot;, connection);
+            command.Parameters.AddWithValue(&quot;@sourceId&quot;, this.source.Id);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var id = reader.GetInt32(0);
+                var text = reader.GetString(1);
+                var sourceId = reader.GetInt32(2);
+                var owner = reader.GetString(3);
+                notes.Add(new Note(id, text, sourceId, owner));
+            }
+
+            connection.Close();
+            return notes;
+        }
+
+        public IList&lt;NoteTag&gt; GetNoteTags(int noteId)
+        {
+            var tags = new List&lt;NoteTag&gt;();
+            var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = new SqlCommand(&quot;SELECT * FROM dbo.NoteTags WHERE NoteId = @noteId&quot;, connection);
+            command.Parameters.AddWithValue(&quot;@noteId&quot;, noteId);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var tagId = reader.GetInt32(1);
+                var noteTag = new NoteTag();
+                noteTag.Id = tagId;
+                noteTag.NoteId = noteId;
+                tags.Add(noteTag);
+            }
+
+            tags = this.GetNoteTagNames(tags);
+
+            return tags;
+        }
+
+        private List&lt;NoteTag&gt; GetNoteTagNames(List&lt;NoteTag&gt; tags)
+        {
+            foreach (var currTag in tags)
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;SELECT * FROM dbo.Tags WHERE Id = @tagId&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@tagId&quot;, currTag.Id);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var name = reader.GetString(1);
+                    currTag.Name = name;
+                }
+            }
+            return tags;
+        }
+
+        public bool AddNoteToDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command =
+                    new SqlCommand(&quot;INSERT INTO dbo.Note (Text, SourceId, Owner) OUTPUT INSERTED.Id VALUES (@text, @sourceId, @owner)&quot;,
+                        connection);
+                command.Parameters.AddWithValue(&quot;@text&quot;, note.Text);
+                command.Parameters.AddWithValue(&quot;@sourceId&quot;, note.SourceId);
+                command.Parameters.AddWithValue(&quot;@owner&quot;, note.Owner);
+
+                var result = command.ExecuteScalar();
+                if (result != null)
+                {
+                    note.Id = Convert.ToInt32(result);
+                }
+
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToAddNoteToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool AddTagToDatabase(NoteTag noteTag)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;INSERT INTO dbo.Tags (Name) OUTPUT INSERTED.Id VALUES (@name)&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@name&quot;, noteTag.Name);
+                var result = command.ExecuteScalar();
+                connection.Close();
+
+                var noteTagAdded = false;
+                if (result != null)
+                {
+                    var tagId = Convert.ToInt32(result);
+                    if (tagId &gt; -1)
+                    {
+                        noteTagAdded = this.AddNoteTagToDatabase(tagId, noteTag.NoteId);
+                    }
+                }
+
+                return noteTagAdded;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToAddNoteTagToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        private bool AddNoteTagToDatabase(int tagId, int noteId)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;INSERT INTO dbo.NoteTags (TagId, NoteId) VALUES (@tagId, @noteId)&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@tagId&quot;, tagId);
+                command.Parameters.AddWithValue(&quot;@noteId&quot;, noteId);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToAddNoteTagToDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool UpdateNoteInDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;UPDATE dbo.Note SET Text = @text WHERE Id = @id&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@text&quot;, note.Text);
+                command.Parameters.AddWithValue(&quot;@id&quot;, note.Id);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToUpdateNoteInDatabase, ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool DeleteNoteFromDatabase(Note note)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;DELETE FROM dbo.Note WHERE Id = @id&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@id&quot;, note.Id);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToDeleteNoteFromDatabase, ErrorCaption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool DeleteTagFromDatabase(NoteTag noteTag)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;DELETE FROM dbo.Tags WHERE Id = @id&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@id&quot;, noteTag.Id);
+                command.ExecuteNonQuery();
+                connection.Close();
+
+                if (this.DeleteNoteTagsFromDatabase(noteTag.NoteId))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToDeleteNoteTagFromDatabase, ErrorCaption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        private bool DeleteNoteTagsFromDatabase(int noteId)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand(&quot;DELETE FROM dbo.NoteTags WHERE NoteId = @noteId&quot;, connection);
+                command.Parameters.AddWithValue(&quot;@noteId&quot;, noteId);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToDeleteNoteTagFromDatabase, ErrorCaption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        #endregion
+    }
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[36,32,36,36,1],[36,37,36,49,1],[44,47,44,51,1],[54,5,54,47,1],[55,5,55,6,1],[56,9,56,30,1],[57,9,57,39,1],[58,9,58,85,1],[59,5,59,6,1],[66,5,66,81,1],[67,5,67,6,1],[68,9,68,30,1],[69,9,69,39,1],[70,9,70,48,1],[71,5,71,6,1],[83,5,83,6,1],[84,9,84,77,1],[85,9,85,58,1],[86,9,86,10,1],[87,13,87,34,1],[88,13,88,25,1],[91,9,91,22,1],[92,5,92,6,1],[103,5,103,6,0],[104,9,104,77,0],[105,9,105,58,0],[106,9,106,10,0],[107,13,107,34,0],[108,13,108,20,0],[108,22,108,33,0],[108,34,108,36,0],[108,37,108,41,0],[109,13,109,14,0],[110,17,110,45,0],[111,17,111,40,0],[112,17,112,42,0],[113,17,113,76,0],[114,17,114,45,0],[115,13,115,14,0],[117,13,117,34,0],[119,13,119,27,0],[120,13,120,14,0],[121,17,121,29,0],[123,9,123,10,0],[125,9,125,22,0],[126,5,126,6,0],[137,5,137,6,0],[138,9,138,51,0],[139,9,139,37,0],[140,9,140,28,0],[141,9,141,33,0],[143,9,143,60,0],[144,9,144,10,0],[145,13,145,20,0],[145,22,145,34,0],[145,35,145,37,0],[145,38,145,48,0],[146,13,146,14,0],[147,17,147,43,0],[148,17,148,18,0],[149,21,149,48,0],[150,21,150,33,0],[152,13,152,14,0],[153,9,153,10,0],[155,9,155,22,0],[156,5,156,6,0],[165,5,165,6,1],[166,9,166,42,1],[167,9,167,78,1],[168,9,168,64,1],[169,9,169,10,1],[170,13,170,45,1],[171,13,171,25,1],[174,9,174,22,1],[175,5,175,6,1],[183,5,183,6,1],[184,9,184,54,1],[185,9,185,10,0],[186,13,186,41,0],[187,13,187,55,0],[188,13,188,65,0],[189,9,189,10,0],[190,9,190,42,1],[191,9,191,63,1],[192,9,192,10,1],[193,13,193,44,1],[194,13,194,25,1],[197,9,197,22,1],[198,5,198,6,1],[204,5,204,6,1],[205,9,205,54,1],[206,9,206,31,1],[207,5,207,6,0],[210,5,210,6,1],[211,9,211,16,1],[211,18,211,30,1],[211,31,211,33,1],[211,34,211,44,1],[212,9,212,10,1],[213,13,213,20,1],[213,22,213,33,0],[213,34,213,36,0],[213,37,213,82,1],[214,13,214,14,0],[215,17,215,53,0],[216,13,216,14,0],[217,9,217,10,0],[218,5,218,6,0]]);
+    </script>
+  </body>
+</html>
