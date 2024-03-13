@@ -1,4 +1,5 @@
-﻿using StudyDesk.Controller;
+﻿using Microsoft.IdentityModel.Tokens;
+using StudyDesk.Controller;
 using StudyDesk.Model;
 
 namespace StudyDesk.View;
@@ -18,8 +19,12 @@ public partial class MainPageForm : Form
     private const string? DeletionFailedPleaseTryAgainOrContactAdmin =
         "Deletion Failed. Please try again or contact admin.";
 
+    private const string? PleaseEnterATagToSearch = "Please enter a tag to search.";
+    private const string? InvalidSearch = "Invalid Search";
+
     private const string? AreYouSureYouWantToDeleteThisSource = "Are you sure you want to delete this source?";
     private const string? DeleteSource = "Delete Source";
+    private const string? EnterTagToSearch = "Enter tag to search...";
 
     private readonly MainPageController controller;
 
@@ -114,11 +119,31 @@ public partial class MainPageForm : Form
 
     private void resetSourcesButton_Click(object sender, EventArgs e)
     {
-
+        this.controller.ResetUserSources();
+        this.loadSources();
     }
 
     private void searchNoteTagButton_Click(object sender, EventArgs e)
     {
+        this.indexListView.Items.Clear();
+
+        if (!this.searchNoteTagTextBox.Text.IsNullOrEmpty() &&
+            this.searchNoteTagTextBox.Text != EnterTagToSearch)
+        {
+            foreach (var currSource in this.controller.getSourcesWithMatchingNoteTags(this.searchNoteTagTextBox.Text))
+            {
+                this.indexListView.Items.Add(currSource.Title);
+            }
+
+            this.searchNoteTagTextBox.Text = EnterTagToSearch;
+            this.searchNoteTagTextBox.ForeColor = Color.Gray;
+        }
+        else
+        {
+            MessageBox.Show(PleaseEnterATagToSearch, InvalidSearch, MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+            this.loadSources();
+        }
 
     }
 
@@ -126,14 +151,14 @@ public partial class MainPageForm : Form
     {
         if (string.IsNullOrWhiteSpace(this.searchNoteTagTextBox.Text))
         {
-            this.searchNoteTagTextBox.Text = "Enter tag to search...";
+            this.searchNoteTagTextBox.Text = EnterTagToSearch;
             this.searchNoteTagTextBox.ForeColor = Color.Gray;
         }
     }
 
     private void searchNoteTagTextBox_Enter(object sender, EventArgs e)
     {
-        if (this.searchNoteTagTextBox.Text == "Enter tag to search...")
+        if (this.searchNoteTagTextBox.Text == EnterTagToSearch)
         {
             this.searchNoteTagTextBox.Text = string.Empty;
             this.searchNoteTagTextBox.ForeColor = Color.Black;

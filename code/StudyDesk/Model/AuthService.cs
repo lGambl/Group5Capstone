@@ -12,6 +12,10 @@ public class AuthService
 {
     #region Properties
 
+    /// <summary>
+    ///   Gets the HTTP client.
+    /// </summary>
+    /// <value>The HTTP client.</value>
     public HttpClient HttpClient { get; }
 
     #endregion
@@ -113,6 +117,37 @@ public class AuthService
         catch (Exception ex)
         {
             throw new Exception("An error occurred while fetching sources: " + ex.Message);
+        }
+    }
+
+    public virtual async Task<IEnumerable<Source>> GetSourcesWithMatchingTag(string tag)
+    {
+        try
+        {
+            this.HttpClient.DefaultRequestHeaders.Accept.Clear();
+            this.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await this.HttpClient.GetAsync("https://localhost:7240/SourceExplorer/SearchTag/" + tag)
+                .ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var contentString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                var sources = JsonConvert.DeserializeObject<IEnumerable<Source>>(contentString);
+                return sources ?? new List<Source>();
+            }
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return new List<Source>();
+            }
+
+            throw new Exception("Request failed with status code: " + response.StatusCode);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while searching sources: " + ex.Message);
         }
     }
 

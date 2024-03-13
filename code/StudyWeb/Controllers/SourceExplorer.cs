@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StudyWeb.Data;
 using StudyWeb.Models;
 
@@ -576,6 +577,50 @@ public class SourceExplorer : Controller
         }
 
         return Ok(new { success = true, message = "Note deleted successfully." });
+    }
+
+    /// <summary>
+    ///   Searches the tag.
+    /// </summary>
+    /// <param name="tag">The tag.</param>
+    /// <returns>
+    ///   Ok & a list of sources, if successful.
+    ///   BadRequest if unsuccessful.
+    /// </returns>
+    [Authorize]
+    [Route("SearchTag/{tag}")]
+    public async Task<IActionResult> SearchTag(string tag)
+    {
+        if (tag.IsNullOrEmpty())
+        {
+            return BadRequest(new { success = false, message = "Tag not found." });
+        }
+
+        try
+        {
+            const string searchTagQuery = @"SELECT DISTINCT Source.Id, Source.Link, Source.Title, Source.Type, Source.Owner " +
+                                          "FROM Tags " +
+                                          "JOIN NoteTags ON Tags.Id = NoteTags.TagId " +
+                                          "JOIN Note ON NoteTags.NoteId = Note.Id " +
+                                          "JOIN Source ON Note.SourceId = Source.Id " +
+                                          "WHERE Tags.Name = {0}";
+
+            var sources = await this.context.Source
+                .FromSqlRaw(searchTagQuery, "<" + tag + ">")
+                .ToListAsync();
+
+            if (sources == null || sources.Count == 0)
+            {
+                return NotFound(new { success = false, message = "No sources found for the given tag." });
+            }
+
+            return Ok(sources);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
     }
 
     #endregion

@@ -10,12 +10,10 @@ public class MainPageController
 {
     #region Data members
 
-    #region Data Members
-
     private const string ConnectionString =
         "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-    #endregion
+    private readonly IList<Source> userSources;
 
     #endregion
 
@@ -27,7 +25,7 @@ public class MainPageController
     /// <value>
     ///     The sources as a collection of Source objects.
     /// </value>
-    public IList<Source> Sources => this.AuthService.GetSources().Result.ToList();
+    public IList<Source> Sources { get; set; }
 
     /// <summary>
     ///     Gets the authentication service.
@@ -47,6 +45,8 @@ public class MainPageController
     public MainPageController(AuthService auth)
     {
         this.AuthService = auth;
+        this.Sources = this.AuthService.GetSources().Result.ToList();
+        this.userSources = this.Sources;
     }
 
     #endregion
@@ -95,6 +95,43 @@ public class MainPageController
         }
 
         return false;
+    }
+
+    /// <summary>
+    ///   Gets the sources with matching note tags.
+    /// </summary>
+    /// <param name="tag">The tag.</param>
+    /// <returns>
+    ///   A list of the sources that have notes with matching tags.
+    /// </returns>
+    public List<Source> getSourcesWithMatchingNoteTags(string tag)
+    {
+        List<Source> sources = new List<Source>();
+        foreach (var currSource in this.AuthService.GetSourcesWithMatchingTag(tag).Result)
+        {
+            var newLink = "https://localhost:7240/" + currSource.Link;
+            currSource.Link = newLink;
+            sources.Add(currSource);
+        }
+
+        if (sources.Count == 0)
+        {
+            sources = null;
+        }
+        else
+        {
+            this.Sources = sources;
+        }
+
+        return sources;
+    }
+
+    /// <summary>
+    ///   Resets the user's sources.
+    /// </summary>
+    public void ResetUserSources()
+    {
+        this.Sources = this.userSources;
     }
 
     private void deleteSourceFromSources(string result)
