@@ -24,6 +24,7 @@ namespace StudyWeb.Data.Migrations
             CREATE TABLE [dbo].[Tags] (
                 [Id] int NOT NULL IDENTITY(1,1),
                 [Name] nvarchar(max) NOT NULL,
+                [NoteId] int DEFAULT 0 NOT NULL,
                 CONSTRAINT [PK_Tags] PRIMARY KEY ([Id])
             )
         END");
