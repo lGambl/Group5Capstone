@@ -580,42 +580,44 @@ public class SourceExplorer : Controller
     }
 
     /// <summary>
-    ///   Searches the tag.
+    ///   Searches the tags.
     /// </summary>
-    /// <param name="tag">The tag.</param>
+    /// <param name="tags">The tags.</param>
     /// <returns>
     ///   Ok & a list of sources, if successful.
     ///   BadRequest if unsuccessful.
     /// </returns>
     [Authorize]
-    [Route("SearchTag/{tag}")]
-    public async Task<IActionResult> SearchTag(string tag)
+    [Route("SearchTags")]
+    public async Task<IActionResult> SearchTags([FromBody] IEnumerable<string> tags)
     {
-        if (tag.IsNullOrEmpty())
+        if (tags == null || !tags.Any())
         {
-            return BadRequest(new { success = false, message = "Tag not found." });
+            return BadRequest(new { success = false, message = "Tag list is empty." });
         }
 
         try
         {
-            const string searchTagQuery = @"SELECT DISTINCT Source.Id, Source.Link, Source.Title, Source.Type, Source.Owner " +
-                                          "FROM Tags " +
-                                          "JOIN NoteTags ON Tags.Id = NoteTags.TagId " +
-                                          "JOIN Note ON NoteTags.NoteId = Note.Id " +
-                                          "JOIN Source ON Note.SourceId = Source.Id " +
-                                          "WHERE Tags.Name = {0}";
+            var tagPlaceholders = string.Join(", ", tags.Select((tag, index) => $"@tag{index}"));
+            var searchTagsQuery = $"SELECT DISTINCT Source.Id, Source.Link, Source.Title, Source.Type, Source.Owner " +
+                                  $"FROM Tags " +
+                                  $"JOIN NoteTags ON Tags.Id = NoteTags.TagId " +
+                                  $"JOIN Note ON NoteTags.NoteId = Note.Id " +
+                                  $"JOIN Source ON Note.SourceId = Source.Id " +
+                                  $"WHERE Tags.Name IN ({tagPlaceholders})";
+
+            var parameters = tags.Select((tag, index) => new SqlParameter($"tag{index}", tag)).ToArray();
 
             var sources = await this.context.Source
-                .FromSqlRaw(searchTagQuery, "<" + tag + ">")
+                .FromSqlRaw(searchTagsQuery, parameters)
                 .ToListAsync();
 
             if (sources == null || sources.Count == 0)
             {
-                return NotFound(new { success = false, message = "No sources found for the given tag." });
+                return NotFound(new { success = false, message = "No sources found for the given tags." });
             }
 
             return Ok(sources);
-
         }
         catch (Exception ex)
         {

@@ -100,14 +100,18 @@ public class MainPageController
     /// <summary>
     ///   Gets the sources with matching note tags.
     /// </summary>
-    /// <param name="tag">The tag.</param>
+    /// <param name="tag">The tags.</param>
     /// <returns>
     ///   A list of the sources that have notes with matching tags.
     /// </returns>
-    public List<Source> getSourcesWithMatchingNoteTags(string tag)
+    public async Task<List<Source>> GetSourcesWithMatchingNoteTags(IEnumerable<string> tags)
     {
         List<Source> sources = new List<Source>();
-        foreach (var currSource in this.AuthService.GetSourcesWithMatchingTag(tag).Result)
+
+        // Await the asynchronous method call
+        var matchingSources = await this.AuthService.GetSourcesWithMatchingTags(tags).ConfigureAwait(false);
+
+        foreach (var currSource in matchingSources)
         {
             var newLink = "https://localhost:7240/" + currSource.Link;
             currSource.Link = newLink;

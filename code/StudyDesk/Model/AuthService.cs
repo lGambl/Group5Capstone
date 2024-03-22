@@ -120,14 +120,30 @@ public class AuthService
         }
     }
 
-    public virtual async Task<IEnumerable<Source>> GetSourcesWithMatchingTag(string tag)
+    /// <summary>
+    ///   Gets the sources with matching tags.
+    /// </summary>
+    /// <param name="tags">The tags.</param>
+    /// <returns>
+    ///   Success, with a list of sources if true,
+    ///   Bad request if false.
+    /// </returns>
+    /// <exception cref="System.Exception">Request failed with status code: " + response.StatusCode
+    /// or
+    /// An error occurred while searching sources: " + ex.Message</exception>
+    public virtual async Task<IEnumerable<Source>> GetSourcesWithMatchingTags(IEnumerable<string> tags)
     {
         try
         {
             this.HttpClient.DefaultRequestHeaders.Accept.Clear();
             this.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await this.HttpClient.GetAsync("https://localhost:7240/SourceExplorer/SearchTag/" + tag)
+            // Serialize the list of tags into a JSON string
+            var jsonContent = JsonConvert.SerializeObject(tags);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            // Use PostAsync and adjust the URL to match the SearchTags endpoint
+            var response = await this.HttpClient.PostAsync("https://localhost:7240/SourceExplorer/SearchTags", httpContent)
                 .ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
@@ -178,6 +194,14 @@ public class AuthService
         };
     }
 
+    /// <summary>
+    ///   Deletes the source.
+    /// </summary>
+    /// <param name="sourceId">The source identifier.</param>
+    /// <returns>
+    ///   true, if successful,
+    ///   false otherwise.
+    /// </returns>
     public virtual bool DeleteSource(int sourceId)
     {
         var response = this.HttpClient.DeleteAsync("https://localhost:7240/SourceExplorer/Delete/" + sourceId).Result;

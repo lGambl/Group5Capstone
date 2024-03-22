@@ -39,13 +39,16 @@
             label2 = new Label();
             resetSourcesButton = new Button();
             searchNoteTagPanel = new Panel();
+            searchTagsListView = new ListView();
+            addTagToSearchListButton = new Button();
             searchNoteTagPanel.SuspendLayout();
             SuspendLayout();
             // 
             // indexListView
             // 
             indexListView.Columns.AddRange(new ColumnHeader[] { titleHeader });
-            indexListView.Location = new Point(8, 127);
+            indexListView.HeaderStyle = ColumnHeaderStyle.None;
+            indexListView.Location = new Point(8, 222);
             indexListView.Margin = new Padding(3, 2, 3, 2);
             indexListView.Name = "indexListView";
             indexListView.Size = new Size(292, 226);
@@ -62,7 +65,7 @@
             // 
             // addButton
             // 
-            addButton.Location = new Point(8, 357);
+            addButton.Location = new Point(8, 453);
             addButton.Margin = new Padding(3, 2, 3, 2);
             addButton.Name = "addButton";
             addButton.Size = new Size(82, 22);
@@ -74,7 +77,7 @@
             // deleteButton
             // 
             deleteButton.Enabled = false;
-            deleteButton.Location = new Point(218, 357);
+            deleteButton.Location = new Point(218, 453);
             deleteButton.Margin = new Padding(3, 2, 3, 2);
             deleteButton.Name = "deleteButton";
             deleteButton.Size = new Size(82, 22);
@@ -105,11 +108,11 @@
             // 
             // searchNoteTagButton
             // 
-            searchNoteTagButton.Location = new Point(106, 53);
+            searchNoteTagButton.Location = new Point(92, 156);
             searchNoteTagButton.Name = "searchNoteTagButton";
-            searchNoteTagButton.Size = new Size(73, 30);
+            searchNoteTagButton.Size = new Size(87, 30);
             searchNoteTagButton.TabIndex = 5;
-            searchNoteTagButton.Text = "Search Tag";
+            searchNoteTagButton.Text = "Search Tags";
             searchNoteTagButton.UseVisualStyleBackColor = true;
             searchNoteTagButton.Click += searchNoteTagButton_Click;
             // 
@@ -127,7 +130,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(8, 110);
+            label2.Location = new Point(8, 205);
             label2.Name = "label2";
             label2.Size = new Size(51, 15);
             label2.TabIndex = 7;
@@ -135,7 +138,7 @@
             // 
             // resetSourcesButton
             // 
-            resetSourcesButton.Location = new Point(115, 357);
+            resetSourcesButton.Location = new Point(115, 453);
             resetSourcesButton.Name = "resetSourcesButton";
             resetSourcesButton.Size = new Size(73, 22);
             resetSourcesButton.TabIndex = 8;
@@ -146,19 +149,39 @@
             // searchNoteTagPanel
             // 
             searchNoteTagPanel.BorderStyle = BorderStyle.FixedSingle;
+            searchNoteTagPanel.Controls.Add(addTagToSearchListButton);
+            searchNoteTagPanel.Controls.Add(searchTagsListView);
             searchNoteTagPanel.Controls.Add(searchNoteTagButton);
             searchNoteTagPanel.Controls.Add(searchNoteTagTextBox);
             searchNoteTagPanel.Controls.Add(label1);
             searchNoteTagPanel.Location = new Point(8, 11);
             searchNoteTagPanel.Name = "searchNoteTagPanel";
-            searchNoteTagPanel.Size = new Size(188, 86);
+            searchNoteTagPanel.Size = new Size(188, 191);
             searchNoteTagPanel.TabIndex = 9;
+            // 
+            // searchTagsListView
+            // 
+            searchTagsListView.Location = new Point(4, 96);
+            searchTagsListView.Name = "searchTagsListView";
+            searchTagsListView.Size = new Size(175, 54);
+            searchTagsListView.TabIndex = 7;
+            searchTagsListView.UseCompatibleStateImageBehavior = false;
+            // 
+            // addTagToSearchListButton
+            // 
+            addTagToSearchListButton.Location = new Point(50, 58);
+            addTagToSearchListButton.Name = "addTagToSearchListButton";
+            addTagToSearchListButton.Size = new Size(129, 23);
+            addTagToSearchListButton.TabIndex = 8;
+            addTagToSearchListButton.Text = "Add tag to search list";
+            addTagToSearchListButton.UseVisualStyleBackColor = true;
+            addTagToSearchListButton.Click += addTagToSearchListButton_Click;
             // 
             // MainPageForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(312, 385);
+            ClientSize = new Size(312, 486);
             Controls.Add(searchNoteTagPanel);
             Controls.Add(resetSourcesButton);
             Controls.Add(label2);
@@ -188,5 +211,7 @@
         private Label label2;
         private Button resetSourcesButton;
         private Panel searchNoteTagPanel;
+        private ListView searchTagsListView;
+        private Button addTagToSearchListButton;
     }
 }

@@ -125,18 +125,23 @@ public partial class MainPageForm : Form
 
     private void searchNoteTagButton_Click(object sender, EventArgs e)
     {
-        this.indexListView.Items.Clear();
-
-        if (!this.searchNoteTagTextBox.Text.IsNullOrEmpty() &&
-            this.searchNoteTagTextBox.Text != EnterTagToSearch)
+        if (this.searchTagsListView.Items.Count != 0)
         {
-            foreach (var currSource in this.controller.getSourcesWithMatchingNoteTags(this.searchNoteTagTextBox.Text))
+            var tags = new List<string>();
+            foreach (ListViewItem currItem in this.searchTagsListView.Items)
+            {
+                //var text = currItem.Text.Trim('<', '>');
+                //tags.Add(text);
+                tags.Add(currItem.Text);
+            }
+
+            this.indexListView.Items.Clear();
+            this.searchTagsListView.Clear();
+
+            foreach (var currSource in this.controller.GetSourcesWithMatchingNoteTags(tags).Result)
             {
                 this.indexListView.Items.Add(currSource.Title);
             }
-
-            this.searchNoteTagTextBox.Text = EnterTagToSearch;
-            this.searchNoteTagTextBox.ForeColor = Color.Gray;
         }
         else
         {
@@ -144,7 +149,21 @@ public partial class MainPageForm : Form
                 MessageBoxIcon.Error);
             this.loadSources();
         }
+    }
 
+    private void addTagToSearchListButton_Click(object sender, EventArgs e)
+    {
+        if (this.searchNoteTagTextBox.Text.Any() && this.searchNoteTagTextBox.Text != "Enter tag to search...")
+        {
+            this.searchTagsListView.Items.Add("<" + this.searchNoteTagTextBox.Text + ">");
+            this.searchNoteTagTextBox.Text = EnterTagToSearch;
+            this.searchNoteTagTextBox.ForeColor = Color.Gray;
+        }
+        else
+        {
+            MessageBox.Show(PleaseEnterATagToSearch, InvalidSearch, MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
     }
 
     private void searchNoteTagTextBox_Leave(object sender, EventArgs e)
