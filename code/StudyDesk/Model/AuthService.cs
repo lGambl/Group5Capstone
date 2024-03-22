@@ -159,7 +159,8 @@ public class AuthService
                 return new List<Source>();
             }
 
-            throw new Exception("Request failed with status code: " + response.StatusCode);
+            return new List<Source>();
+            //throw new Exception("Request failed with status code: " + response.StatusCode);
         }
         catch (Exception ex)
         {

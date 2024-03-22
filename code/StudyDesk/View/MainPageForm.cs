@@ -20,6 +20,7 @@ public partial class MainPageForm : Form
         "Deletion Failed. Please try again or contact admin.";
 
     private const string? PleaseEnterATagToSearch = "Please enter a tag to search.";
+    private const string? NoMatchingTags = "No tags matched your search.";
     private const string? InvalidSearch = "Invalid Search";
 
     private const string? AreYouSureYouWantToDeleteThisSource = "Are you sure you want to delete this source?";
@@ -130,17 +131,25 @@ public partial class MainPageForm : Form
             var tags = new List<string>();
             foreach (ListViewItem currItem in this.searchTagsListView.Items)
             {
-                //var text = currItem.Text.Trim('<', '>');
-                //tags.Add(text);
                 tags.Add(currItem.Text);
             }
 
             this.indexListView.Items.Clear();
             this.searchTagsListView.Clear();
 
-            foreach (var currSource in this.controller.GetSourcesWithMatchingNoteTags(tags).Result)
+            var result = this.controller.GetSourcesWithMatchingNoteTags(tags).Result;
+            if (result != null && result.Count > 0)
             {
-                this.indexListView.Items.Add(currSource.Title);
+                foreach (var currSource in result)
+                {
+                    this.indexListView.Items.Add(currSource.Title);
+                }
+            }
+            else
+            {
+                MessageBox.Show(NoMatchingTags, InvalidSearch, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                this.loadSources();
             }
         }
         else
