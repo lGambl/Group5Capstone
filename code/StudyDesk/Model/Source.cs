@@ -15,7 +15,7 @@
         ///   Gets or sets the link.
         /// </summary>
         /// <value>The link.</value>
-        public string Link { get; init; }
+        public string Link { get; set; }
 
         /// <summary>
         ///   Gets or sets the title.

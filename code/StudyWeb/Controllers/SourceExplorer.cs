@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StudyWeb.Data;
 using StudyWeb.Models;
 
@@ -576,6 +577,52 @@ public class SourceExplorer : Controller
         }
 
         return Ok(new { success = true, message = "Note deleted successfully." });
+    }
+
+    /// <summary>
+    ///   Searches the tags.
+    /// </summary>
+    /// <param name="tags">The tags.</param>
+    /// <returns>
+    ///   Ok & a list of sources, if successful.
+    ///   BadRequest if unsuccessful.
+    /// </returns>
+    [Authorize]
+    [Route("SearchTags")]
+    public async Task<IActionResult> SearchTags([FromBody] IEnumerable<string> tags)
+    {
+        if (tags == null || !tags.Any())
+        {
+            return BadRequest(new { success = false, message = "Tag list is empty." });
+        }
+
+        try
+        {
+            var tagPlaceholders = string.Join(", ", tags.Select((tag, index) => $"@tag{index}"));
+            var searchTagsQuery = $"SELECT DISTINCT Source.Id, Source.Link, Source.Title, Source.Type, Source.Owner " +
+                                  $"FROM Tags " +
+                                  $"JOIN NoteTags ON Tags.Id = NoteTags.TagId " +
+                                  $"JOIN Note ON NoteTags.NoteId = Note.Id " +
+                                  $"JOIN Source ON Note.SourceId = Source.Id " +
+                                  $"WHERE Tags.Name IN ({tagPlaceholders})";
+
+            var parameters = tags.Select((tag, index) => new SqlParameter($"tag{index}", tag)).ToArray();
+
+            var sources = await this.context.Source
+                .FromSqlRaw(searchTagsQuery, parameters)
+                .ToListAsync();
+
+            if (sources == null || sources.Count == 0)
+            {
+                return NotFound(new { success = false, message = "No sources found for the given tags." });
+            }
+
+            return Ok(sources);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
     }
 
     #endregion

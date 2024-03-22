@@ -12,6 +12,10 @@ public class AuthService
 {
     #region Properties
 
+    /// <summary>
+    ///   Gets the HTTP client.
+    /// </summary>
+    /// <value>The HTTP client.</value>
     public HttpClient HttpClient { get; }
 
     #endregion
@@ -117,6 +121,54 @@ public class AuthService
     }
 
     /// <summary>
+    ///   Gets the sources with matching tags.
+    /// </summary>
+    /// <param name="tags">The tags.</param>
+    /// <returns>
+    ///   Success, with a list of sources if true,
+    ///   Bad request if false.
+    /// </returns>
+    /// <exception cref="System.Exception">Request failed with status code: " + response.StatusCode
+    /// or
+    /// An error occurred while searching sources: " + ex.Message</exception>
+    public virtual async Task<IEnumerable<Source>> GetSourcesWithMatchingTags(IEnumerable<string> tags)
+    {
+        try
+        {
+            this.HttpClient.DefaultRequestHeaders.Accept.Clear();
+            this.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            // Serialize the list of tags into a JSON string
+            var jsonContent = JsonConvert.SerializeObject(tags);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            // Use PostAsync and adjust the URL to match the SearchTags endpoint
+            var response = await this.HttpClient.PostAsync("https://localhost:7240/SourceExplorer/SearchTags", httpContent)
+                .ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var contentString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                var sources = JsonConvert.DeserializeObject<IEnumerable<Source>>(contentString);
+                return sources ?? new List<Source>();
+            }
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return new List<Source>();
+            }
+
+            return new List<Source>();
+            //throw new Exception("Request failed with status code: " + response.StatusCode);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while searching sources: " + ex.Message);
+        }
+    }
+
+    /// <summary>
     ///     Attempts to log out the user.
     /// </summary>
     /// <returns>True if successful, false otherwise.</returns>
@@ -143,6 +195,14 @@ public class AuthService
         };
     }
 
+    /// <summary>
+    ///   Deletes the source.
+    /// </summary>
+    /// <param name="sourceId">The source identifier.</param>
+    /// <returns>
+    ///   true, if successful,
+    ///   false otherwise.
+    /// </returns>
     public virtual bool DeleteSource(int sourceId)
     {
         var response = this.HttpClient.DeleteAsync("https://localhost:7240/SourceExplorer/Delete/" + sourceId).Result;

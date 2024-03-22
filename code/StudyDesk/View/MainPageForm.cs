@@ -1,4 +1,5 @@
-﻿using StudyDesk.Controller;
+﻿using Microsoft.IdentityModel.Tokens;
+using StudyDesk.Controller;
 using StudyDesk.Model;
 
 namespace StudyDesk.View;
@@ -18,8 +19,13 @@ public partial class MainPageForm : Form
     private const string? DeletionFailedPleaseTryAgainOrContactAdmin =
         "Deletion Failed. Please try again or contact admin.";
 
+    private const string? PleaseEnterATagToSearch = "Please enter a tag to search.";
+    private const string? NoMatchingTags = "No tags matched your search.";
+    private const string? InvalidSearch = "Invalid Search";
+
     private const string? AreYouSureYouWantToDeleteThisSource = "Are you sure you want to delete this source?";
     private const string? DeleteSource = "Delete Source";
+    private const string? EnterTagToSearch = "Enter tag to search...";
 
     private readonly MainPageController controller;
 
@@ -109,6 +115,81 @@ public partial class MainPageForm : Form
                 MessageBox.Show(DeletionFailedPleaseTryAgainOrContactAdmin, DeletionFailed, MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+        }
+    }
+
+    private void resetSourcesButton_Click(object sender, EventArgs e)
+    {
+        this.controller.ResetUserSources();
+        this.loadSources();
+    }
+
+    private void searchNoteTagButton_Click(object sender, EventArgs e)
+    {
+        if (this.searchTagsListView.Items.Count != 0)
+        {
+            var tags = new List<string>();
+            foreach (ListViewItem currItem in this.searchTagsListView.Items)
+            {
+                tags.Add(currItem.Text);
+            }
+
+            this.indexListView.Items.Clear();
+            this.searchTagsListView.Clear();
+
+            var result = this.controller.GetSourcesWithMatchingNoteTags(tags).Result;
+            if (result != null && result.Count > 0)
+            {
+                foreach (var currSource in result)
+                {
+                    this.indexListView.Items.Add(currSource.Title);
+                }
+            }
+            else
+            {
+                MessageBox.Show(NoMatchingTags, InvalidSearch, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                this.loadSources();
+            }
+        }
+        else
+        {
+            MessageBox.Show(PleaseEnterATagToSearch, InvalidSearch, MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+            this.loadSources();
+        }
+    }
+
+    private void addTagToSearchListButton_Click(object sender, EventArgs e)
+    {
+        if (this.searchNoteTagTextBox.Text.Any() && this.searchNoteTagTextBox.Text != "Enter tag to search...")
+        {
+            this.searchTagsListView.Items.Add("<" + this.searchNoteTagTextBox.Text + ">");
+            this.searchNoteTagTextBox.Text = EnterTagToSearch;
+            this.searchNoteTagTextBox.ForeColor = Color.Gray;
+        }
+        else
+        {
+            MessageBox.Show(PleaseEnterATagToSearch, InvalidSearch, MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+    }
+
+    private void searchNoteTagTextBox_Leave(object sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(this.searchNoteTagTextBox.Text))
+        {
+            this.searchNoteTagTextBox.Text = EnterTagToSearch;
+            this.searchNoteTagTextBox.ForeColor = Color.Gray;
+        }
+    }
+
+    private void searchNoteTagTextBox_Enter(object sender, EventArgs e)
+    {
+        if (this.searchNoteTagTextBox.Text == EnterTagToSearch)
+        {
+            this.searchNoteTagTextBox.Text = string.Empty;
+            this.searchNoteTagTextBox.ForeColor = Color.Black;
         }
     }
 
