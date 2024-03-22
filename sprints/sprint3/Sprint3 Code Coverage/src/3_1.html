@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>D:\C#Projects\Group5Capstone\code\StudyDesk\Controller\LoginController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using StudyDesk.Model;
+
+namespace StudyDesk.Controller;
+
+/// &lt;summary&gt;
+///     The Login Controller.
+/// &lt;/summary&gt;
+public class LoginController
+{
+    #region Data members
+
+    private readonly AuthService authService;
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;LoginController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;authService&quot;&gt;The authentication service.&lt;/param&gt;
+    public LoginController(AuthService authService)
+    {
+        this.authService = authService;
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///     Verifies the login credentials.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;username&quot;&gt;The username.&lt;/param&gt;
+    /// &lt;param name=&quot;password&quot;&gt;The password.&lt;/param&gt;
+    /// &lt;returns&gt;
+    ///     True if login is successful, False if unsuccessful
+    /// &lt;/returns&gt;
+    public AuthService? VerifyLoginCredentials(string username, string password)
+    {
+        return this.authService.LoginAsync(username, password).Result;
+    }
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[22,5,22,52,1],[23,5,23,6,1],[24,9,24,40,1],[25,5,25,6,1],[40,5,40,6,1],[41,9,41,71,1],[42,5,42,6,1]]);
+    </script>
+  </body>
+</html>
