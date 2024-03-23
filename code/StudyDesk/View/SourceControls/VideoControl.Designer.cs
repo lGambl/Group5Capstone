@@ -35,21 +35,23 @@
             // 
             // videoPlayer
             // 
-            videoPlayer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            videoPlayer.Dock = DockStyle.Fill;
             videoPlayer.Enabled = true;
             videoPlayer.Location = new Point(0, 0);
+            videoPlayer.Margin = new Padding(3, 2, 3, 2);
             videoPlayer.Name = "videoPlayer";
             videoPlayer.OcxState = (AxHost.State)resources.GetObject("videoPlayer.OcxState");
-            videoPlayer.Size = new Size(545, 395);
+            videoPlayer.Size = new Size(477, 296);
             videoPlayer.TabIndex = 0;
             // 
             // VideoControl
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(videoPlayer);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "VideoControl";
-            Size = new Size(545, 395);
+            Size = new Size(477, 296);
             ((System.ComponentModel.ISupportInitialize)videoPlayer).EndInit();
             ResumeLayout(false);
         }
