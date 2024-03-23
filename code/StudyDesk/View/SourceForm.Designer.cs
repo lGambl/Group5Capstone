@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             splitContainer1 = new SplitContainer();
-            documentControl1 = new SourceControls.DocumentControl();
             videoControl1 = new SourceControls.VideoControl();
+            documentControl1 = new SourceControls.DocumentControl();
             notesFlowLayoutPanel = new FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -51,13 +51,19 @@
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Panel2.Controls.Add(notesFlowLayoutPanel);
             splitContainer1.Size = new Size(1019, 547);
             splitContainer1.SplitterDistance = 700;
             splitContainer1.SplitterWidth = 5;
-            splitContainer1.Panel2.Controls.Add(notesFlowLayoutPanel);
-            splitContainer1.Size = new Size(892, 410);
-            splitContainer1.SplitterDistance = 613;
             splitContainer1.TabIndex = 1;
+            // 
+            // videoControl1
+            // 
+            videoControl1.Dock = DockStyle.Fill;
+            videoControl1.Location = new Point(0, 0);
+            videoControl1.Name = "videoControl1";
+            videoControl1.Size = new Size(700, 547);
+            videoControl1.TabIndex = 1;
             // 
             // documentControl1
             // 
@@ -69,17 +75,11 @@
             // notesFlowLayoutPanel
             // 
             notesFlowLayoutPanel.AutoScroll = true;
-            notesFlowLayoutPanel.Location = new Point(3, 3);
+            notesFlowLayoutPanel.Dock = DockStyle.Fill;
+            notesFlowLayoutPanel.Location = new Point(0, 0);
             notesFlowLayoutPanel.Name = "notesFlowLayoutPanel";
-            notesFlowLayoutPanel.Size = new Size(269, 403);
+            notesFlowLayoutPanel.Size = new Size(314, 547);
             notesFlowLayoutPanel.TabIndex = 0;
-            // 
-            // videoControl1
-            // 
-            videoControl1.Location = new Point(3, 0);
-            videoControl1.Name = "videoControl1";
-            videoControl1.Size = new Size(681, 494);
-            videoControl1.TabIndex = 1;
             // 
             // SourceForm
             // 
