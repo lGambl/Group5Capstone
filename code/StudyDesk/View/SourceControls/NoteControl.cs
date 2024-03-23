@@ -33,6 +33,8 @@
         /// </summary>
         public event NoteEventHandler SaveNotesChangesButtonClick;
 
+        public event NoteEventHandler DeleteTagButtonClick;
+
         /// <summary>
         ///   Initializes a new instance of the <see cref="NoteControl" /> class.
         /// </summary>
@@ -101,11 +103,28 @@
             SaveNotesChangesButtonClick?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.noteTextBox.Text));
         }
 
+        /// <summary>
+        ///   Called when [delete tag button click].
+        /// </summary>
+        protected virtual void OnDeleteTagButtonClick()
+        {
+            if (this.tagsLlistView.SelectedItems.Count > 0)
+            {
+                DeleteTagButtonClick?.Invoke(this, new NoteEventArgs(this.NoteIndex, this.tagsLlistView.SelectedItems[0].Text));
+                this.tagsLlistView.Items.Remove(this.tagsLlistView.SelectedItems[0]);
+            }
+            else
+            {
+                var result = MessageBox.Show("Please select a tag to delete.", "No Tag Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void initializeButtons()
         {
             this.deleteNoteButton.Click += (sender, e) => OnDeleteNoteButtonClicked();
             this.addTagButton.Click += (sender, e) => OnAddTagButtonClicked();
             this.saveChangesButton.Click += (sender, e) => OnSaveChangesButtonClick();
+            this.deleteTagButton.Click += (sender, e) => OnDeleteTagButtonClick();
         }
 
         /// <summary>
@@ -178,7 +197,7 @@
             /// <param name="tags">The tags.</param>
             public NoteEventArgs(int noteIndex, List<string> tags)
             {
-                NoteIndex= noteIndex;
+                NoteIndex = noteIndex;
                 Tags = tags;
             }
         }

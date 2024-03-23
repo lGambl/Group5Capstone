@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using StudyDesk.Model;
 
 namespace StudyDesk.Controller;
@@ -185,6 +187,7 @@ public class SourceFormController
         {
             var noteTag = new NoteTag();
             noteTag.NoteId = this.Notes[noteIndex].Id;
+            noteTag.Name = "void";
             this.NotesRepository.DeleteTagFromDatabase(noteTag);
         }
         var note = this.Notes[noteIndex];
@@ -195,6 +198,51 @@ public class SourceFormController
         }
 
         return false;
+    }
+
+    /// <summary>
+    ///   Deletes the note tag.
+    /// </summary>
+    /// <param name="noteIndex">Index of the note.</param>
+    /// <param name="tag">The tag.</param>
+    /// <returns>
+    ///   true, if successfully deleted.
+    ///   false otherwise.
+    /// </returns>
+    public bool DeleteNoteTag(int noteIndex, string tag)
+    {
+        if (this.Notes[noteIndex].NoteTags.Count > 0)
+        {
+            var tagId = this.getTagId(noteIndex, tag);
+            if (tagId >= 0)
+            {
+                var noteTag = new NoteTag();
+                noteTag.Id = tagId;
+                noteTag.NoteId = this.Notes[noteIndex].Id;
+                var result = this.NotesRepository.DeleteTagFromDatabase(noteTag);
+
+                if (result)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private int getTagId(int noteIndex, string tag)
+    {
+        var tags = this.NotesRepository.GetNoteTags(this.Notes[noteIndex].Id);
+        var tagId = -1;
+        foreach (var currTag in tags)
+        {
+            if (currTag.Name == tag)
+            {
+                tagId = currTag.Id;
+            }
+        }
+        return tagId;
     }
 
     /// <summary>
@@ -416,19 +464,57 @@ public class SourceFormController
         {
             try
             {
-                var connection = new SqlConnection(ConnectionString);
-                connection.Open();
-                var command = new SqlCommand("DELETE FROM dbo.Tags WHERE Id = @id", connection);
-                command.Parameters.AddWithValue("@id", noteTag.Id);
-                command.ExecuteNonQuery();
-                connection.Close();
-
-                if (this.DeleteNoteTagsFromDatabase(noteTag.NoteId))
+                if (noteTag.Name == "void")
                 {
-                    return true;
+                    if (this.DeleteNoteTagsFromDatabase(noteTag.NoteId))
+                    {
+                        var connection = new SqlConnection(ConnectionString);
+                        connection.Open();
+                        var command = new SqlCommand("DELETE FROM dbo.Tags WHERE Id = @id", connection);
+                        command.Parameters.AddWithValue("@id", noteTag.Id);
+                        command.ExecuteNonQuery();
+                        connection.Close();
+
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (this.deleteNoteTagFromDatabase(noteTag.Id, noteTag.NoteId))
+                    {
+                        var connection = new SqlConnection(ConnectionString);
+                        connection.Open();
+                        var command = new SqlCommand("DELETE FROM dbo.Tags WHERE Id = @id", connection);
+                        command.Parameters.AddWithValue("@id", noteTag.Id);
+                        command.ExecuteNonQuery();
+                        connection.Close();
+
+                        return true;
+                    }
                 }
 
                 return false;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(FailedToDeleteNoteTagFromDatabase, ErrorCaption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        private bool deleteNoteTagFromDatabase(int tagId, int noteId)
+        {
+            try
+            {
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                var command = new SqlCommand("DELETE FROM dbo.NoteTags WHERE Id = @tagId AND NoteId = @noteId", connection);
+                command.Parameters.AddWithValue("@noteId", noteId);
+                command.Parameters.AddWithValue("@tagId", tagId);
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
             }
             catch (Exception)
             {

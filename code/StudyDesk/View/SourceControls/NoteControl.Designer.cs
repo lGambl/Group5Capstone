@@ -33,6 +33,7 @@
             tagsLlistView = new ListView();
             deleteNoteButton = new Button();
             saveChangesButton = new Button();
+            deleteTagButton = new Button();
             SuspendLayout();
             // 
             // noteTextBox
@@ -46,10 +47,10 @@
             // 
             // addTagButton
             // 
-            addTagButton.Location = new Point(78, 251);
+            addTagButton.Location = new Point(11, 251);
             addTagButton.Margin = new Padding(3, 2, 3, 2);
             addTagButton.Name = "addTagButton";
-            addTagButton.Size = new Size(82, 32);
+            addTagButton.Size = new Size(90, 32);
             addTagButton.TabIndex = 2;
             addTagButton.Text = "Add Tag";
             addTagButton.UseVisualStyleBackColor = true;
@@ -58,6 +59,7 @@
             // 
             tagsLlistView.Location = new Point(11, 175);
             tagsLlistView.Margin = new Padding(3, 2, 3, 2);
+            tagsLlistView.MultiSelect = false;
             tagsLlistView.Name = "tagsLlistView";
             tagsLlistView.Size = new Size(221, 72);
             tagsLlistView.TabIndex = 4;
@@ -83,10 +85,20 @@
             saveChangesButton.Text = "Save Changes";
             saveChangesButton.UseVisualStyleBackColor = true;
             // 
+            // deleteTagButton
+            // 
+            deleteTagButton.Location = new Point(139, 251);
+            deleteTagButton.Name = "deleteTagButton";
+            deleteTagButton.Size = new Size(93, 32);
+            deleteTagButton.TabIndex = 7;
+            deleteTagButton.Text = "Delete Tag";
+            deleteTagButton.UseVisualStyleBackColor = true;
+            // 
             // NoteControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(deleteTagButton);
             Controls.Add(saveChangesButton);
             Controls.Add(deleteNoteButton);
             Controls.Add(tagsLlistView);
@@ -106,5 +118,6 @@
         private ListView tagsLlistView;
         private Button deleteNoteButton;
         private Button saveChangesButton;
+        private Button deleteTagButton;
     }
 }

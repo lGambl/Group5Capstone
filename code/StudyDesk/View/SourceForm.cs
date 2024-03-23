@@ -79,6 +79,7 @@ namespace StudyDesk.View
             noteControl.AddTagButtonClicked += NoteControl_AddTagButtonClicked;
             noteControl.DeleteNoteButtonClicked += NoteControl_DeleteNoteButtonClicked;
             noteControl.SaveNotesChangesButtonClick += NoteControl_SaveChangesButtonClicked;
+            noteControl.DeleteTagButtonClick += NoteControl_DeleteTagButtonClicked;
         }
 
         private void setupAddnoteControlButtons(AddNoteControl addNoteControl)
@@ -128,6 +129,16 @@ namespace StudyDesk.View
                 {
                     this.notesFlowLayoutPanel.Refresh();
                 }
+            }
+        }
+
+        private void NoteControl_DeleteTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
+        {
+            var result = MessageBox.Show("Are you sure you want to delete this tag?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                this.controller.DeleteNoteTag((e.NoteIndex - 1), e.NoteText);
             }
         }
 
