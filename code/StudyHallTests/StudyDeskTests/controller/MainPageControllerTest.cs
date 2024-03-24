@@ -72,4 +72,72 @@ public class MainPageControllerTest
         var result = await controller.DeleteSource("{TestSource}");
         Assert.IsFalse(result);
     }*/
+
+    [Test]
+    public async Task GetSourcesWithMatchingNoteTags_ReturnsSourcesWithModifiedLinks()
+    {
+        var tags = new List<string> { "tag1", "tag2" };
+        var expectedSources = new List<Source>
+        {
+            new Source(1, "originalLink1", "Source 1", SourceType.Pdf, "Owner 1"),
+            new Source(2, "originalLink2", "Source 2", SourceType.Video, "Owner 2")
+        };
+
+        var mockAuthService = new Mock<AuthService>();
+        mockAuthService.Setup(service => service.GetSourcesWithMatchingTags(It.IsAny<IEnumerable<string>>()))
+            .ReturnsAsync(expectedSources);
+
+        var mainPageController = new MainPageController(mockAuthService.Object);
+        var result = await mainPageController.GetSourcesWithMatchingNoteTags(tags);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(expectedSources.Count, result.Count);
+        for (int i = 0; i < expectedSources.Count; i++)
+        {
+            string expectedLink = expectedSources[i].Link;
+            Assert.AreEqual(expectedLink, result[i].Link);
+        }
+        mockAuthService.Verify(service => service.GetSourcesWithMatchingTags(It.IsAny<IEnumerable<string>>()), Times.Once);
+    }
+
+    [Test]
+    public async Task GetSourcesWithMatchingNoteTags_NoMatchingSources_ReturnsNull()
+    {
+        var tags = new List<string> { "tag1", "tag2" };
+
+        var mockAuthService = new Mock<AuthService>();
+        mockAuthService.Setup(service => service.GetSourcesWithMatchingTags(It.IsAny<IEnumerable<string>>()))
+            .ReturnsAsync(new List<Source>());
+
+        var mainPageController = new MainPageController(mockAuthService.Object);
+        var result = await mainPageController.GetSourcesWithMatchingNoteTags(tags);
+
+        Assert.IsNull(result);
+        mockAuthService.Verify(service => service.GetSourcesWithMatchingTags(It.IsAny<IEnumerable<string>>()), Times.Once);
+    }
+
+    [Test]
+    public void ResetUserSources_SetsSourcesToUserSources()
+    {
+        var mockAuthService = new Mock<AuthService>();
+        var mainPageController = new MainPageController(mockAuthService.Object);
+
+        var initialSources = new List<Source>
+        {
+            new Source(1, "link1", "Source 1", SourceType.Image, "owner1"),
+        };
+        var userSources = new List<Source>
+        {
+            new Source(2, "link2", "Source 2", SourceType.Video, "owner2"),
+            new Source(3, "link3", "Source 3", SourceType.Pdf, "owner3")
+        };
+
+        mainPageController.Sources = initialSources;
+
+        mainPageController.GetType().GetProperty("userSources")?.SetValue(mainPageController, userSources);
+
+        mainPageController.ResetUserSources();
+
+        Assert.AreEqual(userSources, mainPageController.Sources);
+    }
 }
