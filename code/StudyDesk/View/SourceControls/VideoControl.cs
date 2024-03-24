@@ -54,5 +54,13 @@ public partial class VideoControl : UserControl
         return filePath;
     }
 
+    /// <summary>
+    ///     Stops the video playback.
+    /// </summary>
+    public void StopPlayback()
+    {
+        this.videoPlayer.Ctlcontrols.stop();
+    }
+
     #endregion
 }

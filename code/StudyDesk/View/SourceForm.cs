@@ -69,9 +69,7 @@ public partial class SourceForm : Form
         switch (source.Type)
         {
             case SourceType.VideoLink:
-                _ = this.videoControl1.SetVideo(source.Link);
-                this.waitForPlayer();
-                this.videoControl1.Visible = true;
+                this.setupVideoPlayer(source);
                 break;
             case SourceType.PdfLink:
             case SourceType.Pdf:
@@ -86,6 +84,14 @@ public partial class SourceForm : Form
                 Close();
                 break;
         }
+    }
+
+    private void setupVideoPlayer(Source source)
+    {
+        _ = this.videoControl1.SetVideo(source.Link);
+        this.waitForPlayer();
+        this.videoControl1.Visible = true;
+        this.Closing += (sender, e) => this.videoControl1.StopPlayback();
     }
 
     private void setupNoteControlButtons(NoteControl noteControl)
