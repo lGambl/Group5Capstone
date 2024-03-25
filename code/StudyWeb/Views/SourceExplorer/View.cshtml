@@ -9,23 +9,45 @@
 </head>
 
 <style>
+    html, body{
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .content-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Two columns */
+        height: 69vh;
+        width: 90vw; /* Full width of the viewport */
+        gap: 10px; /* Optional: Adds space between columns */
+    }
+
+    .iframe-container {
+        height: 100%; /* Full height */
+        width: 100%; /* Full width */
+    }
+
+    iframe {
+        height: 100%; /* Full height */
+        width: 100%; /* Full width */
+        border: none; /* Optional: Removes the border */
+    }
+
+    /* Style for the notes section */
     #notes {
-        background-color: #fff8dc; /* Notebook-like paper color */
-        border: 2px solid #d3d3d3; /* Light grey border for the notebook */
+        background-color: #fff8dc;
+        border: 2px solid #d3d3d3;
         padding: 20px;
-        margin: 10px;
-        overflow-y: scroll;
-        box-shadow: 5px 5px 15px rgba(0,0,0,0.2); /* Adding some shadow for depth */
-        font-family: 'Courier New', Courier, monospace; /* Gives a typewritten or handwritten feel */
-        max-height: 700px; /* Adjust based on your layout */
-        height: 700px; /* Adjust based on your layout */
-        display: flex;
-        flex-direction: column;
+        overflow-y: auto; /* Allows scrolling */
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+        font-family: 'Courier New', Courier, monospace;
     }
 
     #notesList {
         overflow-y: auto;
-        max-height: 500px; /* Adjust as needed */
+        flex-grow: 1;
     }
 
     .note {
@@ -37,13 +59,13 @@
         word-wrap: break-word;
         overflow-y: scroll;
         max-height: 100px;
+        flex-grow: 1;
         
     }
 
     /* Optional: Adding some ruled lines to the notebook */
     #notes::before {
         content: '';
-        position: absolute;
         left: 30px; /* Adjust based on your layout */
         right: 30px; /* Adjust based on your layout */
         top: 0;
@@ -59,7 +81,6 @@
     /* Optional: Adding a 'margin' to the notebook */
     #notes::after {
         content: '';
-        position: absolute;
         left: 20px; /* Adjust based on your layout */
         top: 0;
         bottom: 0;
@@ -82,74 +103,80 @@
 
 <h1>@Html.DisplayFor(model => model.Title)</h1>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr">
-
-    @if (Model.Type == SourceTypes.VideoLink || Model.Type == SourceTypes.PdfLink || Model.Type == SourceTypes.ImageLink)
-    {
-        <div>
+<div class="content-container">
+@switch (Model.Type)
+{
+    case SourceTypes.VideoLink:
+    case SourceTypes.PdfLink:
+    case SourceTypes.ImageLink:
+        <div class="iframe-container">
             <iframe width="1000" height="700" src="@Html.DisplayFor(model => model.Link)"></iframe>
         </div>
-    }
-    else if (Model.Type == SourceTypes.Video)
-    {
-        <div>
-            <video width="1000" height="700" controls>
+        break;
+    case SourceTypes.Video:
+        <div class="iframe-container">
+            <video controls style="width: 100%; height: 100%;">
                 <source src="@Url.Content("~/" + Model.Link)" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
-    }
-    else if (Model.Type is SourceTypes.Pdf or SourceTypes.Image)
-    {
-        <div>
-            <iframe width="1000" height="700" src="@Url.Content("~/" + Model.Link)"></iframe>
-        </div>
-    }
-
-    <div id="notes">
-        @using (Html.BeginForm("Note", "SourceExplorer", FormMethod.Post, new { id = "noteForm", @class = "form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-
-            <p style="display:none" id="Id">@Html.DisplayFor(note => note.Id)</p>
-
-            <div class="form-group">
-                <label for="noteText" class="control-label">Add Note</label>
-                <textarea name="noteText" id="noteText" class="form-control" rows="3" required placeholder="Enter your note here..."></textarea>
+            break;
+            case SourceTypes.Pdf or SourceTypes.Image:
+        <div class="iframe-container">
+                <iframe width="1000" height="700" src="@Url.Content("~/" + Model.Link)"></iframe>
             </div>
+            break;
+            }
 
-            <button type="submit" class="btn btn-primary submit-note-btn-margin">Submit Note</button>
-
-            <div id="tags">
-                <label for="noteTags">Tags</label>
-                <textarea name="noteTags" id="noteTags" class="form-control" disabled rows="3" placeholder="No tags yet."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="noteTagEditor" class="control-label">Add Tags</label>
-                <textarea name="noteTags" id="noteTagEditor" class="form-control" rows="2" placeholder="Enter your tag here..."></textarea>
-            </div>
-
-            <button type="button" id="addTagNewNote" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
-
-            <div id="notesList">
-                @foreach (var note in Model.Notes)
+            <div id="notes">
+                @using (Html.BeginForm("Note", "SourceExplorer", FormMethod.Post, new { id = "noteForm", @class = "form-horizontal", role = "form" }))
                 {
-                    <div class="note">
-                        <p>@note.Text</p>
-                        <div id="tags">
-                            <label for="noteTags">Tags</label>
-                            <textarea disabled rows="3" placeholder="No tags yet.">@note.Tags.Select(t => t.Name).ToString()</textarea>
-                        </div>
-                        <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete</button>
+                    @Html.AntiForgeryToken()
+
+                    <p style="display:none" id="Id">@Html.DisplayFor(note => note.Id)</p>
+
+                    <div class="form-group">
+                        <label for="noteText" class="control-label">Add Note</label>
+                        <textarea name="noteText" id="noteText" class="form-control" rows="3" required placeholder="Enter your note here..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary submit-note-btn-margin">Submit Note</button>
+
+                    <div id="tags">
+                        <label for="noteTags">Tags</label>
+                        <textarea name="noteTags" id="newNoteTags" class="form-control" disabled rows="3" placeholder="No tags yet."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="noteTagEditor" class="control-label">Add Tags</label>
+                        <textarea name="noteTags" id="noteTagEditor" class="form-control" rows="2" placeholder="Enter your tag here..."></textarea>
+                    </div>
+
+                    <button type="button" id="addTagNewNote" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
+
+                    <div id="notesList">
+                        @foreach (var note in Model.Notes)
+                        {
+                            <div class="note">
+                                <p>@note.Text</p>
+                                <div id="tags">
+                                    <label for="noteTags">Tags</label>
+                                    <ul id="noteTags" disabled rows="2" placeholder="No tags yet.">
+                                        @foreach (var tag in note.Tags)
+                                        {
+                                            <li class="note-tags">@tag.Name</li>
+                                        }
+                                    </ul>
+                                </div>
+                                <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete</button>
+                            </div>
+                        }
                     </div>
                 }
             </div>
-        }
-    </div>
 
-</div>
-<script>
+        </div>
+        <script>
 
     function goBack() {
         window.history.back();
@@ -161,7 +188,7 @@
 
             var sourceId = $("#Id").text();
             var noteText = $('#noteText').val();
-            var noteTags = $('#noteTags').val();
+            var noteTags = $('#newNoteTags').val();
 
             $.ajax({
                 url: '/SourceExplorer/Note', 
@@ -208,7 +235,7 @@
 
     $(document).on('click', '#addTagNewNote', function () {
         var tagText = $('#noteTagEditor').val();
-        var noteTags = $('#noteTags').val();
+        var noteTags = $('#newNoteTags').val();
         var newTag = "<" + tagText + ">";
 
         $('#noteTags').val(newTag + "," + noteTags);
