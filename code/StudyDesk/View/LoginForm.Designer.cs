@@ -74,9 +74,10 @@ namespace StudyDesk.View
             // 
             // label1
             // 
+            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Magneto", 25F);
-            label1.Location = new Point(60, 73);
+            label1.Location = new Point(60, 57);
             label1.Name = "label1";
             label1.Size = new Size(226, 41);
             label1.TabIndex = 3;
