@@ -10,7 +10,7 @@ namespace StudyWeb.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            /*migrationBuilder.CreateTable(
                 name: "NoteTags",
                 columns: table => new
                 {
@@ -46,7 +46,7 @@ namespace StudyWeb.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Tags_NoteId",
                 table: "Tags",
-                column: "NoteId");
+                column: "NoteId");*/
         }
 
         /// <inheritdoc />
