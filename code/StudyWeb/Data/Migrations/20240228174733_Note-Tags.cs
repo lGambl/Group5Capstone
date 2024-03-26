@@ -19,37 +19,53 @@ namespace StudyWeb.Data.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
-            migrationBuilder.Sql(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Tags')
-        BEGIN
-            CREATE TABLE [dbo].[Tags] (
-                [Id] int NOT NULL IDENTITY(1,1),
-                [Name] nvarchar(max) NOT NULL,
-                CONSTRAINT [PK_Tags] PRIMARY KEY ([Id])
-            )
-        END");
+            migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NoteId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tags_Note_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Note",
+                        principalColumn: "Id");
+                });
 
-            migrationBuilder.Sql(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'NoteTags')
-        BEGIN
-            CREATE TABLE [dbo].[NoteTags] (
-                [Id] int NOT NULL IDENTITY(1,1),
-                [TagId] int DEFAULT 0 NOT NULL,
-                [NoteId] int NOT NULL,
-                CONSTRAINT [PK_NoteTags] PRIMARY KEY ([Id]),
-                CONSTRAINT [FK_Tags_Note_NoteId] FOREIGN KEY ([NoteId]) REFERENCES [dbo].[Note] ([Id]),
-                CONSTRAINT [FK_Tags_Tag_TagId] FOREIGN KEY ([TagId]) REFERENCES [dbo].[Tags] ([Id])
-            )
-        END");
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_NoteId",
+                table: "Tags",
+                column: "NoteId");
+
+            migrationBuilder.CreateTable(
+                name: "NoteTags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TagId = table.Column<int>(type: "int", nullable: false),
+                    NoteId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NoteTags", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                               name: "FK_Note_Source_SourceId",
-                                              table: "Note");
+            migrationBuilder.DropTable(
+                name: "NoteTags");
 
-            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'NoteTags') DROP TABLE [dbo].[NoteTags]");
-            migrationBuilder.Sql(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Tags') DROP TABLE [dbo].[Tags]");
+            migrationBuilder.DropTable(
+                name: "Tags");
         }
     }
 }
