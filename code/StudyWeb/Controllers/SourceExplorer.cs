@@ -112,13 +112,9 @@ public class SourceExplorer : Controller
 
         try
         {
-            var insertTagQuery = "INSERT INTO Tags (Name) VALUES (@Name);";
-            SqlParameter[] parameters =
-            {
-                new("@Name", tagName)
-            };
+            var tagList = new List<string> { tagName };
+            await this.addTagsIfNew(tagList);
 
-            await this.context.Database.ExecuteSqlRawAsync(insertTagQuery, parameters);
         }
         catch (Exception ex)
         {
