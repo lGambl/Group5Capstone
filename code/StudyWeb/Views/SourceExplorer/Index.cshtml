@@ -104,9 +104,11 @@
             selectedTags.push(validTag);
             updateSelectedTags();
             $('#tagInput').val('');
-            triggerSearch(); // Trigger the search
+            triggerSearch();
         } else if (validTag === '') {
             alert('Tags can only contain alphanumeric characters.');
+        } else {
+            alert('Tag could not be added to search. Ensure that the tag name is not empty and that it is not already in the search.');
         }
     });
 
