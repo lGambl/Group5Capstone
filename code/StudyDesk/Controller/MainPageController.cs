@@ -13,7 +13,7 @@ public class MainPageController
     private const string ConnectionString =
         "Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-    private readonly IList<Source> userSources;
+    //private readonly IList<Source> userSources;
 
     #endregion
 
@@ -34,6 +34,8 @@ public class MainPageController
     ///     The authentication service.
     /// </value>
     public AuthService AuthService { get; }
+
+    public IList<Source> userSources { get; set; }
 
     #endregion
 

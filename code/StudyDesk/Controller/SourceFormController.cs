@@ -137,6 +137,11 @@ public class SourceFormController
     /// </returns>
     public bool AddTagToExistingNote(int noteIndex, string tag)
     {
+        if (noteIndex < 1 || noteIndex > this.Notes.Count)
+        {
+            return false;
+        }
+
         var noteId = this.Notes[noteIndex - 1].Id;
         var noteTag = new NoteTag();
         noteTag.Name = tag;
