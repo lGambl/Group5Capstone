@@ -352,14 +352,12 @@
         $('#noteTagEditor').val('');
     });
 
-        // Existing JavaScript...
-
-        // Function to open the edit note modal
-        function openEditNoteModal(noteId, currentText) {
-            $('#editNoteId').val(noteId);
-            $('#newText').val(currentText);
-            $('#editNoteModal').modal('show');
-        }
+    // Function to open the edit note modal
+    function openEditNoteModal(noteId, currentText) {
+        $('#editNoteId').val(noteId);
+        $('#newText').val(currentText);
+        $('#editNoteModal').modal('show');
+    }
 
     // Handle the form submit within the modal
     $('#editNoteForm').submit(function (e) {
