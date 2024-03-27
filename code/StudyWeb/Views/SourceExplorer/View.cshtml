@@ -32,11 +32,12 @@
     .iframe-container {
         height: 100%; /* Full height */
         width: 100%; /* Full width */
+        display: flex;
     }
 
     iframe {
-        height: 100%; /* Full height */
-        width: 100%; /* Full width */
+        height: inherit;
+        align-content: center;
         border: none; /* Optional: Removes the border */
     }
 
@@ -132,12 +133,12 @@
         case SourceTypes.PdfLink:
         case SourceTypes.ImageLink:
             <div class="iframe-container">
-                <iframe width="1000" height="700" src="@Html.DisplayFor(model => model.Link)"></iframe>
+                <iframe width="100%" height="100%" src="@Html.DisplayFor(model => model.Link)"></iframe>
             </div>
             break;
         case SourceTypes.Video:
-            <div class="iframe-container">
-                <video controls style="width: 100%; height: 100%;">
+            <div class="iframe-container" style="align-content:center">
+                <video controls style="height:inherit;">
                     <source src="@Url.Content("~/" + Model.Link)" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
