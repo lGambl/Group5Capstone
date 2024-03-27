@@ -89,14 +89,14 @@ public class SourceExplorer : Controller
     }
 
     /// <summary>
-    /// Adds the tag.
+    ///     Adds the tag.
     /// </summary>
     /// <param name="noteId">The note identifier.</param>
     /// <param name="tagName">Name of the tag.</param>
     /// <returns></returns>
     [Authorize]
     [HttpPost]
-    [Route("SourceExplorer/AddTag")]
+    [Route("AddTag")]
     public async Task<IActionResult> AddTag([FromForm] int noteId, [FromForm] string tagName)
     {
         if (string.IsNullOrWhiteSpace(tagName))
@@ -112,13 +112,8 @@ public class SourceExplorer : Controller
 
         try
         {
-            var insertTagQuery = "INSERT INTO Tags (Name) VALUES (@Name);";
-            SqlParameter[] parameters =
-            {
-                new("@Name", tagName)
-            };
-
-            await this.context.Database.ExecuteSqlRawAsync(insertTagQuery, parameters);
+            var tagList = new List<string> { tagName };
+            await this.addTagsIfNew(tagList);
         }
         catch (Exception ex)
         {
@@ -129,6 +124,11 @@ public class SourceExplorer : Controller
         if (tag == null)
         {
             return BadRequest();
+        }
+
+        if (this.tagAlreadyAdded(tag, noteId))
+        {
+            return BadRequest(new { success = false, message = "Tag already added." });
         }
 
         try
@@ -148,6 +148,12 @@ public class SourceExplorer : Controller
         }
 
         return Ok(new { success = true, message = "Tag added successfully." });
+    }
+
+    private bool tagAlreadyAdded(Tags tag, int noteId)
+    {
+        var noteTagsEntry = this.context.NoteTags.FirstOrDefault(nt => nt.TagId == tag.Id && nt.NoteId == noteId);
+        return noteTagsEntry != null;
     }
 
     private Source? getSource(int? id)
@@ -409,7 +415,6 @@ public class SourceExplorer : Controller
             {
                 await this.addNoteWithTags(text, owner, sourceId, tags);
             }
-            
         }
         catch (Exception ex)
         {
@@ -428,6 +433,7 @@ public class SourceExplorer : Controller
                 return false;
             }
         }
+
         return true;
     }
 
@@ -442,7 +448,9 @@ public class SourceExplorer : Controller
         };
         var noteId = await this.context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
 
-        var note = this.context.Note.FirstOrDefault(n => n.Text == text && n.Owner == owner && n.SourceId == sourceId) ?? throw new Exception();
+        var note =
+            this.context.Note.FirstOrDefault(n => n.Text == text && n.Owner == owner && n.SourceId == sourceId) ??
+            throw new Exception();
 
         var tagList = tags.Split(',');
         await this.addTagsIfNew(tagList);
@@ -475,6 +483,7 @@ public class SourceExplorer : Controller
             {
                 continue;
             }
+
             var tagExists = this.context.Tags.FirstOrDefault(t => t.Name == tag);
             if (tagExists == null)
             {
@@ -551,12 +560,12 @@ public class SourceExplorer : Controller
     }
 
     /// <summary>
-    /// Deletes the note.
+    ///     Deletes the note.
     /// </summary>
     /// <param name="noteId">The note identifier.</param>
     /// <returns>
-    ///   Ok, if the note was removed successfully.
-    ///   BadRequest if the note was not deleted.
+    ///     Ok, if the note was removed successfully.
+    ///     BadRequest if the note was not deleted.
     /// </returns>
     [Authorize]
     [HttpDelete]
@@ -573,6 +582,7 @@ public class SourceExplorer : Controller
             const string deleteSourceQuery = "DELETE FROM note WHERE Id = @Id";
             var parameter = new SqlParameter("@Id", noteId);
             await this.context.Database.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
+            await this.deleteNoteTags(noteId);
         }
         catch (Exception ex)
         {
@@ -582,13 +592,21 @@ public class SourceExplorer : Controller
         return Ok(new { success = true, message = "Note deleted successfully." });
     }
 
+    private async Task deleteNoteTags(int noteId)
+    {
+        const string deleteNoteTagsQuery = "DELETE FROM NoteTags WHERE NoteId = @NoteId";
+
+        var parameter = new SqlParameter("@NoteId", noteId);
+        await this.context.Database.ExecuteSqlRawAsync(deleteNoteTagsQuery, parameter);
+    }
+
     /// <summary>
-    ///   Searches the tags.
+    ///     Searches the tags.
     /// </summary>
     /// <param name="tags">The tags.</param>
     /// <returns>
-    ///   Ok & a list of sources, if successful.
-    ///   BadRequest if unsuccessful.
+    ///     Ok & a list of sources, if successful.
+    ///     BadRequest if unsuccessful.
     /// </returns>
     [Authorize]
     [Route("SearchTags")]
@@ -626,6 +644,51 @@ public class SourceExplorer : Controller
         {
             return BadRequest(new { success = false, message = ex.Message });
         }
+    }
+
+    /// <summary>
+    /// Deletes the NoteTag entries for the given tagIds associated with the noteId.
+    /// </summary>
+    /// <param name="noteId">The id of the note.</param>
+    /// <param name="tagIds">The ids of the tags to delete.</param>
+    /// <returns>Ok if successful, BadRequest if an exception occurs, and Unauthorized if user is not authorized.</returns>
+    [Authorize]
+    [HttpDelete]
+    [Route("DeleteNoteTags/{noteId}")]
+    public async Task<IActionResult> DeleteNoteTags(int noteId, IEnumerable<int> tagIds)
+    {
+        if (noteId < 0 || tagIds == null || !tagIds.Any())
+        {
+            return BadRequest(new { success = false, message = "Note Id or Tag Ids not found. " });
+        }
+
+        var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (owner == null)
+        {
+            return Unauthorized(new { success = false, message = "User is not authenticated." });
+        }
+
+        try
+        {
+            foreach (var tagId in tagIds)
+            {
+                const string deleteNoteTagsQuery = "DELETE FROM NoteTags WHERE NoteId = @NoteId AND TagId = @TagId";
+
+                var parameters = new[]
+                {
+                    new SqlParameter("@NoteId", noteId),
+                    new SqlParameter("@TagId", tagId)
+                };
+
+                await this.context.Database.ExecuteSqlRawAsync(deleteNoteTagsQuery, parameters);
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
+
+        return Ok(new { success = true, message = "Note tags deleted successfully." });
     }
 
     #endregion
