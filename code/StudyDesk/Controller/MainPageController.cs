@@ -35,6 +35,10 @@ public class MainPageController
     /// </value>
     public AuthService AuthService { get; }
 
+    /// <summary>
+    ///   Gets or sets the user sources.
+    /// </summary>
+    /// <value>The user sources.</value>
     public IList<Source> userSources { get; set; }
 
     #endregion
@@ -54,6 +58,14 @@ public class MainPageController
     #endregion
 
     #region Methods
+
+    /// <summary>
+    ///   Gets the updated sources.
+    /// </summary>
+    public void GetUpdatedSources()
+    {
+        this.Sources = (IList<Source>)this.AuthService.GetSources().Result;
+    }
 
     /// <summary>
     ///     Logouts this instance.
