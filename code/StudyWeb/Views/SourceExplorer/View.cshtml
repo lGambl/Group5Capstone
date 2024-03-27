@@ -6,6 +6,7 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <style>
@@ -120,7 +121,7 @@
     }
 </style>
 
-<button onclick="goBack()">Go Back</button>
+<button type="button" onclick="goBack()">Go Back</button>
 
 <h1>@Html.DisplayFor(model => model.Title)</h1>
 
@@ -180,7 +181,8 @@
                 {
                     <div class="note">
                         <p>@note.Text</p>
-                        <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete Note</button>
+                        <button type="button" onclick="openEditNoteModal(@note.Id, '@note.Text')" class="edit-note-btn btn-secondary">Edit</button>
+                        <button type="button" class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete Note</button>
                         <div id="tags">
                             <label for="noteTags">Tags</label>
                             <ul id="noteTags" disabled rows="2" placeholder="No tags yet.">
@@ -192,8 +194,8 @@
                                 }
                             </ul>
                         </div>
-                        <button class="add-tag-btn btn-secondary" data-note-id="@note.Id">Add Tag</button>
-                        <button class="delete-tag-btn btn-secondary" data-note-id="@note.Id">Delete Tag(s)</button>
+                        <button type="button" class="add-tag-btn btn-secondary" data-note-id="@note.Id">Add Tag</button>
+                        <button type="button" class="delete-tag-btn btn-secondary" data-note-id="@note.Id">Delete Tag(s)</button>
                     </div>
                 }
             </div>
@@ -201,6 +203,30 @@
     </div>
 
 </div>
+
+<div class="modal fade" id="editNoteModal" tabindex="-1" role="dialog" aria-labelledby="editNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editNoteModalLabel">Edit Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editNoteForm">
+                    <input type="hidden" id="editNoteId" name="noteId" value="">
+                    <div class="form-group">
+                        <label for="newText" class="col-form-label">Note Text:</label>
+                        <textarea class="form-control" id="newText" name="newText"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 
     function goBack() {
@@ -324,4 +350,37 @@
         $('#noteTagEditor').val('');
     });
 
+    function openEditNoteModal(noteId, currentText) {
+        $('#editNoteId').val(noteId);
+        $('#newText').val(currentText);
+        $('#editNoteModal').modal('show');
+    }
+
+    $('#editNoteForm').submit(function (e) {
+        e.preventDefault();
+        var noteId = $('#editNoteId').val();
+        var newText = $('#newText').val();
+
+        $.ajax({
+            url: '/SourceExplorer/EditNote',
+            type: 'POST',
+            data: { noteId: noteId, newText: newText },
+            success: function (response) {
+                alert('Note updated successfully.');
+                $('#editNoteModal').modal('hide');
+                location.reload();
+            },
+            error: function () {
+                alert('Error updating note.');
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('.close').click(function () {
+            $('#editNoteModal').modal('hide');
+        });
+    });
 </script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
