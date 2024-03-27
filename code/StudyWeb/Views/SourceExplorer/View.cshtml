@@ -121,7 +121,7 @@
     }
 </style>
 
-<button onclick="goBack()">Go Back</button>
+<button type="button" onclick="goBack()">Go Back</button>
 
 <h1>@Html.DisplayFor(model => model.Title)</h1>
 
@@ -182,7 +182,7 @@
                     <div class="note">
                         <p>@note.Text</p>
                         <button type="button" onclick="openEditNoteModal(@note.Id, '@note.Text')" class="edit-note-btn btn-secondary">Edit</button>
-                        <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete Note</button>
+                        <button type="button" class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete Note</button>
                         <div id="tags">
                             <label for="noteTags">Tags</label>
                             <ul id="noteTags" disabled rows="2" placeholder="No tags yet.">
@@ -194,8 +194,8 @@
                                 }
                             </ul>
                         </div>
-                        <button class="add-tag-btn btn-secondary" data-note-id="@note.Id">Add Tag</button>
-                        <button class="delete-tag-btn btn-secondary" data-note-id="@note.Id">Delete Tag(s)</button>
+                        <button type="button" class="add-tag-btn btn-secondary" data-note-id="@note.Id">Add Tag</button>
+                        <button type="button" class="delete-tag-btn btn-secondary" data-note-id="@note.Id">Delete Tag(s)</button>
                     </div>
                 }
             </div>
