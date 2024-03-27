@@ -181,9 +181,8 @@
                 {
                     <div class="note">
                         <p>@note.Text</p>
+                        <button type="button" onclick="openEditNoteModal(@note.Id, '@note.Text')" class="edit-note-btn btn-secondary">Edit</button>
                         <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete Note</button>
-                        <!-- Edit Button -->
-                        <button onclick="openEditNoteModal(@note.Id, '@note.Text')" class="btn btn-info">Edit</button>
                         <div id="tags">
                             <label for="noteTags">Tags</label>
                             <ul id="noteTags" disabled rows="2" placeholder="No tags yet.">
@@ -205,7 +204,6 @@
 
 </div>
 
-<!-- Edit Note Modal -->
 <div class="modal fade" id="editNoteModal" tabindex="-1" role="dialog" aria-labelledby="editNoteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -352,14 +350,12 @@
         $('#noteTagEditor').val('');
     });
 
-    // Function to open the edit note modal
     function openEditNoteModal(noteId, currentText) {
         $('#editNoteId').val(noteId);
         $('#newText').val(currentText);
         $('#editNoteModal').modal('show');
     }
 
-    // Handle the form submit within the modal
     $('#editNoteForm').submit(function (e) {
         e.preventDefault();
         var noteId = $('#editNoteId').val();
@@ -372,11 +368,17 @@
             success: function (response) {
                 alert('Note updated successfully.');
                 $('#editNoteModal').modal('hide');
-                location.reload(); // Reload the page to see the updated note text
+                location.reload();
             },
             error: function () {
                 alert('Error updating note.');
             }
+        });
+    });
+
+    $(document).ready(function () {
+        $('.close').click(function () {
+            $('#editNoteModal').modal('hide');
         });
     });
 </script>
