@@ -62,6 +62,7 @@ public partial class MainPageForm : Form
     {
         var addSourceForm = new AddSourceForm(this.controller.AuthService);
         addSourceForm.ShowDialog();
+        this.controller.GetUpdatedSources();
         this.loadSources();
     }
 
