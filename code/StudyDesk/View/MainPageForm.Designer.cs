@@ -39,8 +39,8 @@
             label2 = new Label();
             resetSourcesButton = new Button();
             searchNoteTagPanel = new Panel();
-            searchTagsListView = new ListView();
             addTagToSearchListButton = new Button();
+            searchTagsListView = new ListView();
             searchNoteTagPanel.SuspendLayout();
             SuspendLayout();
             // 
@@ -159,14 +159,6 @@
             searchNoteTagPanel.Size = new Size(188, 191);
             searchNoteTagPanel.TabIndex = 9;
             // 
-            // searchTagsListView
-            // 
-            searchTagsListView.Location = new Point(4, 96);
-            searchTagsListView.Name = "searchTagsListView";
-            searchTagsListView.Size = new Size(175, 54);
-            searchTagsListView.TabIndex = 7;
-            searchTagsListView.UseCompatibleStateImageBehavior = false;
-            // 
             // addTagToSearchListButton
             // 
             addTagToSearchListButton.Location = new Point(50, 58);
@@ -176,6 +168,15 @@
             addTagToSearchListButton.Text = "Add tag to search list";
             addTagToSearchListButton.UseVisualStyleBackColor = true;
             addTagToSearchListButton.Click += addTagToSearchListButton_Click;
+            // 
+            // searchTagsListView
+            // 
+            searchTagsListView.Location = new Point(4, 96);
+            searchTagsListView.Name = "searchTagsListView";
+            searchTagsListView.Size = new Size(175, 54);
+            searchTagsListView.TabIndex = 7;
+            searchTagsListView.UseCompatibleStateImageBehavior = false;
+            searchTagsListView.View = System.Windows.Forms.View.List;
             // 
             // MainPageForm
             // 
