@@ -86,21 +86,21 @@
                 var dialogResult = addTagForm.ShowDialog();
                 if (dialogResult == DialogResult.OK)
                 {
-                    string newTag = addTagForm.EnteredTagName;
+                    string newTag = "<" + addTagForm.EnteredTagName + ">";
                     var duplicateTag = false;
                     foreach (ListViewItem currItem in this.tagsLlistView.Items)
                     {
                         var itemString = currItem.Text;
-                        if (itemString == "<" + newTag + ">")
+                        if (itemString == newTag)
                         {
                             duplicateTag = true;
                         }
                     }
                     if (!duplicateTag)
                     {
-                        this.tagsLlistView.Items.Add(new ListViewItem("<" + newTag + ">"));
+                        this.tagsLlistView.Items.Add(new ListViewItem(newTag));
                         List<string> tags = new List<string>();
-                        tags.Add("<" + newTag + ">");
+                        tags.Add(newTag);
                         AddTagButtonClicked?.Invoke(this, new NoteEventArgs(this.NoteIndex, tags));
                     }
                     else
