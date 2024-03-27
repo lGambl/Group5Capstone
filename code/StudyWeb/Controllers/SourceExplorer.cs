@@ -691,6 +691,12 @@ public class SourceExplorer : Controller
         return Ok(new { success = true, message = "Note tags deleted successfully." });
     }
 
+    /// <summary>
+    ///   Edits the note.
+    /// </summary>
+    /// <param name="noteId">The note identifier.</param>
+    /// <param name="newText">The new text.</param>
+    /// <returns></returns>
     [Authorize]
     [HttpPost]
     [Route("EditNote")]
@@ -715,7 +721,6 @@ public class SourceExplorer : Controller
 
         try
         {
-            // Prepare and execute the raw SQL update command.
             var updateNoteTextQuery = "UPDATE Note SET Text = @newText WHERE Id = @noteId AND Owner = @owner";
             var parameters = new[]
             {
