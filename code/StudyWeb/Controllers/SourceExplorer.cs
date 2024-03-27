@@ -691,5 +691,48 @@ public class SourceExplorer : Controller
         return Ok(new { success = true, message = "Note tags deleted successfully." });
     }
 
+    [Authorize]
+    [HttpPost]
+    [Route("EditNote")]
+    public async Task<IActionResult> EditNote([FromForm] int noteId, [FromForm] string newText)
+    {
+        if (string.IsNullOrWhiteSpace(newText))
+        {
+            return BadRequest(new { success = false, message = "New text for the note is required." });
+        }
+
+        var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (owner == null)
+        {
+            return Unauthorized(new { success = false, message = "User is not authenticated." });
+        }
+
+        var noteExists = await this.context.Note.AnyAsync(n => n.Id == noteId && n.Owner == owner);
+        if (!noteExists)
+        {
+            return NotFound(new { success = false, message = "Note not found or you do not have permission to edit it." });
+        }
+
+        try
+        {
+            // Prepare and execute the raw SQL update command.
+            var updateNoteTextQuery = "UPDATE Note SET Text = @newText WHERE Id = @noteId AND Owner = @owner";
+            var parameters = new[]
+            {
+                new SqlParameter("@newText", newText),
+                new SqlParameter("@noteId", noteId),
+                new SqlParameter("@owner", owner)
+            };
+
+            await this.context.Database.ExecuteSqlRawAsync(updateNoteTextQuery, parameters);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { success = false, message = $"An error occurred while updating the note: {ex.Message}" });
+        }
+
+        return Ok(new { success = true, message = "Note updated successfully." });
+    }
+
     #endregion
 }

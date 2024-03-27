@@ -6,6 +6,7 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <style>
@@ -181,6 +182,8 @@
                     <div class="note">
                         <p>@note.Text</p>
                         <button class="delete-note-btn btn-secondary" data-note-id="@note.Id">Delete Note</button>
+                        <!-- Edit Button -->
+                        <button onclick="openEditNoteModal(@note.Id, '@note.Text')" class="btn btn-info">Edit</button>
                         <div id="tags">
                             <label for="noteTags">Tags</label>
                             <ul id="noteTags" disabled rows="2" placeholder="No tags yet.">
@@ -201,6 +204,31 @@
     </div>
 
 </div>
+
+<!-- Edit Note Modal -->
+<div class="modal fade" id="editNoteModal" tabindex="-1" role="dialog" aria-labelledby="editNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editNoteModalLabel">Edit Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editNoteForm">
+                    <input type="hidden" id="editNoteId" name="noteId" value="">
+                    <div class="form-group">
+                        <label for="newText" class="col-form-label">Note Text:</label>
+                        <textarea class="form-control" id="newText" name="newText"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 
     function goBack() {
@@ -324,4 +352,35 @@
         $('#noteTagEditor').val('');
     });
 
+        // Existing JavaScript...
+
+        // Function to open the edit note modal
+        function openEditNoteModal(noteId, currentText) {
+            $('#editNoteId').val(noteId);
+            $('#newText').val(currentText);
+            $('#editNoteModal').modal('show');
+        }
+
+    // Handle the form submit within the modal
+    $('#editNoteForm').submit(function (e) {
+        e.preventDefault();
+        var noteId = $('#editNoteId').val();
+        var newText = $('#newText').val();
+
+        $.ajax({
+            url: '/SourceExplorer/EditNote',
+            type: 'POST',
+            data: { noteId: noteId, newText: newText },
+            success: function (response) {
+                alert('Note updated successfully.');
+                $('#editNoteModal').modal('hide');
+                location.reload(); // Reload the page to see the updated note text
+            },
+            error: function () {
+                alert('Error updating note.');
+            }
+        });
+    });
 </script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
