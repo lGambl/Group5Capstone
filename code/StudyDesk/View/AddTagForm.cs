@@ -29,8 +29,11 @@
             {
                 MessageBox.Show("Please enter a tag name.", "Input Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            else
+            {
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
         }
     }
 }

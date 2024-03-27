@@ -449,14 +449,17 @@ public class SourceExplorer : Controller
     {
         foreach (var tag in tagList)
         {
-            var tagId = this.context.Tags.FirstOrDefault(t => t.Name == tag)?.Id ?? throw new Exception();
-            var insertNoteTagQuery = "INSERT INTO NoteTags (NoteId, TagId) VALUES (@NoteId, @TagId);";
-            SqlParameter[] parameters =
+            if (!tag.IsNullOrEmpty())
             {
-                new("@NoteId", note.Id),
-                new("@TagId", tagId)
-            };
-            await this.context.Database.ExecuteSqlRawAsync(insertNoteTagQuery, parameters);
+                var tagId = this.context.Tags.FirstOrDefault(t => t.Name == tag)?.Id ?? throw new Exception();
+                var insertNoteTagQuery = "INSERT INTO NoteTags (NoteId, TagId) VALUES (@NoteId, @TagId);";
+                SqlParameter[] parameters =
+                {
+                    new("@NoteId", note.Id),
+                    new("@TagId", tagId)
+                };
+                await this.context.Database.ExecuteSqlRawAsync(insertNoteTagQuery, parameters);
+            }
         }
     }
 
