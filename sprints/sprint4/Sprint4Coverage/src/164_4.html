@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>D:\C#Projects\Group5Capstone\code\StudyDesk\Controller\AddSourceController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using StudyDesk.Model;
+
+namespace StudyDesk.Controller;
+
+/// &lt;summary&gt;
+///     A controller for the Add Source form.
+/// &lt;/summary&gt;
+public class AddSourceController
+{
+    #region Data members
+
+    private readonly AuthService authService;
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;AddSourceController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;authService&quot;&gt;The authentication service.&lt;/param&gt;
+    public AddSourceController(AuthService authService)
+    {
+        this.authService = authService;
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///     Adds the source.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;title&quot;&gt;The title.&lt;/param&gt;
+    /// &lt;param name=&quot;filePath&quot;&gt;The file path or link in the case of links.&lt;/param&gt;
+    /// &lt;param name=&quot;type&quot;&gt;The type.&lt;/param&gt;
+    /// &lt;returns&gt;True if successful, false otherwise.&lt;/returns&gt;
+    public bool AddSource(string title, string filePath, SourceType type)
+    {
+        try
+        {
+            this.authService.AddSource(title, filePath, type);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[22,5,22,56,1],[23,5,23,6,1],[24,9,24,40,1],[25,5,25,6,1],[39,5,39,6,1],[41,9,41,10,1],[42,13,42,63,1],[43,13,43,25,1],[45,9,45,26,1],[46,9,46,10,1],[47,13,47,26,1],[49,5,49,6,1]]);
+    </script>
+  </body>
+</html>
