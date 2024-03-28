@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>D:\C#Projects\Group5Capstone\code\StudyWeb\Data\ApplicationDbContext.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using StudyWeb.Models;
+
+namespace StudyWeb.Data;
+
+/// &lt;summary&gt;
+///     The Database Context
+/// &lt;/summary&gt;
+/// &lt;remarks&gt;
+///     The database context
+/// &lt;/remarks&gt;
+/// &lt;param name=&quot;options&quot;&gt;&lt;/param&gt;
+public class ApplicationDbContext(DbContextOptions&lt;ApplicationDbContext&gt; options) : IdentityDbContext(options)
+{
+    #region Properties
+
+    /// &lt;summary&gt;
+    ///     The Source
+    /// &lt;/summary&gt;
+    public DbSet&lt;Source&gt; Source { get; init; } = default!;
+
+    /// &lt;summary&gt;
+    ///     The Note
+    /// &lt;/summary&gt;
+    public DbSet&lt;Note&gt; Note { get; init; } = default!;
+
+    /// &lt;summary&gt;
+    ///     The SourceType
+    /// &lt;/summary&gt;
+    public DbSet&lt;SourceType&gt; SourceType { get; init; } = default!;
+
+    /// &lt;summary&gt;
+    ///     Gets the tags.
+    /// &lt;/summary&gt;
+    public DbSet&lt;Tags&gt; Tags { get; init; } = default!;
+
+    /// &lt;summary&gt;
+    ///     Gets the note tag.
+    /// &lt;/summary&gt;
+    public DbSet&lt;NoteTags&gt; NoteTags { get; init; } = default!;
+
+    #endregion
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,85,14,111,1],[21,35,21,39,1],[21,40,21,45,1],[21,50,21,58,1],[26,31,26,35,1],[26,36,26,41,1],[26,46,26,54,1],[31,43,31,47,1],[31,48,31,53,1],[31,58,31,66,1],[36,31,36,35,1],[36,36,36,41,1],[36,46,36,54,1],[41,39,41,43,1],[41,44,41,49,1],[41,54,41,62,1]]);
+    </script>
+  </body>
+</html>

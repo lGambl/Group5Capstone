@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>D:\C#Projects\Group5Capstone\code\StudyWeb\Controllers\AuthController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using StudyWeb.Models;
+
+namespace StudyWeb.Controllers
+{
+    /// &lt;summary&gt;
+    ///   The Authorization Controller class.
+    /// &lt;/summary&gt;
+    [Route(&quot;[controller]&quot;)]
+    public class AuthController : ControllerBase
+    {
+        private readonly SignInManager&lt;IdentityUser&gt; _signInManager;
+
+        /// &lt;summary&gt;
+        ///   Initializes a new instance of the &lt;see cref=&quot;AuthController&quot; /&gt; class.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;signInManager&quot;&gt;
+        ///   The sign in manager.
+        /// &lt;/param&gt;
+        public AuthController(SignInManager&lt;IdentityUser&gt; signInManager)
+        {
+            _signInManager = signInManager;
+        }
+
+        /// &lt;summary&gt;
+        ///   Logins the specified model.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;model&quot;&gt;
+        ///   The model.
+        /// &lt;/param&gt;
+        /// &lt;returns&gt;
+        ///   Ok if the credentials are legitimate, Unauthorized if illegitimate. 
+        /// &lt;/returns&gt;
+        [HttpPost(&quot;login&quot;)]
+        public async Task&lt;IActionResult&gt; Login([FromBody] LoginDto model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, isPersistent: false, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var keyString = &quot;TheSuperSecretKeyThatIsLongEnough&quot;;
+                var key = Encoding.ASCII.GetBytes(keyString);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, model.Username)
+                        // Add other claims as needed
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return Ok(new { Token = tokenHandler.WriteToken(token) });
+            }
+            return Unauthorized();
+        }
+    }
+
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[25,9,25,73,0],[26,9,26,10,0],[27,13,27,44,0],[28,9,28,10,0],[41,9,41,10,0],[42,13,42,145,0],[44,13,44,34,0],[45,13,45,14,0],[46,17,46,66,0],[47,17,47,69,0],[48,17,48,62,0],[49,17,58,19,0],[60,17,60,71,0],[61,17,61,75,0],[63,13,63,35,0],[64,9,64,10,0]]);
+    </script>
+  </body>
+</html>

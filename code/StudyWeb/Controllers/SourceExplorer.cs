@@ -16,6 +16,7 @@ public class SourceExplorer : Controller
     #region Data members
 
     private readonly ApplicationDbContext context;
+    private readonly IDatabaseService databaseService;
 
     #endregion
 
@@ -25,9 +26,12 @@ public class SourceExplorer : Controller
     ///     Initializes a new instance of the <see cref="SourceExplorer" /> class.
     /// </summary>
     /// <param name="context">The context.</param>
-    public SourceExplorer(ApplicationDbContext context)
+    /// <param service="service">The service.</param>
+    public SourceExplorer(ApplicationDbContext context, IDatabaseService service)
     {
         this.context = context;
+        this.databaseService = service;
+        
     }
 
     #endregion
@@ -121,10 +125,6 @@ public class SourceExplorer : Controller
         }
 
         var tag = this.context.Tags.FirstOrDefault(t => t.Name == tagName);
-        if (tag == null)
-        {
-            return BadRequest();
-        }
 
         if (this.tagAlreadyAdded(tag, noteId))
         {
@@ -140,7 +140,7 @@ public class SourceExplorer : Controller
                 new("@TagId", tag.Id)
             };
 
-            await this.context.Database.ExecuteSqlRawAsync(insertNoteTagQuery, parameters);
+            await this.databaseService.ExecuteSqlRawAsync(insertNoteTagQuery, parameters);
         }
         catch (Exception ex)
         {
@@ -403,13 +403,13 @@ public class SourceExplorer : Controller
             if (this.noTags(tags))
             {
                 var insertNoteQuery = "INSERT INTO Note (Text, Owner, SourceId) VALUES (@Text, @Owner, @SourceId);";
-                SqlParameter[] parameters =
-                {
-                    new("@Text", text),
-                    new("@Owner", owner),
-                    new("@SourceId", sourceId)
-                };
-                await this.context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+                object[] parameters =
+                [
+                    new SqlParameter("@Text", text),
+                    new SqlParameter("@Owner", owner),
+                    new SqlParameter("@SourceId", sourceId)
+                ];
+                await this.databaseService.ExecuteSqlRawAsync(insertNoteQuery, parameters);
             }
             else
             {
@@ -446,7 +446,7 @@ public class SourceExplorer : Controller
             new("@Owner", owner),
             new("@SourceId", sourceId)
         };
-        var noteId = await this.context.Database.ExecuteSqlRawAsync(insertNoteQuery, parameters);
+        var noteId = await this.databaseService.ExecuteSqlRawAsync(insertNoteQuery, parameters);
 
         var note =
             this.context.Note.FirstOrDefault(n => n.Text == text && n.Owner == owner && n.SourceId == sourceId) ??
@@ -470,7 +470,7 @@ public class SourceExplorer : Controller
                     new("@NoteId", note.Id),
                     new("@TagId", tagId)
                 };
-                await this.context.Database.ExecuteSqlRawAsync(insertNoteTagQuery, parameters);
+                await this.databaseService.ExecuteSqlRawAsync(insertNoteTagQuery, parameters);
             }
         }
     }
@@ -492,7 +492,7 @@ public class SourceExplorer : Controller
                 {
                     new("@Name", tag)
                 };
-                await this.context.Database.ExecuteSqlRawAsync(insertTagQuery, parameters);
+                await this.databaseService.ExecuteSqlRawAsync(insertTagQuery, parameters);
             }
         }
     }
@@ -521,7 +521,7 @@ public class SourceExplorer : Controller
             {
                 const string deleteSourceQuery = "DELETE FROM source WHERE Id = @Id";
                 var parameter = new SqlParameter("@Id", sourceId);
-                await this.context.Database.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
+                await this.databaseService.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
             }
             catch (Exception ex)
             {
@@ -545,7 +545,7 @@ public class SourceExplorer : Controller
                 {
                     const string deleteNoteQuery = "DELETE FROM note WHERE Id = @Id";
                     var parameter = new SqlParameter("@Id", currNote.Id);
-                    await this.context.Database.ExecuteSqlRawAsync(deleteNoteQuery, parameter);
+                    await this.databaseService.ExecuteSqlRawAsync(deleteNoteQuery, parameter);
                 }
             }
             catch (Exception)
@@ -581,7 +581,7 @@ public class SourceExplorer : Controller
         {
             const string deleteSourceQuery = "DELETE FROM note WHERE Id = @Id";
             var parameter = new SqlParameter("@Id", noteId);
-            await this.context.Database.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
+            await this.databaseService.ExecuteSqlRawAsync(deleteSourceQuery, parameter);
             await this.deleteNoteTags(noteId);
         }
         catch (Exception ex)
@@ -597,7 +597,7 @@ public class SourceExplorer : Controller
         const string deleteNoteTagsQuery = "DELETE FROM NoteTags WHERE NoteId = @NoteId";
 
         var parameter = new SqlParameter("@NoteId", noteId);
-        await this.context.Database.ExecuteSqlRawAsync(deleteNoteTagsQuery, parameter);
+        await this.databaseService.ExecuteSqlRawAsync(deleteNoteTagsQuery, parameter);
     }
 
     /// <summary>
@@ -680,7 +680,7 @@ public class SourceExplorer : Controller
                     new SqlParameter("@TagId", tagId)
                 };
 
-                await this.context.Database.ExecuteSqlRawAsync(deleteNoteTagsQuery, parameters);
+                await this.databaseService.ExecuteSqlRawAsync(deleteNoteTagsQuery, parameters);
             }
         }
         catch (Exception ex)
@@ -729,7 +729,7 @@ public class SourceExplorer : Controller
                 new SqlParameter("@owner", owner)
             };
 
-            await this.context.Database.ExecuteSqlRawAsync(updateNoteTextQuery, parameters);
+            await this.databaseService.ExecuteSqlRawAsync(updateNoteTextQuery, parameters);
         }
         catch (Exception ex)
         {

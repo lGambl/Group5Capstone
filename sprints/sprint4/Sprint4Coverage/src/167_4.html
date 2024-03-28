@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>D:\C#Projects\Group5Capstone\code\StudyDesk\Controller\MainPageController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Text.RegularExpressions;
+using StudyDesk.Model;
+
+namespace StudyDesk.Controller;
+
+/// &lt;summary&gt;
+///     Controller for the main page.
+/// &lt;/summary&gt;
+public class MainPageController
+{
+    #region Data members
+
+    private const string ConnectionString =
+        &quot;Server=(localdb)\\mssqllocaldb;Database=aspnet-BestPhonebookApp-0fc62a5a-c4b5-4292-9de7-2d743b650400;Trusted_Connection=True;MultipleActiveResultSets=true&quot;;
+
+    //private readonly IList&lt;Source&gt; userSources;
+
+    #endregion
+
+    #region Properties
+
+    /// &lt;summary&gt;
+    ///     Gets or sets the sources of the logged-in user.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The sources as a collection of Source objects.
+    /// &lt;/value&gt;
+    public IList&lt;Source&gt; Sources { get; set; }
+
+    /// &lt;summary&gt;
+    ///     Gets the authentication service.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;
+    ///     The authentication service.
+    /// &lt;/value&gt;
+    public AuthService AuthService { get; }
+
+    /// &lt;summary&gt;
+    ///   Gets or sets the user sources.
+    /// &lt;/summary&gt;
+    /// &lt;value&gt;The user sources.&lt;/value&gt;
+    public IList&lt;Source&gt; userSources { get; set; }
+
+    #endregion
+
+    #region Constructors
+
+    /// &lt;summary&gt;
+    ///     Initializes a new instance of the &lt;see cref=&quot;MainPageController&quot; /&gt; class.
+    /// &lt;/summary&gt;
+    public MainPageController(AuthService auth)
+    {
+        this.AuthService = auth;
+        this.Sources = this.AuthService.GetSources().Result.ToList();
+        this.userSources = this.Sources;
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// &lt;summary&gt;
+    ///   Gets the updated sources.
+    /// &lt;/summary&gt;
+    public void GetUpdatedSources()
+    {
+        this.Sources = (IList&lt;Source&gt;)this.AuthService.GetSources().Result;
+    }
+
+    /// &lt;summary&gt;
+    ///     Logouts this instance.
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;True if successful, false otherwise.&lt;/returns&gt;
+    public bool Logout()
+    {
+        return this.AuthService.Logout();
+    }
+
+
+    /// &lt;summary&gt;
+    ///     Deletes the source.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;title&quot;&gt;The title.&lt;/param&gt;
+    /// &lt;returns&gt;
+    ///     True if the source was deleted, False if not deleted.
+    /// &lt;/returns&gt;
+    public async Task&lt;bool&gt; DeleteSource(string title)
+    {
+        const string pattern = @&quot;\{(.*?)\}&quot;;
+        var match = Regex.Match(title, pattern);
+        var result = match.Groups[1].Value;
+
+        var sourceId = -1;
+        foreach (var currSource in this.Sources)
+        {
+            if (currSource.Title == result)
+            {
+                sourceId = currSource.Id;
+                break;
+            }
+        }
+
+        var response = this.AuthService.DeleteSource(sourceId);
+
+        if (response)
+        {
+            this.deleteSourceFromSources(result);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// &lt;summary&gt;
+    ///   Gets the sources with matching note tags.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;tag&quot;&gt;The tags.&lt;/param&gt;
+    /// &lt;returns&gt;
+    ///   A list of the sources that have notes with matching tags.
+    /// &lt;/returns&gt;
+    public async Task&lt;List&lt;Source&gt;&gt; GetSourcesWithMatchingNoteTags(IEnumerable&lt;string&gt; tags)
+    {
+        List&lt;Source&gt; sources = new List&lt;Source&gt;();
+
+        // Await the asynchronous method call
+        var matchingSources = await this.AuthService.GetSourcesWithMatchingTags(tags).ConfigureAwait(false);
+
+        foreach (var currSource in matchingSources)
+        {
+            var newLink = &quot;https://localhost:7240/&quot; + currSource.Link;
+            currSource.Link = newLink;
+            sources.Add(currSource);
+        }
+
+        if (sources.Count == 0)
+        {
+            sources = null;
+        }
+        else
+        {
+            this.Sources = sources;
+        }
+
+        return sources;
+    }
+
+    /// &lt;summary&gt;
+    ///   Resets the user&#39;s sources.
+    /// &lt;/summary&gt;
+    public void ResetUserSources()
+    {
+        this.Sources = this.userSources;
+    }
+
+    private void deleteSourceFromSources(string result)
+    {
+        Source? sourceToRemove = null;
+        foreach (var currSource in this.Sources)
+        {
+            if (currSource.Title == result)
+            {
+                sourceToRemove = currSource;
+                break;
+            }
+        }
+
+        this.Sources.Remove(sourceToRemove!);
+    }
+
+    #endregion
+
+    // /// &lt;summary&gt;
+    // ///     Initializes a new instance of the &lt;see cref=&quot;MainPageController&quot; /&gt; class.
+    // ///     Here for testing purposes.
+    // /// &lt;/summary&gt;
+    // /// &lt;param name=&quot;auth&quot;&gt;The authentication.&lt;/param&gt;
+    // /// &lt;param name=&quot;client&quot;&gt;The client.&lt;/param&gt;
+    // public MainPageController(AuthService auth, HttpClient client)
+    // {
+    //     this.AuthService = auth;
+    //     this.Sources = this.AuthService.GetSources().Result.ToList();
+    //     this.Client = client;
+    // }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[28,36,28,40,1],[28,41,28,45,1],[36,38,36,42,1],[42,40,42,44,1],[42,45,42,49,1],[51,5,51,48,1],[52,5,52,6,1],[53,9,53,33,1],[54,9,54,70,1],[55,9,55,41,1],[56,5,56,6,1],[66,5,66,6,0],[67,9,67,76,0],[68,5,68,6,0],[75,5,75,6,1],[76,9,76,42,1],[77,5,77,6,1],[88,5,88,6,1],[90,9,90,49,1],[91,9,91,44,1],[93,9,93,27,1],[94,9,94,16,1],[94,18,94,32,1],[94,33,94,35,1],[94,36,94,48,1],[95,9,95,10,1],[96,13,96,44,1],[97,13,97,14,0],[98,17,98,42,0],[99,17,99,23,0],[101,9,101,10,1],[103,9,103,64,1],[105,9,105,22,1],[106,9,106,10,1],[107,13,107,50,1],[108,13,108,25,1],[111,9,111,22,1],[112,5,112,6,1],[122,5,122,6,1],[123,9,123,51,1],[126,9,126,109,1],[128,9,128,16,1],[128,18,128,32,1],[128,33,128,35,1],[128,36,128,51,1],[129,9,129,10,1],[130,13,130,71,1],[131,13,131,39,1],[132,13,132,37,1],[133,9,133,10,1],[135,9,135,32,1],[136,9,136,10,1],[137,13,137,28,1],[138,9,138,10,1],[140,9,140,10,1],[141,13,141,36,1],[142,9,142,10,1],[144,9,144,24,1],[145,5,145,6,1],[151,5,151,6,1],[152,9,152,41,1],[153,5,153,6,1],[156,5,156,6,1],[157,9,157,39,1],[158,9,158,16,1],[158,18,158,32,1],[158,33,158,35,1],[158,36,158,48,1],[159,9,159,10,1],[160,13,160,44,1],[161,13,161,14,0],[162,17,162,45,0],[163,17,163,23,0],[165,9,165,10,1],[167,9,167,46,1],[168,5,168,6,1]]);
+    </script>
+  </body>
+</html>
