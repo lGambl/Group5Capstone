@@ -1,0 +1,12 @@
+Context: User is searching for sources that have notes with tags that match the searched tag.
+Primary Flow:
+1.  The user types the tag into the search text box
+2.  The user clicks add tag button.
+3.  The tag is added a a list of tags to be searched.
+4.  The user clicks search button
+5.  The sources list view is populated with all sources that have notes with tags that match one and/or all tags searched.
+
+Alternative Flow(s):
+User selects to reset the sources:
+    1a.  The user clicks the reset button
+    2a.  The list view is reset and populated with the user's sources. 

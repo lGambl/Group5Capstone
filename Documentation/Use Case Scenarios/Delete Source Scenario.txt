@@ -1,0 +1,14 @@
+Context: User has loaded into the source explorer
+Primary Flow:
+1.  The user selects a source to delete.
+2.  A prompt appears asking the user for confirmation.
+3.  After confirming, the source is removed and the page is refreshed.
+
+Alternative Flow(s):
+User cancels deletion:
+    3a.  The user clicks cancel on the prompt.
+    4a.  The user returns to the source explorer.
+
+Error occurs when deleting source:
+    3a.  An alert is displayed informing the user of the error.
+    4a.  The user returns to the source explorer.
