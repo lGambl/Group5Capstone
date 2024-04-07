@@ -30,8 +30,6 @@ public partial class SourceForm : Form
         this.loadNotes();
         this.loadSource(source);
         this.documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        //this.notesFlowLayoutPanel.Anchor =
-        //AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
     }
 
     #endregion
@@ -47,26 +45,6 @@ public partial class SourceForm : Form
         {
             this.notesListView.Items.Add(currNote.Text);
         }
-
-        /*this.notesFlowLayoutPanel.Controls.Clear();
-        this.controller.RefreshNotes();
-
-        var addNoteControl = new AddNoteControl();
-        addNoteControl.BorderStyle = BorderStyle.Fixed3D;
-        this.setupAddnoteControlButtons(addNoteControl);
-        this.notesFlowLayoutPanel.Controls.Add(addNoteControl);
-
-        var index = 1;
-        foreach (var note in this.controller.Notes)
-        {
-            var noteControl = new NoteControl(index);
-            noteControl.BorderStyle = BorderStyle.Fixed3D;
-            noteControl.setNoteText(note.Text);
-            noteControl.SetNoteTags(note.NoteTags);
-            this.setupNoteControlButtons(noteControl);
-            this.notesFlowLayoutPanel.Controls.Add(noteControl);
-            index++;
-        }*/
     }
 
     private void loadSource(Source source)
@@ -117,6 +95,13 @@ public partial class SourceForm : Form
         var addNoteForm = new AddNoteForm(this.controller);
         addNoteForm.Owner = this;
         addNoteForm.ShowDialog();
+    }
+
+    private void notesListView_MouseDoubleClick(object sender, MouseEventArgs e)
+    {
+        var note = this.controller.Notes[this.notesListView.SelectedIndices[0]];
+        var noteForm = new NoteForm(note, this.controller, this.notesListView.SelectedIndices[0]);
+        noteForm.ShowDialog();
     }
 
     /*private void setupNoteControlButtons(NoteControl noteControl)

@@ -106,11 +106,13 @@
             // notesListView
             // 
             notesListView.Location = new Point(3, 30);
+            notesListView.MultiSelect = false;
             notesListView.Name = "notesListView";
             notesListView.Size = new Size(269, 371);
             notesListView.TabIndex = 1;
             notesListView.UseCompatibleStateImageBehavior = false;
             notesListView.View = System.Windows.Forms.View.List;
+            notesListView.MouseDoubleClick += notesListView_MouseDoubleClick;
             // 
             // SourceForm
             // 

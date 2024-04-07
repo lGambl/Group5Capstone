@@ -87,6 +87,7 @@
             // tagsListView
             // 
             tagsListView.Location = new Point(119, 144);
+            tagsListView.MultiSelect = false;
             tagsListView.Name = "tagsListView";
             tagsListView.Size = new Size(235, 102);
             tagsListView.TabIndex = 5;
