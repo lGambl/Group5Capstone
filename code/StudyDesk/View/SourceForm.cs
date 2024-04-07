@@ -30,8 +30,8 @@ public partial class SourceForm : Form
         this.loadNotes();
         this.loadSource(source);
         this.documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        this.notesFlowLayoutPanel.Anchor =
-            AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        //this.notesFlowLayoutPanel.Anchor =
+        //AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
     }
 
     #endregion
@@ -40,7 +40,15 @@ public partial class SourceForm : Form
 
     private void loadNotes()
     {
-        this.notesFlowLayoutPanel.Controls.Clear();
+        this.notesListView.Clear();
+        this.controller.RefreshNotes();
+
+        foreach (var currNote in this.controller.Notes)
+        {
+            this.notesListView.Items.Add(currNote.Text);
+        }
+
+        /*this.notesFlowLayoutPanel.Controls.Clear();
         this.controller.RefreshNotes();
 
         var addNoteControl = new AddNoteControl();
@@ -58,7 +66,7 @@ public partial class SourceForm : Form
             this.setupNoteControlButtons(noteControl);
             this.notesFlowLayoutPanel.Controls.Add(noteControl);
             index++;
-        }
+        }*/
     }
 
     private void loadSource(Source source)
@@ -94,20 +102,37 @@ public partial class SourceForm : Form
         this.Closing += (sender, e) => this.videoControl1.StopPlayback();
     }
 
-    private void setupNoteControlButtons(NoteControl noteControl)
+    private void waitForPlayer()
+    {
+        MessageBox.Show("Please wait for the video to load", "Loading Video", MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
+        while (!this.videoControl1.PlayerReady)
+        {
+            Application.DoEvents();
+        }
+    }
+
+    private void addNoteButton_Click(object sender, EventArgs e)
+    {
+        var addNoteForm = new AddNoteForm(this.controller);
+        addNoteForm.Owner = this;
+        addNoteForm.ShowDialog();
+    }
+
+    /*private void setupNoteControlButtons(NoteControl noteControl)
     {
         noteControl.AddTagButtonClicked += this.NoteControl_AddTagButtonClicked;
         noteControl.DeleteNoteButtonClicked += this.NoteControl_DeleteNoteButtonClicked;
         noteControl.SaveNotesChangesButtonClick += this.NoteControl_SaveChangesButtonClicked;
         noteControl.DeleteTagButtonClick += this.NoteControl_DeleteTagButtonClicked;
-    }
+    }*/
 
-    private void setupAddnoteControlButtons(AddNoteControl addNoteControl)
+    /*private void setupAddnoteControlButtons(AddNoteControl addNoteControl)
     {
         addNoteControl.AddNoteButtonClicked += this.AddNoteControl_AddNoteButtonClicked;
-    }
+    }*/
 
-    private void AddNoteControl_AddNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
+    /*private void AddNoteControl_AddNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
     {
         if (e.Tags is { Count: > 0 })
         {
@@ -119,9 +144,9 @@ public partial class SourceForm : Form
         }
 
         this.loadNotes();
-    }
+    }*/
 
-    private void NoteControl_DeleteNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
+    /*private void NoteControl_DeleteNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
     {
         var result = MessageBox.Show("Are you sure you want to delete this note?", "Confirm Deletion",
             MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -133,14 +158,14 @@ public partial class SourceForm : Form
                 this.notesFlowLayoutPanel.Controls.RemoveAt(e.NoteIndex);
             }
         }
-    }
+    }*/
 
-    private void NoteControl_AddTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
+    /*private void NoteControl_AddTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
     {
         this.controller.AddTagToExistingNote(e.NoteIndex, e.Tags[0]);
-    }
+    }*/
 
-    private void NoteControl_SaveChangesButtonClicked(object sender, NoteControl.NoteEventArgs e)
+    /*private void NoteControl_SaveChangesButtonClicked(object sender, NoteControl.NoteEventArgs e)
     {
         var result = MessageBox.Show("Are you sure you want to save the changes to this note?", "Confirm Changes",
             MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -152,9 +177,9 @@ public partial class SourceForm : Form
                 this.notesFlowLayoutPanel.Refresh();
             }
         }
-    }
+    }*/
 
-    private void NoteControl_DeleteTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
+    /*private void NoteControl_DeleteTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
     {
         var result = MessageBox.Show("Are you sure you want to delete this tag?", "Confirm Deletion",
             MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -163,17 +188,7 @@ public partial class SourceForm : Form
         {
             this.controller.DeleteNoteTag(e.NoteIndex - 1, e.NoteText);
         }
-    }
-
-    private void waitForPlayer()
-    {
-        MessageBox.Show("Please wait for the video to load", "Loading Video", MessageBoxButtons.OK,
-            MessageBoxIcon.Information);
-        while (!this.videoControl1.PlayerReady)
-        {
-            Application.DoEvents();
-        }
-    }
+    }*/
 
     #endregion
 
