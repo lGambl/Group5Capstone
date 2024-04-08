@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.Data.SqlClient;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Data.SqlClient;
 using StudyDesk.Model;
 
 namespace StudyDesk.Controller;
@@ -228,12 +226,27 @@ public class SourceFormController
 
                 if (result)
                 {
+                    this.Notes[noteIndex].NoteTags.RemoveAt(this.getNoteTagIndex(noteIndex, tag));
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    private int getNoteTagIndex(int noteIndex, string tag)
+    {
+        int index = 0;
+        foreach (var currTag in this.Notes[noteIndex].NoteTags)    
+        {
+            if (currTag == tag)
+            {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 
     private int getTagId(int noteIndex, string tag)
