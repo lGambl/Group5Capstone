@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using StudyDesk.Controller;
+﻿using StudyDesk.Controller;
 
 namespace StudyDesk.View
 {
+    /// <summary>
+    ///   Form for adding a note.
+    /// </summary>
     public partial class AddNoteForm : Form
     {
-        private SourceFormController controller;
+        private readonly SourceFormController controller;
+        private SourceForm sourceForm;
 
-        public AddNoteForm(SourceFormController controller)
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AddNoteForm" /> class.
+        /// </summary>
+        /// <param name="controller">The controller.</param>
+        public AddNoteForm(SourceFormController controller, SourceForm sourceForm)
         {
             InitializeComponent();
             this.controller = controller;
+            this.sourceForm = sourceForm;
         }
 
         private void addNoteButton_Click(object sender, EventArgs e)
@@ -34,6 +34,7 @@ namespace StudyDesk.View
             }
             //TODO: Refresh the notes in the SourceExplorer window.
             this.Close();
+            this.sourceForm.LoadNotes();
         }
 
         private void addTagButton_Click(object sender, EventArgs e)

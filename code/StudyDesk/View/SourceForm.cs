@@ -1,6 +1,6 @@
-﻿using StudyDesk.Controller;
+﻿using System.Runtime.CompilerServices;
+using StudyDesk.Controller;
 using StudyDesk.Model;
-using StudyDesk.View.SourceControls;
 
 namespace StudyDesk.View;
 
@@ -27,7 +27,7 @@ public partial class SourceForm : Form
         this.InitializeComponent();
         this.controller = new SourceFormController(source);
         StartPosition = FormStartPosition.CenterScreen;
-        this.loadNotes();
+        this.LoadNotes();
         this.loadSource(source);
         this.documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
     }
@@ -36,7 +36,10 @@ public partial class SourceForm : Form
 
     #region Methods
 
-    private void loadNotes()
+    /// <summary>
+    ///   Loads the notes.
+    /// </summary>
+    public void LoadNotes()
     {
         this.notesListView.Clear();
         this.controller.RefreshNotes();
@@ -92,88 +95,18 @@ public partial class SourceForm : Form
 
     private void addNoteButton_Click(object sender, EventArgs e)
     {
-        var addNoteForm = new AddNoteForm(this.controller);
-        addNoteForm.Owner = this;
+        var addNoteForm = new AddNoteForm(this.controller, this);
+        addNoteForm.StartPosition = FormStartPosition.CenterParent;
         addNoteForm.ShowDialog();
     }
 
     private void notesListView_MouseDoubleClick(object sender, MouseEventArgs e)
     {
         var note = this.controller.Notes[this.notesListView.SelectedIndices[0]];
-        var noteForm = new NoteForm(note, this.controller, this.notesListView.SelectedIndices[0]);
+        var noteForm = new NoteForm(note, this.controller, this.notesListView.SelectedIndices[0], this);
+        noteForm.StartPosition = FormStartPosition.CenterParent;
         noteForm.ShowDialog();
     }
-
-    /*private void setupNoteControlButtons(NoteControl noteControl)
-    {
-        noteControl.AddTagButtonClicked += this.NoteControl_AddTagButtonClicked;
-        noteControl.DeleteNoteButtonClicked += this.NoteControl_DeleteNoteButtonClicked;
-        noteControl.SaveNotesChangesButtonClick += this.NoteControl_SaveChangesButtonClicked;
-        noteControl.DeleteTagButtonClick += this.NoteControl_DeleteTagButtonClicked;
-    }*/
-
-    /*private void setupAddnoteControlButtons(AddNoteControl addNoteControl)
-    {
-        addNoteControl.AddNoteButtonClicked += this.AddNoteControl_AddNoteButtonClicked;
-    }*/
-
-    /*private void AddNoteControl_AddNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
-    {
-        if (e.Tags is { Count: > 0 })
-        {
-            this.controller.AddNoteWithTags(e.NoteText, e.Tags);
-        }
-        else
-        {
-            this.controller.AddNote(e.NoteText);
-        }
-
-        this.loadNotes();
-    }*/
-
-    /*private void NoteControl_DeleteNoteButtonClicked(object sender, NoteControl.NoteEventArgs e)
-    {
-        var result = MessageBox.Show("Are you sure you want to delete this note?", "Confirm Deletion",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        if (result == DialogResult.Yes)
-        {
-            if (this.controller.DeleteNoteAt(e.NoteIndex - 1))
-            {
-                this.notesFlowLayoutPanel.Controls.RemoveAt(e.NoteIndex);
-            }
-        }
-    }*/
-
-    /*private void NoteControl_AddTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
-    {
-        this.controller.AddTagToExistingNote(e.NoteIndex, e.Tags[0]);
-    }*/
-
-    /*private void NoteControl_SaveChangesButtonClicked(object sender, NoteControl.NoteEventArgs e)
-    {
-        var result = MessageBox.Show("Are you sure you want to save the changes to this note?", "Confirm Changes",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        if (result == DialogResult.Yes)
-        {
-            if (this.controller.EditNote(e.NoteIndex - 1, e.NoteText))
-            {
-                this.notesFlowLayoutPanel.Refresh();
-            }
-        }
-    }*/
-
-    /*private void NoteControl_DeleteTagButtonClicked(object sender, NoteControl.NoteEventArgs e)
-    {
-        var result = MessageBox.Show("Are you sure you want to delete this tag?", "Confirm Deletion",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        if (result == DialogResult.Yes)
-        {
-            this.controller.DeleteNoteTag(e.NoteIndex - 1, e.NoteText);
-        }
-    }*/
 
     #endregion
 

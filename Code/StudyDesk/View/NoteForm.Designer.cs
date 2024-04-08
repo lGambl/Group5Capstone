@@ -92,6 +92,7 @@
             tagsListView.Size = new Size(235, 102);
             tagsListView.TabIndex = 5;
             tagsListView.UseCompatibleStateImageBehavior = false;
+            tagsListView.View = System.Windows.Forms.View.List;
             // 
             // NoteForm
             // 

@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿/*namespace StudyDesk.Model;
+
+/// <summary>
 ///   The Note Event Args class
 /// </summary>
 public class NoteEventArgs : EventArgs
@@ -71,4 +73,4 @@ public class NoteEventArgs : EventArgs
         NoteIndex = noteIndex;
         Tags = tags;
     }
-}
+}*/

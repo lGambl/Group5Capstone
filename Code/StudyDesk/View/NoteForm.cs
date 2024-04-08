@@ -1,33 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using StudyDesk.Controller;
+﻿using StudyDesk.Controller;
 using StudyDesk.Model;
 
 namespace StudyDesk.View
 {
+    /// <summary>
+    ///   The form for viewing a note.
+    /// </summary>
     public partial class NoteForm : Form
     {
-        private SourceFormController controller;
-        private int noteIndex;
+        private readonly SourceFormController controller;
+        private Note note;
+        private readonly int noteIndex;
+        private SourceForm sourceForm;
 
-        public NoteForm(Note note, SourceFormController controller, int index)
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="NoteForm" /> class.
+        /// </summary>
+        /// <param name="note">The note.</param>
+        /// <param name="controller">The controller.</param>
+        /// <param name="index">The index.</param>
+        public NoteForm(Note note, SourceFormController controller, int index, SourceForm sourceForm)
         {
             InitializeComponent();
+            this.note = note;
             this.controller = controller;
             this.noteIndex = index;
+            this.sourceForm = sourceForm;
             this.displayNoteDetails(note);
         }
 
         private void displayNoteDetails(Note note)
         {
             this.noteTextBox.Text = note.Text;
+            this.loadNoteTags(note);
+        }
+
+        private void loadNoteTags(Note note)
+        {
+            tagsListView.Items.Clear();
             foreach (var currTag in note.NoteTags)
             {
                 this.tagsListView.Items.Add(currTag);
@@ -43,6 +53,7 @@ namespace StudyDesk.View
             {
                 this.controller.DeleteNoteAt(this.noteIndex);
                 this.Close();
+                this.sourceForm.LoadNotes();
                 //TODO: update notes in source explorer
             }
         }
@@ -55,6 +66,7 @@ namespace StudyDesk.View
             if (result == DialogResult.Yes)
             {
                 this.controller.EditNote(this.noteIndex, this.noteTextBox.Text);
+                this.sourceForm.LoadNotes();
                 //TODO: update notes in source explorer
             }
         }
@@ -98,6 +110,7 @@ namespace StudyDesk.View
             if (result == DialogResult.Yes)
             {
                 this.controller.DeleteNoteTag(this.noteIndex, this.tagsListView.SelectedItems[0].Text);
+                this.loadNoteTags(this.note);
                 //TODO: update notes in source explorer
             }
         }
