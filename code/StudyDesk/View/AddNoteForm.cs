@@ -23,7 +23,21 @@ namespace StudyDesk.View
 
         private void addNoteButton_Click(object sender, EventArgs e)
         {
-            if (this.noteTextBox.Text != String.Empty && this.noteTextBox.Text != "Enter your note here...")
+            var duplicateNote = false;
+            foreach (var currNote in this.controller.Notes)
+            {
+                if (this.noteTextBox.Text == currNote.Text)
+                {
+                    duplicateNote = true;
+                }
+            }
+
+            if (duplicateNote)
+            {
+                MessageBox.Show("This note already exists for the source.", "Error Adding Note",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (this.noteTextBox.Text != String.Empty && this.noteTextBox.Text != "Enter your note here...")
             {
                 if (this.tagsListView.Items.Count == 0)
                 {

@@ -59,6 +59,15 @@ namespace StudyDesk.View
 
         private void saveChangesButton_Click(object sender, EventArgs e)
         {
+            var duplicateNote = false;
+            foreach (var currNote in this.controller.Notes)
+            {
+                if (this.noteTextBox.Text == currNote.Text)
+                {
+                    duplicateNote = true;
+                }
+            }
+
             if (this.noteTextBox.Text == string.Empty)
             {
                 MessageBox.Show("Note text cannot be empty. Please enter a note to save.", "Error Saving Changes",
@@ -67,6 +76,11 @@ namespace StudyDesk.View
             else if (this.noteTextBox.Text == this.note.Text)
             {
                 MessageBox.Show("You must edit the note text to save changes.", "Error Saving Changes",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (duplicateNote)
+            {
+                MessageBox.Show("This note already exists for the source.", "Error Adding Note",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
