@@ -9,9 +9,9 @@ namespace StudyDesk.View
     public partial class NoteForm : Form
     {
         private readonly SourceFormController controller;
-        private Note note;
+        private readonly Note note;
         private readonly int noteIndex;
-        private SourceForm sourceForm;
+        private readonly SourceForm sourceForm;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="NoteForm" /> class.
@@ -54,7 +54,6 @@ namespace StudyDesk.View
                 this.controller.DeleteNoteAt(this.noteIndex);
                 this.Close();
                 this.sourceForm.LoadNotes();
-                //TODO: update notes in source explorer
             }
         }
 
@@ -67,7 +66,6 @@ namespace StudyDesk.View
             {
                 this.controller.EditNote(this.noteIndex, this.noteTextBox.Text);
                 this.sourceForm.LoadNotes();
-                //TODO: update notes in source explorer
             }
         }
 
@@ -111,7 +109,6 @@ namespace StudyDesk.View
             {
                 this.controller.DeleteNoteTag(this.noteIndex, this.tagsListView.SelectedItems[0].Text);
                 this.loadNoteTags(this.note);
-                //TODO: update notes in source explorer
             }
         }
     }

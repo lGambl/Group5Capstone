@@ -32,7 +32,6 @@ namespace StudyDesk.View
                 List<string> tags = this.tagsListView.Items.Cast<ListViewItem>().Select(item => item.Text).ToList();
                 this.controller.AddNoteWithTags(this.noteTextBox.Text, tags);
             }
-            //TODO: Refresh the notes in the SourceExplorer window.
             this.Close();
             this.sourceForm.LoadNotes();
         }
@@ -41,6 +40,8 @@ namespace StudyDesk.View
         {
             this.tagsListView.Items.Add("<" + this.tagTextBox.Text + ">");
             this.tagTextBox.Text = string.Empty;
+            this.tagTextBox.Text = "Enter your tag here...";
+            this.tagTextBox.ForeColor = Color.Gray;
         }
 
         private void noteTextBox_Enter(object sender, EventArgs e)

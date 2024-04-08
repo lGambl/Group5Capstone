@@ -83,11 +83,14 @@
             // 
             // tagsListView
             // 
+            tagsListView.Enabled = false;
             tagsListView.Location = new Point(208, 137);
+            tagsListView.MultiSelect = false;
             tagsListView.Name = "tagsListView";
             tagsListView.Size = new Size(179, 81);
             tagsListView.TabIndex = 4;
             tagsListView.UseCompatibleStateImageBehavior = false;
+            tagsListView.View = System.Windows.Forms.View.List;
             // 
             // label1
             // 
