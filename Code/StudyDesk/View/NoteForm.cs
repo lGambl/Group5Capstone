@@ -59,13 +59,26 @@ namespace StudyDesk.View
 
         private void saveChangesButton_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("Are you sure you want to save the changes to this note?", "Confirm Changes",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
+            if (this.noteTextBox.Text == string.Empty)
             {
-                this.controller.EditNote(this.noteIndex, this.noteTextBox.Text);
-                this.sourceForm.LoadNotes();
+                MessageBox.Show("Note text cannot be empty. Please enter a note to save.", "Error Saving Changes",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (this.noteTextBox.Text == this.note.Text)
+            {
+                MessageBox.Show("You must edit the note text to save changes.", "Error Saving Changes",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                var result = MessageBox.Show("Are you sure you want to save the changes to this note?", "Confirm Changes",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    this.controller.EditNote(this.noteIndex, this.noteTextBox.Text);
+                    this.sourceForm.LoadNotes();
+                }
             }
         }
 

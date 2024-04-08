@@ -23,25 +23,56 @@ namespace StudyDesk.View
 
         private void addNoteButton_Click(object sender, EventArgs e)
         {
-            if (this.tagsListView.Items.Count == 0)
+            if (this.noteTextBox.Text != String.Empty && this.noteTextBox.Text != "Enter your note here...")
             {
-                this.controller.AddNote(this.noteTextBox.Text);
+                if (this.tagsListView.Items.Count == 0)
+                {
+                    this.controller.AddNote(this.noteTextBox.Text);
+                }
+                else
+                {
+                    List<string> tags = this.tagsListView.Items.Cast<ListViewItem>().Select(item => item.Text).ToList();
+                    this.controller.AddNoteWithTags(this.noteTextBox.Text, tags);
+                }
+                this.Close();
+                this.sourceForm.LoadNotes();
             }
             else
             {
-                List<string> tags = this.tagsListView.Items.Cast<ListViewItem>().Select(item => item.Text).ToList();
-                this.controller.AddNoteWithTags(this.noteTextBox.Text, tags);
+                MessageBox.Show("Please enter a note to add.", "Error Adding Note",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            this.Close();
-            this.sourceForm.LoadNotes();
         }
 
         private void addTagButton_Click(object sender, EventArgs e)
         {
-            this.tagsListView.Items.Add("<" + this.tagTextBox.Text + ">");
-            this.tagTextBox.Text = string.Empty;
-            this.tagTextBox.Text = "Enter your tag here...";
-            this.tagTextBox.ForeColor = Color.Gray;
+            var duplicateItem = false;
+            var tagString = "<" + this.tagTextBox.Text + ">";
+            for (int i = 0; i < this.tagsListView.Items.Count; i++)
+            {
+                if (tagString == this.tagsListView.Items[i].Text)
+                {
+                    duplicateItem = true;
+                    break;
+                }
+            }
+            if (this.tagTextBox.Text == string.Empty || this.tagTextBox.Text == "Enter your tag here...")
+            {
+                MessageBox.Show("Please enter a tag to add.", "Error Adding Tag",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (duplicateItem)
+            {
+                MessageBox.Show("Duplicate Tag. Please enter a new tag.", "Error Adding Tag",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                this.tagsListView.Items.Add("<" + this.tagTextBox.Text + ">");
+                this.tagTextBox.Text = string.Empty;
+                this.tagTextBox.Text = "Enter your tag here...";
+                this.tagTextBox.ForeColor = Color.Gray;
+            }
         }
 
         private void noteTextBox_Enter(object sender, EventArgs e)
