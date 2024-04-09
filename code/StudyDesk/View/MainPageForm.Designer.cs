@@ -34,13 +34,11 @@
             deleteButton = new Button();
             logoutButton = new Button();
             label1 = new Label();
-            searchNoteTagButton = new Button();
             searchNoteTagTextBox = new TextBox();
             label2 = new Label();
-            resetSourcesButton = new Button();
             searchNoteTagPanel = new Panel();
+            searchTagsCheckedListBox = new CheckedListBox();
             addTagToSearchListButton = new Button();
-            searchTagsListView = new ListView();
             searchNoteTagPanel.SuspendLayout();
             SuspendLayout();
             // 
@@ -106,16 +104,6 @@
             label1.TabIndex = 4;
             label1.Text = "Search Note Tags:";
             // 
-            // searchNoteTagButton
-            // 
-            searchNoteTagButton.Location = new Point(92, 156);
-            searchNoteTagButton.Name = "searchNoteTagButton";
-            searchNoteTagButton.Size = new Size(87, 30);
-            searchNoteTagButton.TabIndex = 5;
-            searchNoteTagButton.Text = "Search Tags";
-            searchNoteTagButton.UseVisualStyleBackColor = true;
-            searchNoteTagButton.Click += searchNoteTagButton_Click;
-            // 
             // searchNoteTagTextBox
             // 
             searchNoteTagTextBox.ForeColor = SystemColors.InactiveCaption;
@@ -136,28 +124,26 @@
             label2.TabIndex = 7;
             label2.Text = "Sources:";
             // 
-            // resetSourcesButton
-            // 
-            resetSourcesButton.Location = new Point(115, 453);
-            resetSourcesButton.Name = "resetSourcesButton";
-            resetSourcesButton.Size = new Size(73, 22);
-            resetSourcesButton.TabIndex = 8;
-            resetSourcesButton.Text = "Reset";
-            resetSourcesButton.UseVisualStyleBackColor = true;
-            resetSourcesButton.Click += resetSourcesButton_Click;
-            // 
             // searchNoteTagPanel
             // 
             searchNoteTagPanel.BorderStyle = BorderStyle.FixedSingle;
+            searchNoteTagPanel.Controls.Add(searchTagsCheckedListBox);
             searchNoteTagPanel.Controls.Add(addTagToSearchListButton);
-            searchNoteTagPanel.Controls.Add(searchTagsListView);
-            searchNoteTagPanel.Controls.Add(searchNoteTagButton);
             searchNoteTagPanel.Controls.Add(searchNoteTagTextBox);
             searchNoteTagPanel.Controls.Add(label1);
             searchNoteTagPanel.Location = new Point(8, 11);
             searchNoteTagPanel.Name = "searchNoteTagPanel";
             searchNoteTagPanel.Size = new Size(188, 191);
             searchNoteTagPanel.TabIndex = 9;
+            // 
+            // searchTagsCheckedListBox
+            // 
+            searchTagsCheckedListBox.FormattingEnabled = true;
+            searchTagsCheckedListBox.Location = new Point(4, 87);
+            searchTagsCheckedListBox.Name = "searchTagsCheckedListBox";
+            searchTagsCheckedListBox.Size = new Size(175, 94);
+            searchTagsCheckedListBox.TabIndex = 9;
+            searchTagsCheckedListBox.ItemCheck += searchTagsCheckedListBox_ItemCheck;
             // 
             // addTagToSearchListButton
             // 
@@ -169,22 +155,12 @@
             addTagToSearchListButton.UseVisualStyleBackColor = true;
             addTagToSearchListButton.Click += addTagToSearchListButton_Click;
             // 
-            // searchTagsListView
-            // 
-            searchTagsListView.Location = new Point(4, 96);
-            searchTagsListView.Name = "searchTagsListView";
-            searchTagsListView.Size = new Size(175, 54);
-            searchTagsListView.TabIndex = 7;
-            searchTagsListView.UseCompatibleStateImageBehavior = false;
-            searchTagsListView.View = System.Windows.Forms.View.List;
-            // 
             // MainPageForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(312, 486);
             Controls.Add(searchNoteTagPanel);
-            Controls.Add(resetSourcesButton);
             Controls.Add(label2);
             Controls.Add(logoutButton);
             Controls.Add(deleteButton);
@@ -207,12 +183,10 @@
         private Button deleteButton;
         private Button logoutButton;
         private Label label1;
-        private Button searchNoteTagButton;
         private TextBox searchNoteTagTextBox;
         private Label label2;
-        private Button resetSourcesButton;
         private Panel searchNoteTagPanel;
-        private ListView searchTagsListView;
         private Button addTagToSearchListButton;
+        private CheckedListBox searchTagsCheckedListBox;
     }
 }

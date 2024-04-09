@@ -1,5 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using StudyDesk.Controller;
+﻿using StudyDesk.Controller;
 using StudyDesk.Model;
 
 namespace StudyDesk.View;
@@ -119,24 +118,23 @@ public partial class MainPageForm : Form
         }
     }
 
-    private void resetSourcesButton_Click(object sender, EventArgs e)
+    private void resetSources()
     {
         this.controller.ResetUserSources();
         this.loadSources();
     }
 
-    private void searchNoteTagButton_Click(object sender, EventArgs e)
+    private void searchNoteTag()
     {
-        if (this.searchTagsListView.Items.Count != 0)
+        if (this.searchTagsCheckedListBox.Items.Count != 0)
         {
             var tags = new List<string>();
-            foreach (ListViewItem currItem in this.searchTagsListView.Items)
+            foreach (string currItem in this.searchTagsCheckedListBox.Items)
             {
-                tags.Add(currItem.Text);
+                tags.Add(currItem);
             }
 
             this.indexListView.Items.Clear();
-            this.searchTagsListView.Clear();
 
             var result = this.controller.GetSourcesWithMatchingNoteTags(tags).Result;
             if (result != null && result.Count > 0)
@@ -165,9 +163,11 @@ public partial class MainPageForm : Form
     {
         if (this.searchNoteTagTextBox.Text.Any() && this.searchNoteTagTextBox.Text != "Enter tag to search...")
         {
-            this.searchTagsListView.Items.Add("<" + this.searchNoteTagTextBox.Text + ">");
+            this.searchTagsCheckedListBox.Items.Add("<" + this.searchNoteTagTextBox.Text + ">");
             this.searchNoteTagTextBox.Text = EnterTagToSearch;
             this.searchNoteTagTextBox.ForeColor = Color.Gray;
+
+            this.searchNoteTag();
         }
         else
         {
@@ -195,4 +195,18 @@ public partial class MainPageForm : Form
     }
 
     #endregion
+
+    private void searchTagsCheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+    {
+        BeginInvoke((MethodInvoker)delegate
+        {
+            searchTagsCheckedListBox.Items.RemoveAt(e.Index);
+            this.resetSources();
+
+            if (this.searchTagsCheckedListBox.Items.Count > 0)
+            {
+                this.searchNoteTag();
+            }
+        });
+    }
 }
