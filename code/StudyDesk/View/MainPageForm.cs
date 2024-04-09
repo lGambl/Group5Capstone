@@ -148,7 +148,6 @@ public partial class MainPageForm : Form
             {
                 MessageBox.Show(NoMatchingTags, InvalidSearch, MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                this.loadSources();
             }
         }
         else
