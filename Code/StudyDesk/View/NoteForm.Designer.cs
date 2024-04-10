@@ -76,6 +76,7 @@
             // 
             // deleteTagButton
             // 
+            deleteTagButton.Enabled = false;
             deleteTagButton.Location = new Point(360, 244);
             deleteTagButton.Name = "deleteTagButton";
             deleteTagButton.Size = new Size(85, 23);
@@ -93,6 +94,7 @@
             tagsListView.TabIndex = 5;
             tagsListView.UseCompatibleStateImageBehavior = false;
             tagsListView.View = System.Windows.Forms.View.List;
+            tagsListView.SelectedIndexChanged += tagsListView_SelectedIndexChanged;
             // 
             // NoteForm
             // 

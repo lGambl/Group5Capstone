@@ -138,5 +138,17 @@ namespace StudyDesk.View
                 this.loadNoteTags(this.note);
             }
         }
+
+        private void tagsListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.tagsListView.SelectedItems.Count > 0)
+            {
+                this.deleteTagButton.Enabled = true;
+            }
+            else
+            {
+                this.deleteTagButton.Enabled = false;
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using StudyDesk.Controller;
+﻿using StudyDesk.Controller;
 using StudyDesk.Model;
 
 namespace StudyDesk.View;
@@ -26,6 +25,7 @@ public partial class MainPageForm : Form
     private const string? AreYouSureYouWantToDeleteThisSource = "Are you sure you want to delete this source?";
     private const string? DeleteSource = "Delete Source";
     private const string? EnterTagToSearch = "Enter tag to search...";
+    private const string? TagExistsInSearch = "This tag already exists in the search list.";
 
     private readonly MainPageController controller;
 
@@ -119,24 +119,23 @@ public partial class MainPageForm : Form
         }
     }
 
-    private void resetSourcesButton_Click(object sender, EventArgs e)
+    private void resetSources()
     {
         this.controller.ResetUserSources();
         this.loadSources();
     }
 
-    private void searchNoteTagButton_Click(object sender, EventArgs e)
+    private void searchNoteTag()
     {
-        if (this.searchTagsListView.Items.Count != 0)
+        if (this.searchTagsCheckedListBox.Items.Count != 0)
         {
             var tags = new List<string>();
-            foreach (ListViewItem currItem in this.searchTagsListView.Items)
+            foreach (string currItem in this.searchTagsCheckedListBox.Items)
             {
-                tags.Add(currItem.Text);
+                tags.Add(currItem);
             }
 
             this.indexListView.Items.Clear();
-            this.searchTagsListView.Clear();
 
             var result = this.controller.GetSourcesWithMatchingNoteTags(tags).Result;
             if (result != null && result.Count > 0)
@@ -150,7 +149,6 @@ public partial class MainPageForm : Form
             {
                 MessageBox.Show(NoMatchingTags, InvalidSearch, MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                this.loadSources();
             }
         }
         else
@@ -163,16 +161,25 @@ public partial class MainPageForm : Form
 
     private void addTagToSearchListButton_Click(object sender, EventArgs e)
     {
-        if (this.searchNoteTagTextBox.Text.Any() && this.searchNoteTagTextBox.Text != "Enter tag to search...")
+        if (!this.searchNoteTagTextBox.Text.Any() || this.searchNoteTagTextBox.Text == EnterTagToSearch)
         {
-            this.searchTagsListView.Items.Add("<" + this.searchNoteTagTextBox.Text + ">");
+            MessageBox.Show(PleaseEnterATagToSearch, InvalidSearch, MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+        else if (this.searchTagsCheckedListBox.Items.Contains("<" + this.searchNoteTagTextBox.Text + ">"))
+        {
+            MessageBox.Show(TagExistsInSearch, InvalidSearch, MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
             this.searchNoteTagTextBox.Text = EnterTagToSearch;
             this.searchNoteTagTextBox.ForeColor = Color.Gray;
         }
         else
         {
-            MessageBox.Show(PleaseEnterATagToSearch, InvalidSearch, MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            this.searchTagsCheckedListBox.Items.Add("<" + this.searchNoteTagTextBox.Text + ">");
+            this.searchNoteTagTextBox.Text = EnterTagToSearch;
+            this.searchNoteTagTextBox.ForeColor = Color.Gray;
+
+            this.searchNoteTag();
         }
     }
 
@@ -195,4 +202,18 @@ public partial class MainPageForm : Form
     }
 
     #endregion
+
+    private void searchTagsCheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+    {
+        BeginInvoke((MethodInvoker)delegate
+        {
+            searchTagsCheckedListBox.Items.RemoveAt(e.Index);
+            this.resetSources();
+
+            if (this.searchTagsCheckedListBox.Items.Count > 0)
+            {
+                this.searchNoteTag();
+            }
+        });
+    }
 }
