@@ -25,6 +25,7 @@ public partial class MainPageForm : Form
     private const string? AreYouSureYouWantToDeleteThisSource = "Are you sure you want to delete this source?";
     private const string? DeleteSource = "Delete Source";
     private const string? EnterTagToSearch = "Enter tag to search...";
+    private const string? TagExistsInSearch = "This tag already exists in the search list.";
 
     private readonly MainPageController controller;
 
@@ -160,18 +161,25 @@ public partial class MainPageForm : Form
 
     private void addTagToSearchListButton_Click(object sender, EventArgs e)
     {
-        if (this.searchNoteTagTextBox.Text.Any() && this.searchNoteTagTextBox.Text != "Enter tag to search...")
+        if (!this.searchNoteTagTextBox.Text.Any() || this.searchNoteTagTextBox.Text == EnterTagToSearch)
+        {
+            MessageBox.Show(PleaseEnterATagToSearch, InvalidSearch, MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+        else if (this.searchTagsCheckedListBox.Items.Contains("<" + this.searchNoteTagTextBox.Text + ">"))
+        {
+            MessageBox.Show(TagExistsInSearch, InvalidSearch, MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+            this.searchNoteTagTextBox.Text = EnterTagToSearch;
+            this.searchNoteTagTextBox.ForeColor = Color.Gray;
+        }
+        else
         {
             this.searchTagsCheckedListBox.Items.Add("<" + this.searchNoteTagTextBox.Text + ">");
             this.searchNoteTagTextBox.Text = EnterTagToSearch;
             this.searchNoteTagTextBox.ForeColor = Color.Gray;
 
             this.searchNoteTag();
-        }
-        else
-        {
-            MessageBox.Show(PleaseEnterATagToSearch, InvalidSearch, MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
         }
     }
 
