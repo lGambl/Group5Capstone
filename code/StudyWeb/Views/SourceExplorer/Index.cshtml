@@ -70,6 +70,12 @@
 
 <script>
 
+    function updateHistoryAfterTagChange() {
+        const url = new URL(window.location);
+        url.searchParams.set('tags', selectedTags.join(','));
+        window.history.replaceState({ path: url.toString() }, '', url.toString());
+    }
+
     $('.delete-action').on('click', function (e) {
         e.preventDefault();
         var deleteUrl = $(this).attr('href');
@@ -105,6 +111,7 @@
             updateSelectedTags();
             $('#tagInput').val('');
             triggerSearch();
+            udpateHistoryAfterTagChange();
         } else if (validTag === '') {
             alert('Tags can only contain alphanumeric characters.');
         } else {
@@ -117,6 +124,7 @@
         selectedTags = selectedTags.filter(tag => tag !== tagToRemove);
         updateSelectedTags();
         triggerSearch(); // Trigger the search
+        updateHistoryAfterTagChange();
     });
 
     function triggerSearch() {
