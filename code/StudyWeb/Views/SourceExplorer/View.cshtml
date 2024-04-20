@@ -8,6 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 
 <style>
@@ -51,12 +52,12 @@
         box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
         font-family: 'Courier New', Courier, monospace;
         overflow-y: hidden;
+        position: relative;
     }
 
     #notesList {
         overflow-y: scroll; /* Adds scrollbar when content overflows */
         padding-right: 15px; /* Optional: for better scrollbar visibility */
-        height: 30vh
     }
 
     .note-actions {
@@ -112,6 +113,12 @@
     .tagsLabel{
         margin-top: 5px;
     }
+
+    #toggleNoteForm {
+        position: absolute;
+        right: 0;
+    }
+
 </style>
 
 <button type="button" onclick="goBack()">Go Back</button>
@@ -144,6 +151,11 @@
     }
 
     <div id="notes">
+        <div id="form-Area">
+        <span id="toggleNoteForm" onclick="toggleNoteFormVisiblity()" class="material-symbols-outlined">
+            add_box
+        </span>
+
         @using (Html.BeginForm("Note", "SourceExplorer", FormMethod.Post, new { id = "noteForm", @class = "form-horizontal", role = "form" }))
         {
             @Html.AntiForgeryToken()
@@ -152,55 +164,56 @@
 
             <div class="form-group">
                 <label for="noteText" class="control-label">Add Note</label>
-                <textarea name="noteText" id="noteText" class="form-control" rows="3" placeholder="Enter your note here..."></textarea>
-            </div>
+                <textarea name="noteText" id="noteText" class="form-control" rows="2" placeholder="Enter your note here..."></textarea>
+           
 
             <button type="submit" class="btn btn-primary submit-note-btn-margin">Submit Note</button>
 
             <div id="tags">
                 <label for="noteTags" class="tagsLabel">Tags</label>
-                <textarea name="noteTags" id="newNoteTags" class="form-control" disabled rows="3" placeholder="No tags yet."></textarea>
+                <textarea name="noteTags" id="newNoteTags" class="form-control" disabled rows="1" placeholder="No tags yet."></textarea>
             </div>
 
-            <div class="form-group">
+            
                 <label for="noteTagEditor" class="control-label">Add Tags</label>
-                <textarea name="noteTags" id="noteTagEditor" class="form-control" rows="2" placeholder="Enter your tag here..."></textarea>
-            </div>
+                <textarea name="noteTags" id="noteTagEditor" class="form-control" rows="1" placeholder="Enter your tag here..."></textarea>
+            
 
-            <button type="button" id="addTagNewNote" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
+                <button type="button" id="addTagNewNote" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
+            </div>
         }
-
-            <div id="notesList">
-                @foreach (var note in Model.Notes)
-                {
-                    <div class="note">
-                        <p>@note.Text</p>
-                        <button type="button" onclick="openEditNoteModal(@note.Id, '@note.Text')" class="edit-note-btn btn-secondary note-action-btn-@note.Id">Edit</button>
-                        <button type="button" class="delete-note-btn btn-secondary note-action-btn-@note.Id" data-note-id="@note.Id">Delete Note</button>
-                        <div id="tags">
-                            <label for="noteTags">Tags</label>
-                            <ul id="noteTags" disabled rows="2" placeholder="No tags yet.">
-                                @foreach (var tag in note.Tags)
-                                {
-                                    <li class="note-tags">
-                                        <input type="checkbox", id="@tag.Id"/>@tag.Name
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                        <div class="note-actions">
-                            <div>
-                                <button type="button" class="add-tag-btn btn-secondary tag-action-btn-@note.Id" data-note-id="@note.Id">Add Tag</button>
-                                <button type="button" class="delete-tag-btn btn-secondary tag-action-btn-@note.Id" data-note-id="@note.Id">Delete Tag(s)</button>
-                            </div>
-                            <span onclick="toggleNoteActions(@note.Id, event)" class="material-symbols-outlined edit-note-icon">
-                                edit_note
-                            </span>
-                        </div>
+        </div>
+        <div id="notesList" style="height:40%">
+            @foreach (var note in Model.Notes)
+            {
+                <div class="note">
+                    <p>@note.Text</p>
+                    <button type="button" onclick="openEditNoteModal(@note.Id, '@note.Text')" class="edit-note-btn btn-secondary note-action-btn-@note.Id">Edit</button>
+                    <button type="button" class="delete-note-btn btn-secondary note-action-btn-@note.Id" data-note-id="@note.Id">Delete Note</button>
+                    <div id="tags">
+                        <label for="noteTags">Tags</label>
+                        <ul id="noteTags" disabled rows="2" placeholder="No tags yet.">
+                            @foreach (var tag in note.Tags)
+                            {
+                                <li class="note-tags">
+                                    <input type="checkbox", id="@tag.Id"/>@tag.Name
+                                </li>
+                            }
+                        </ul>
                     </div>
-                }
-            </div>
-        
+                    <div class="note-actions">
+                        <div>
+                            <button type="button" class="add-tag-btn btn-secondary tag-action-btn-@note.Id" data-note-id="@note.Id">Add Tag</button>
+                            <button type="button" class="delete-tag-btn btn-secondary tag-action-btn-@note.Id" data-note-id="@note.Id">Delete Tag(s)</button>
+                        </div>
+                        <span onclick="toggleNoteActions(@note.Id, event)" class="material-symbols-outlined edit-note-icon">
+                            edit_note
+                        </span>
+                    </div>
+                </div>
+            }
+        </div>
+
     </div>
 
 </div>
@@ -229,7 +242,7 @@
 </div>
 
 <script>
-
+    let hiding = false;
     function goBack() {
         window.history.back();
     }
@@ -384,21 +397,31 @@
     });
 
     $(document).ready(function () {
-        // Initially hide all action buttons
+        
         $('.edit-note-btn, .delete-note-btn, .add-tag-btn, .delete-tag-btn').hide();
     });
 
     function toggleNoteActions(noteId, event) {
-        // Stop the event from bubbling up and potentially triggering a form submit
+        
         event.stopPropagation();
         event.preventDefault();
 
-        // Toggle visibility of note action buttons
+        
         $('.note-action-btn-' + noteId).toggle();
-        // Toggle visibility of tag action buttons
+        
         $('.tag-action-btn-' + noteId).toggle();
     }
 
+    function toggleNoteFormVisiblity() {
+        $('#noteForm').toggle();
+        if (hiding) {
+            $('#notesList').css('height', '40%');
+            hiding = false;
+        } else {
+            $('#notesList').css('height', '100%');
+            hiding = true;
+        }
+    }
 
 </script>
 
