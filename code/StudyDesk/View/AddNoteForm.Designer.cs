@@ -132,6 +132,7 @@
             Controls.Add(tagTextBox);
             Controls.Add(addNoteButton);
             Controls.Add(noteTextBox);
+            MaximizeBox = false;
             Name = "AddNoteForm";
             Text = "AddNoteForm";
             ResumeLayout(false);

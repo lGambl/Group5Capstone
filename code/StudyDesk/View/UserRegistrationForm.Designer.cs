@@ -42,7 +42,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Magneto", 25F);
-            label1.Location = new Point(48, 116);
+            label1.Location = new Point(47, 41);
             label1.Name = "label1";
             label1.Size = new Size(226, 41);
             label1.TabIndex = 4;
@@ -51,7 +51,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(116, 206);
+            label2.Location = new Point(115, 124);
             label2.Name = "label2";
             label2.Size = new Size(36, 15);
             label2.TabIndex = 5;
@@ -60,7 +60,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(95, 240);
+            label3.Location = new Point(94, 158);
             label3.Name = "label3";
             label3.Size = new Size(57, 15);
             label3.TabIndex = 6;
@@ -69,7 +69,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(48, 271);
+            label4.Location = new Point(47, 189);
             label4.Name = "label4";
             label4.Size = new Size(104, 15);
             label4.TabIndex = 7;
@@ -77,14 +77,14 @@
             // 
             // emailTextBox
             // 
-            emailTextBox.Location = new Point(174, 203);
+            emailTextBox.Location = new Point(173, 121);
             emailTextBox.Name = "emailTextBox";
             emailTextBox.Size = new Size(100, 23);
             emailTextBox.TabIndex = 8;
             // 
             // passwordTextBox
             // 
-            passwordTextBox.Location = new Point(174, 237);
+            passwordTextBox.Location = new Point(173, 155);
             passwordTextBox.Name = "passwordTextBox";
             passwordTextBox.PasswordChar = '*';
             passwordTextBox.Size = new Size(100, 23);
@@ -92,7 +92,7 @@
             // 
             // passwordConfirmationTextBox
             // 
-            passwordConfirmationTextBox.Location = new Point(174, 271);
+            passwordConfirmationTextBox.Location = new Point(173, 189);
             passwordConfirmationTextBox.Name = "passwordConfirmationTextBox";
             passwordConfirmationTextBox.PasswordChar = '*';
             passwordConfirmationTextBox.Size = new Size(102, 23);
@@ -100,7 +100,7 @@
             // 
             // createUserButton
             // 
-            createUserButton.Location = new Point(116, 314);
+            createUserButton.Location = new Point(115, 232);
             createUserButton.Name = "createUserButton";
             createUserButton.Size = new Size(102, 46);
             createUserButton.TabIndex = 11;
@@ -112,7 +112,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(347, 394);
+            ClientSize = new Size(347, 302);
             Controls.Add(createUserButton);
             Controls.Add(passwordConfirmationTextBox);
             Controls.Add(passwordTextBox);
@@ -121,6 +121,7 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
+            MaximizeBox = false;
             Name = "UserRegistrationForm";
             Text = "UserRegistrationForm";
             ResumeLayout(false);

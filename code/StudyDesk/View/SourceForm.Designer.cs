@@ -43,7 +43,7 @@
             // 
             // splitContainer1
             // 
-            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             splitContainer1.Location = new Point(0, 0);
             splitContainer1.Margin = new Padding(3, 2, 3, 2);
             splitContainer1.Name = "splitContainer1";
@@ -71,6 +71,7 @@
             // 
             // documentControl1
             // 
+            documentControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             documentControl1.Location = new Point(3, 0);
             documentControl1.Margin = new Padding(3, 2, 3, 2);
             documentControl1.Name = "documentControl1";
@@ -79,6 +80,7 @@
             // 
             // tableLayoutPanel1
             // 
+            tableLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
@@ -105,6 +107,7 @@
             // 
             // notesListView
             // 
+            notesListView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             notesListView.Location = new Point(3, 30);
             notesListView.MultiSelect = false;
             notesListView.Name = "notesListView";

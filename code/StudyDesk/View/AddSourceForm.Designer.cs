@@ -40,16 +40,18 @@
             // 
             // titleTextBox
             // 
-            titleTextBox.Location = new Point(143, 36);
+            titleTextBox.Location = new Point(125, 27);
+            titleTextBox.Margin = new Padding(3, 2, 3, 2);
             titleTextBox.Name = "titleTextBox";
-            titleTextBox.Size = new Size(125, 27);
+            titleTextBox.Size = new Size(110, 23);
             titleTextBox.TabIndex = 1;
             // 
             // uploadButton
             // 
-            uploadButton.Location = new Point(53, 134);
+            uploadButton.Location = new Point(46, 100);
+            uploadButton.Margin = new Padding(3, 2, 3, 2);
             uploadButton.Name = "uploadButton";
-            uploadButton.Size = new Size(94, 29);
+            uploadButton.Size = new Size(82, 22);
             uploadButton.TabIndex = 3;
             uploadButton.Text = "Upload";
             uploadButton.UseVisualStyleBackColor = true;
@@ -58,34 +60,36 @@
             // filePathTextBox
             // 
             filePathTextBox.Enabled = false;
-            filePathTextBox.Location = new Point(258, 136);
+            filePathTextBox.Location = new Point(226, 102);
+            filePathTextBox.Margin = new Padding(3, 2, 3, 2);
             filePathTextBox.Name = "filePathTextBox";
-            filePathTextBox.Size = new Size(125, 27);
+            filePathTextBox.Size = new Size(110, 23);
             filePathTextBox.TabIndex = 5;
             // 
             // fileLabel
             // 
             fileLabel.AutoSize = true;
-            fileLabel.Location = new Point(183, 139);
+            fileLabel.Location = new Point(160, 104);
             fileLabel.Name = "fileLabel";
-            fileLabel.Size = new Size(67, 20);
+            fileLabel.Size = new Size(55, 15);
             fileLabel.TabIndex = 6;
             fileLabel.Text = "File Path:";
             // 
             // titleLabel
             // 
             titleLabel.AutoSize = true;
-            titleLabel.Location = new Point(96, 43);
+            titleLabel.Location = new Point(84, 32);
             titleLabel.Name = "titleLabel";
-            titleLabel.Size = new Size(41, 20);
+            titleLabel.Size = new Size(32, 15);
             titleLabel.TabIndex = 0;
             titleLabel.Text = "Title:";
             // 
             // addSourceButton
             // 
-            addSourceButton.Location = new Point(143, 204);
+            addSourceButton.Location = new Point(125, 153);
+            addSourceButton.Margin = new Padding(3, 2, 3, 2);
             addSourceButton.Name = "addSourceButton";
-            addSourceButton.Size = new Size(94, 29);
+            addSourceButton.Size = new Size(82, 22);
             addSourceButton.TabIndex = 7;
             addSourceButton.Text = "Add Source";
             addSourceButton.UseVisualStyleBackColor = true;
@@ -94,25 +98,26 @@
             // sourceTypeComboBox
             // 
             sourceTypeComboBox.FormattingEnabled = true;
-            sourceTypeComboBox.Location = new Point(183, 89);
+            sourceTypeComboBox.Location = new Point(160, 67);
+            sourceTypeComboBox.Margin = new Padding(3, 2, 3, 2);
             sourceTypeComboBox.Name = "sourceTypeComboBox";
-            sourceTypeComboBox.Size = new Size(151, 28);
+            sourceTypeComboBox.Size = new Size(133, 23);
             sourceTypeComboBox.TabIndex = 8;
             // 
             // sourceTypeLabel
             // 
             sourceTypeLabel.AutoSize = true;
-            sourceTypeLabel.Location = new Point(55, 97);
+            sourceTypeLabel.Location = new Point(48, 73);
             sourceTypeLabel.Name = "sourceTypeLabel";
-            sourceTypeLabel.Size = new Size(92, 20);
+            sourceTypeLabel.Size = new Size(73, 15);
             sourceTypeLabel.TabIndex = 9;
             sourceTypeLabel.Text = "Source Type:";
             // 
             // AddSourceForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(395, 257);
+            ClientSize = new Size(346, 193);
             Controls.Add(sourceTypeLabel);
             Controls.Add(sourceTypeComboBox);
             Controls.Add(addSourceButton);
@@ -121,6 +126,8 @@
             Controls.Add(uploadButton);
             Controls.Add(titleTextBox);
             Controls.Add(titleLabel);
+            Margin = new Padding(3, 2, 3, 2);
+            MaximizeBox = false;
             Name = "AddSourceForm";
             Text = "AddSourceForm";
             ResumeLayout(false);

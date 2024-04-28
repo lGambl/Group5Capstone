@@ -44,7 +44,8 @@ namespace StudyDesk.View
             // 
             // UsernameTextBox
             // 
-            UsernameTextBox.Location = new Point(126, 113);
+            UsernameTextBox.Anchor = AnchorStyles.None;
+            UsernameTextBox.Location = new Point(126, 116);
             UsernameTextBox.Margin = new Padding(3, 2, 3, 2);
             UsernameTextBox.Name = "UsernameTextBox";
             UsernameTextBox.PlaceholderText = "Username";
@@ -53,6 +54,7 @@ namespace StudyDesk.View
             // 
             // PasswordTextBox
             // 
+            PasswordTextBox.Anchor = AnchorStyles.None;
             PasswordTextBox.Location = new Point(126, 156);
             PasswordTextBox.Margin = new Padding(3, 2, 3, 2);
             PasswordTextBox.Name = "PasswordTextBox";
@@ -63,6 +65,7 @@ namespace StudyDesk.View
             // 
             // LoginButton
             // 
+            LoginButton.Anchor = AnchorStyles.None;
             LoginButton.Location = new Point(60, 201);
             LoginButton.Margin = new Padding(3, 2, 3, 2);
             LoginButton.Name = "LoginButton";
@@ -74,7 +77,7 @@ namespace StudyDesk.View
             // 
             // label1
             // 
-            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Magneto", 25F);
             label1.Location = new Point(60, 57);
@@ -85,6 +88,7 @@ namespace StudyDesk.View
             // 
             // label2
             // 
+            label2.Anchor = AnchorStyles.None;
             label2.AutoSize = true;
             label2.Location = new Point(60, 116);
             label2.Name = "label2";
@@ -94,6 +98,7 @@ namespace StudyDesk.View
             // 
             // label3
             // 
+            label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
             label3.Location = new Point(60, 159);
             label3.Name = "label3";
@@ -103,6 +108,7 @@ namespace StudyDesk.View
             // 
             // newUserButton
             // 
+            newUserButton.Anchor = AnchorStyles.None;
             newUserButton.Location = new Point(204, 201);
             newUserButton.Margin = new Padding(3, 2, 3, 2);
             newUserButton.Name = "newUserButton";
@@ -126,6 +132,7 @@ namespace StudyDesk.View
             Controls.Add(UsernameTextBox);
             ForeColor = Color.Black;
             Margin = new Padding(3, 2, 3, 2);
+            MaximizeBox = false;
             Name = "LoginForm";
             Text = "LoginScreen";
             ResumeLayout(false);
