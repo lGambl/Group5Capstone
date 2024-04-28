@@ -167,6 +167,7 @@
             Controls.Add(addButton);
             Controls.Add(indexListView);
             Margin = new Padding(3, 2, 3, 2);
+            MaximizeBox = false;
             Name = "MainPageForm";
             Text = "MainPageForm";
             searchNoteTagPanel.ResumeLayout(false);

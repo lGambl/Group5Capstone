@@ -140,4 +140,11 @@ public partial class DocumentControl : UserControl
     {
         this.ZoomOut();
     }
+
+    /// <inheritdoc/>
+    public override void Refresh()
+    {
+        base.Refresh();
+        this.RenderPdf();
+    }
 }

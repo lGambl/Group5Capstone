@@ -64,6 +64,7 @@ public partial class SourceForm : Form
             case SourceType.Pdf:
                 _ = this.documentControl1.SetDocument(source.Link).Result;
                 this.documentControl1.Visible = true;
+                this.SizeChanged += (sender, e) => this.documentControl1.Refresh();
                 break;
             case SourceType.Image:
             case SourceType.Video:

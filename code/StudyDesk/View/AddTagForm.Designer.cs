@@ -67,6 +67,7 @@
             Controls.Add(label1);
             Controls.Add(tagTextBox);
             Controls.Add(addTagButton);
+            MaximizeBox = false;
             Name = "AddTagForm";
             Text = "AddTagForm";
             ResumeLayout(false);
