@@ -39,6 +39,7 @@
             // noteTextBox
             // 
             noteTextBox.Location = new Point(12, 12);
+            noteTextBox.MaxLength = 200;
             noteTextBox.Multiline = true;
             noteTextBox.Name = "noteTextBox";
             noteTextBox.Size = new Size(433, 104);

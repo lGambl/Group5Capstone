@@ -69,12 +69,12 @@ public class SourceExplorer : Controller
                 }
             }
 
-            return Ok(sources);
+            return Ok(ownerSources);
         }
 
 
 
-        return View(owner);
+        return View(ownerSources);
     }
 
     /// <summary>
