@@ -9,7 +9,7 @@ namespace StudyDesk.View
     public partial class NoteForm : Form
     {
         private readonly SourceFormController controller;
-        private readonly Note note;
+        private Note note;
         private readonly int noteIndex;
         private readonly SourceForm sourceForm;
 
@@ -37,7 +37,7 @@ namespace StudyDesk.View
 
         private void loadNoteTags(Note note)
         {
-            tagsListView.Items.Clear();
+            this.tagsListView.Items.Clear();
             foreach (var currTag in note.NoteTags)
             {
                 this.tagsListView.Items.Add(currTag);
@@ -135,6 +135,7 @@ namespace StudyDesk.View
             if (result == DialogResult.Yes)
             {
                 this.controller.DeleteNoteTag(this.noteIndex, this.tagsListView.SelectedItems[0].Text);
+                this.note = this.controller.Notes[this.noteIndex];
                 this.loadNoteTags(this.note);
             }
         }

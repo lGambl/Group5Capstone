@@ -62,5 +62,11 @@ public partial class VideoControl : UserControl
         this.videoPlayer.Ctlcontrols.stop();
     }
 
+    private void OnSizeChanged(object? sender, EventArgs e)
+    {
+        this.videoPlayer.Size = this.Size;
+        this.videoPlayer.Refresh();
+    }
+
     #endregion
 }
