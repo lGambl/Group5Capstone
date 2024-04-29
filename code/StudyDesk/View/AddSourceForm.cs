@@ -134,5 +134,19 @@ public partial class AddSourceForm : Form
         return true;
     }
 
+    private void SourceType_SelectionChanged(object? sender, EventArgs e)
+    {
+        var selectedItem = this.sourceTypeComboBox.SelectedItem;
+        if (selectedItem != null && selectedItem.Equals("Pdf"))
+        {
+            this.filePathTextBox.Enabled = false;
+        }
+        else
+        {
+            this.filePathTextBox.Enabled = true;
+        }
+        this.filePathTextBox.Text = "";
+    }
+
     #endregion
 }

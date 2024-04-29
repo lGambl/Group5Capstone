@@ -54,6 +54,8 @@ public partial class LoginForm : Form
         }
     }
 
+
+
     private void newUserButton_Click(object sender, EventArgs e)
     {
         var registrationPage = new UserRegistrationForm();

@@ -46,6 +46,7 @@
             // tagTextBox
             // 
             tagTextBox.Location = new Point(76, 30);
+            tagTextBox.MaxLength = 20;
             tagTextBox.Name = "tagTextBox";
             tagTextBox.Size = new Size(100, 23);
             tagTextBox.TabIndex = 1;
