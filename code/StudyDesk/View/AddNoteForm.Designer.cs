@@ -42,6 +42,7 @@
             // 
             noteTextBox.ForeColor = SystemColors.WindowFrame;
             noteTextBox.Location = new Point(27, 25);
+            noteTextBox.MaxLength = 200;
             noteTextBox.Multiline = true;
             noteTextBox.Name = "noteTextBox";
             noteTextBox.Size = new Size(360, 80);
@@ -64,6 +65,7 @@
             // 
             tagTextBox.ForeColor = SystemColors.WindowFrame;
             tagTextBox.Location = new Point(27, 137);
+            tagTextBox.MaxLength = 20;
             tagTextBox.Name = "tagTextBox";
             tagTextBox.Size = new Size(152, 23);
             tagTextBox.TabIndex = 2;

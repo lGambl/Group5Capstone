@@ -6,7 +6,7 @@
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <label class="form-label" asp-for="Title"> Title</label>
-    <input class="form-control" asp-for="Title" />
+    <input class="form-control" maxlength="50" asp-for="Title" />
     
     <label class="form-label" asp-for="Type" id="typeSelect"> Type</label>
     <select class="form-control" asp-for="Type">
