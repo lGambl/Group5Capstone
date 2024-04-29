@@ -152,36 +152,36 @@
 
     <div id="notes">
         <div id="form-Area">
-        <span id="toggleNoteForm" onclick="toggleNoteFormVisiblity()" class="material-symbols-outlined">
-            add_box
-        </span>
+            <span id="toggleNoteForm" onclick="toggleNoteFormVisiblity()" class="material-symbols-outlined">
+                add_box
+            </span>
 
-        @using (Html.BeginForm("Note", "SourceExplorer", FormMethod.Post, new { id = "noteForm", @class = "form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
+            @using (Html.BeginForm("Note", "SourceExplorer", FormMethod.Post, new { id = "noteForm", @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
 
-            <p style="display:none" id="Id">@Html.DisplayFor(note => note.Id)</p>
+                <p style="display:none" id="Id">@Html.DisplayFor(note => note.Id)</p>
 
-            <div class="form-group">
-                <label for="noteText" class="control-label">Add Note</label>
-                <textarea name="noteText" id="noteText" class="form-control" rows="2" placeholder="Enter your note here..."></textarea>
+                <div class="form-group">
+                    <label for="noteText" class="control-label">Add Note</label>
+                    <textarea name="noteText" id="noteText" maxlength="200" class="form-control" rows="2" placeholder="Enter your note here..."></textarea>
            
 
-            <button type="submit" class="btn btn-primary submit-note-btn-margin">Submit Note</button>
+                    <button type="submit" class="btn btn-primary submit-note-btn-margin">Submit Note</button>
 
-            <div id="tags">
-                <label for="noteTags" class="tagsLabel">Tags</label>
-                <textarea name="noteTags" id="newNoteTags" class="form-control" disabled rows="1" placeholder="No tags yet."></textarea>
-            </div>
+                    <div id="tags">
+                        <label for="noteTags" class="tagsLabel">Tags</label>
+                        <textarea name="noteTags" id="newNoteTags" class="form-control" disabled rows="1" placeholder="No tags yet."></textarea>
+                    </div>
 
             
-                <label for="noteTagEditor" class="control-label">Add Tags</label>
-                <textarea name="noteTags" id="noteTagEditor" class="form-control" rows="1" placeholder="Enter your tag here..."></textarea>
+                    <label for="noteTagEditor" class="control-label">Add Tags</label>
+                    <textarea name="noteTags" id="noteTagEditor" maxlength="20" class="form-control" rows="1" placeholder="Enter your tag here..."></textarea>
             
 
-                <button type="button" id="addTagNewNote" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
-            </div>
-        }
+                    <button type="button" id="addTagNewNote" class="btn btn-primary submit-note-btn-margin">Add Tag</button>
+                </div>
+            }
         </div>
         <div id="notesList" style="height:40%">
             @foreach (var note in Model.Notes)
@@ -218,6 +218,30 @@
 
 </div>
 
+
+<div class="modal fade" id="addTagModal" tabindex="-1" role="dialog" aria-labelledby="addTagModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTagModalLabel">Add Tag</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addTagForm">
+                    <div class="form-group">
+                        <label for="tagText" class="col-form-label">Tag Text:</label>
+                        <input type="text" class="form-control" id="tagText" maxlength="20">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="submitTagForm()">Add Tag</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="modal fade" id="editNoteModal" tabindex="-1" role="dialog" aria-labelledby="editNoteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -232,7 +256,7 @@
                     <input type="hidden" id="editNoteId" name="noteId" value="">
                     <div class="form-group">
                         <label for="newText" class="col-form-label">Note Text:</label>
-                        <textarea class="form-control" id="newText" name="newText"></textarea>
+                        <textarea class="form-control" maxlength="200" id="newText" name="newText"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </form>
@@ -272,30 +296,6 @@
                 }
             });
         });
-    });
-
-    $(document).on('click', '.add-tag-btn', function () {
-        var tagText = prompt("Enter text for tag.");
-        if (tagText) {
-            var noteId = $(this).data('note-id');
-
-            $.ajax({
-                url: '/SourceExplorer/AddTag',
-                type: 'POST',
-                data: {
-                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
-                    tagName: "<"+tagText+">",
-                    noteId: noteId
-                },
-                success: function (response) {
-                    var newTagId = response.tagId;
-                    location.reload();
-                },
-                error: function () {
-                    alert('There was an error adding your tag. Please try again.');
-                }
-            });
-        }
     });
 
 
@@ -422,6 +422,47 @@
             hiding = true;
         }
     }
+
+    $(document).on('click', '.add-tag-btn', function () {
+        var noteId = $(this).data('note-id');
+        $('#tagText').val(''); // Clear any previous text
+        $('#addTagModal').data('note-id', noteId); // Store note ID to use later
+        $('#addTagModal').modal('show'); // Show the modal
+    });
+
+    function submitTagForm() {
+        var noteId = $('#addTagModal').data('note-id');
+        var tagText = $('#tagText').val();
+
+        if (tagText) {
+            $.ajax({
+                url: '/SourceExplorer/AddTag',
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                    tagName: "<" + tagText + ">",
+                    noteId: noteId
+                },
+                success: function (response) {
+                    var newTagId = response.tagId;
+                    location.reload();
+                },
+                error: function () {
+                    alert('There was an error adding your tag. Please try again.');
+                }
+            });
+        }
+
+        $('#addTagModal').modal('hide'); // Hide the modal after submitting
+    }
+
+    // Modal Close Behavior
+    $(document).ready(function () {
+        $('.close').click(function () {
+            $('.modal').modal('hide');
+        });
+    });
+
 
 </script>
 
