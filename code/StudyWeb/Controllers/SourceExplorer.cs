@@ -47,17 +47,19 @@ public class SourceExplorer : Controller
     [Authorize]
     public async Task<IActionResult> Index()
     {
+        var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (owner == null)
+        {
+            return Unauthorized(new { success = false, message = "User is not authenticated." });
+        }
+
+        var sources = await this.context.Source.ToListAsync();
+
+        var ownerSources = sources.Where(s => s.Owner == owner).ToList();
+
         if (Request.Headers["Accept"] == "application/json")
         {
-            var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (owner == null)
-            {
-                return Unauthorized(new { success = false, message = "User is not authenticated." });
-            }
-
-            var sources = await this.context.Source.ToListAsync();
-
-            var ownerSources = sources.Where(s => s.Owner == owner).ToList();
+            
 
             foreach (var source in ownerSources)
             {
@@ -70,7 +72,9 @@ public class SourceExplorer : Controller
             return Ok(sources);
         }
 
-        return View(await this.context.Source.ToListAsync());
+
+
+        return View(owner);
     }
 
     /// <summary>
