@@ -51,7 +51,7 @@
             saveChangesButton.Name = "saveChangesButton";
             saveChangesButton.Size = new Size(101, 23);
             saveChangesButton.TabIndex = 1;
-            saveChangesButton.Text = "Save Changes";
+            saveChangesButton.Text = "Save Text";
             saveChangesButton.UseVisualStyleBackColor = true;
             saveChangesButton.Click += saveChangesButton_Click;
             // 
