@@ -34,11 +34,13 @@
             addTagButton = new Button();
             deleteTagButton = new Button();
             tagsListView = new ListView();
+            label1 = new Label();
+            label2 = new Label();
             SuspendLayout();
             // 
             // noteTextBox
             // 
-            noteTextBox.Location = new Point(12, 12);
+            noteTextBox.Location = new Point(12, 38);
             noteTextBox.MaxLength = 200;
             noteTextBox.Multiline = true;
             noteTextBox.Name = "noteTextBox";
@@ -47,17 +49,17 @@
             // 
             // saveChangesButton
             // 
-            saveChangesButton.Location = new Point(12, 122);
+            saveChangesButton.Location = new Point(12, 148);
             saveChangesButton.Name = "saveChangesButton";
             saveChangesButton.Size = new Size(101, 23);
             saveChangesButton.TabIndex = 1;
-            saveChangesButton.Text = "Save Changes";
+            saveChangesButton.Text = "Save Text";
             saveChangesButton.UseVisualStyleBackColor = true;
             saveChangesButton.Click += saveChangesButton_Click;
             // 
             // deleteNoteButton
             // 
-            deleteNoteButton.Location = new Point(360, 122);
+            deleteNoteButton.Location = new Point(360, 9);
             deleteNoteButton.Name = "deleteNoteButton";
             deleteNoteButton.Size = new Size(85, 23);
             deleteNoteButton.TabIndex = 2;
@@ -67,9 +69,9 @@
             // 
             // addTagButton
             // 
-            addTagButton.Location = new Point(12, 244);
+            addTagButton.Location = new Point(360, 298);
             addTagButton.Name = "addTagButton";
-            addTagButton.Size = new Size(101, 23);
+            addTagButton.Size = new Size(85, 23);
             addTagButton.TabIndex = 3;
             addTagButton.Text = "Add Tag";
             addTagButton.UseVisualStyleBackColor = true;
@@ -78,7 +80,7 @@
             // deleteTagButton
             // 
             deleteTagButton.Enabled = false;
-            deleteTagButton.Location = new Point(360, 244);
+            deleteTagButton.Location = new Point(360, 219);
             deleteTagButton.Name = "deleteTagButton";
             deleteTagButton.Size = new Size(85, 23);
             deleteTagButton.TabIndex = 4;
@@ -88,20 +90,40 @@
             // 
             // tagsListView
             // 
-            tagsListView.Location = new Point(119, 144);
+            tagsListView.Location = new Point(12, 219);
             tagsListView.MultiSelect = false;
             tagsListView.Name = "tagsListView";
-            tagsListView.Size = new Size(235, 102);
+            tagsListView.Size = new Size(342, 102);
             tagsListView.TabIndex = 5;
             tagsListView.UseCompatibleStateImageBehavior = false;
             tagsListView.View = System.Windows.Forms.View.List;
             tagsListView.SelectedIndexChanged += tagsListView_SelectedIndexChanged;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(12, 201);
+            label1.Name = "label1";
+            label1.Size = new Size(33, 15);
+            label1.TabIndex = 6;
+            label1.Text = "Tags:";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(-1, 174);
+            label2.Name = "label2";
+            label2.Size = new Size(462, 15);
+            label2.TabIndex = 7;
+            label2.Text = "___________________________________________________________________________________________";
+            // 
             // NoteForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(457, 279);
+            ClientSize = new Size(459, 333);
+            Controls.Add(label2);
+            Controls.Add(label1);
             Controls.Add(tagsListView);
             Controls.Add(deleteTagButton);
             Controls.Add(addTagButton);
@@ -122,5 +144,7 @@
         private Button addTagButton;
         private Button deleteTagButton;
         private ListView tagsListView;
+        private Label label1;
+        private Label label2;
     }
 }

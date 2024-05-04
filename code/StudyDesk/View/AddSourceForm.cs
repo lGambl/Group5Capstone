@@ -105,26 +105,23 @@ public partial class AddSourceForm : Form
             {
                 Close(); 
             }
-            else
-            {
-                MessageBox.Show(FailedToAddSource);
-                return;
-            }
-        }
-        else
-        {
-            MessageBox.Show(PleaseFillInAllFields); 
         }
     }
 
     private bool checkFields()
     {
+        if (this.titleTextBox.Text == "" && this.filePathTextBox.Text == "")
+        {
+            MessageBox.Show(PleaseFillInAllFields);
+            return false;
+        }
+        
         if (this.titleTextBox.Text == "")
         {
             MessageBox.Show(PleaseEnterATitleForTheSource);
             return false;
         }
-
+        
         if (this.filePathTextBox.Text == "")
         {
             MessageBox.Show(PleaseUploadAFile);
