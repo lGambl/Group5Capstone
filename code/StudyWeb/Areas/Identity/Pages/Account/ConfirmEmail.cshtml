@@ -4,5 +4,13 @@
     ViewData["Title"] = "Confirm email";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>@ViewData["Title"]]</h1>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            window.location.href = "https://localhost:7240/Identity/Account/Login";
+        });
+    </script>
+}
