@@ -77,7 +77,7 @@ public partial class AddSourceForm : Form
     {
         var openFileDialog = new OpenFileDialog
         {
-            AddExtension = true,
+            Filter = FileExtensionFilters,
             CheckFileExists = true,
             CheckPathExists = true,
             Multiselect = false,
