@@ -623,23 +623,26 @@ public class SourceExplorer : Controller
 
         try
         {
+            var owner = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             var tagPlaceholders = string.Join(", ", tags.Select((tag, index) => $"@tag{index}"));
             var searchTagsQuery = $"SELECT DISTINCT Source.Id, Source.Link, Source.Title, Source.Type, Source.Owner " +
                                   $"FROM Tags " +
                                   $"JOIN NoteTags ON Tags.Id = NoteTags.TagId " +
                                   $"JOIN Note ON NoteTags.NoteId = Note.Id " +
                                   $"JOIN Source ON Note.SourceId = Source.Id " +
-                                  $"WHERE Tags.Name IN ({tagPlaceholders})";
+                                  $"WHERE Tags.Name IN ({tagPlaceholders}) AND Source.Owner = @owner;";
 
-            var parameters = tags.Select((tag, index) => new SqlParameter($"tag{index}", tag)).ToArray();
+            var parameters = new List<SqlParameter>();
+            parameters.AddRange(tags.Select((tag, index) => new SqlParameter($"tag{index}", tag)));
+            parameters.Add(new SqlParameter("owner", owner));
 
             var sources = await this.context.Source
-                .FromSqlRaw(searchTagsQuery, parameters)
+                .FromSqlRaw(searchTagsQuery, parameters.ToArray())
                 .ToListAsync();
 
             if (sources == null || sources.Count == 0)
             {
-                return NotFound(new { success = false, message = "No sources found for the given tags." });
+                return Ok(sources);
             }
 
             return Ok(sources);
@@ -649,6 +652,7 @@ public class SourceExplorer : Controller
             return BadRequest(new { success = false, message = ex.Message });
         }
     }
+
 
     /// <summary>
     /// Deletes the NoteTag entries for the given tagIds associated with the noteId.
