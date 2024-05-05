@@ -45,7 +45,7 @@ namespace StudyDesk.View
             // UsernameTextBox
             // 
             UsernameTextBox.Anchor = AnchorStyles.None;
-            UsernameTextBox.Location = new Point(126, 116);
+            UsernameTextBox.Location = new Point(120, 95);
             UsernameTextBox.Margin = new Padding(3, 2, 3, 2);
             UsernameTextBox.Name = "UsernameTextBox";
             UsernameTextBox.PlaceholderText = "Username";
@@ -55,7 +55,7 @@ namespace StudyDesk.View
             // PasswordTextBox
             // 
             PasswordTextBox.Anchor = AnchorStyles.None;
-            PasswordTextBox.Location = new Point(126, 156);
+            PasswordTextBox.Location = new Point(120, 135);
             PasswordTextBox.Margin = new Padding(3, 2, 3, 2);
             PasswordTextBox.Name = "PasswordTextBox";
             PasswordTextBox.PasswordChar = '*';
@@ -66,7 +66,7 @@ namespace StudyDesk.View
             // LoginButton
             // 
             LoginButton.Anchor = AnchorStyles.None;
-            LoginButton.Location = new Point(60, 201);
+            LoginButton.Location = new Point(54, 180);
             LoginButton.Margin = new Padding(3, 2, 3, 2);
             LoginButton.Name = "LoginButton";
             LoginButton.Size = new Size(82, 28);
@@ -80,7 +80,7 @@ namespace StudyDesk.View
             label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Magneto", 25F);
-            label1.Location = new Point(60, 57);
+            label1.Location = new Point(54, 36);
             label1.Name = "label1";
             label1.Size = new Size(226, 41);
             label1.TabIndex = 3;
@@ -90,7 +90,7 @@ namespace StudyDesk.View
             // 
             label2.Anchor = AnchorStyles.None;
             label2.AutoSize = true;
-            label2.Location = new Point(60, 116);
+            label2.Location = new Point(54, 95);
             label2.Name = "label2";
             label2.Size = new Size(60, 15);
             label2.TabIndex = 4;
@@ -100,7 +100,7 @@ namespace StudyDesk.View
             // 
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
-            label3.Location = new Point(60, 159);
+            label3.Location = new Point(54, 138);
             label3.Name = "label3";
             label3.Size = new Size(57, 15);
             label3.TabIndex = 5;
@@ -109,7 +109,7 @@ namespace StudyDesk.View
             // newUserButton
             // 
             newUserButton.Anchor = AnchorStyles.None;
-            newUserButton.Location = new Point(204, 201);
+            newUserButton.Location = new Point(198, 180);
             newUserButton.Margin = new Padding(3, 2, 3, 2);
             newUserButton.Name = "newUserButton";
             newUserButton.Size = new Size(82, 28);
@@ -122,7 +122,7 @@ namespace StudyDesk.View
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(377, 285);
+            ClientSize = new Size(339, 232);
             Controls.Add(newUserButton);
             Controls.Add(label3);
             Controls.Add(label2);
