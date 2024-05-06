@@ -43,9 +43,8 @@
             // 
             // splitContainer1
             // 
-            splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Location = new Point(0, 0);
-            splitContainer1.Margin = new Padding(3, 2, 3, 2);
             splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -56,26 +55,25 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(tableLayoutPanel1);
-            splitContainer1.Size = new Size(892, 410);
-            splitContainer1.SplitterDistance = 610;
+            splitContainer1.Size = new Size(1019, 547);
+            splitContainer1.SplitterDistance = 696;
+            splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 1;
             // 
             // videoControl1
             // 
             videoControl1.Dock = DockStyle.Fill;
             videoControl1.Location = new Point(0, 0);
-            videoControl1.Margin = new Padding(3, 2, 3, 2);
             videoControl1.Name = "videoControl1";
-            videoControl1.Size = new Size(610, 410);
+            videoControl1.Size = new Size(696, 547);
             videoControl1.TabIndex = 1;
             // 
             // documentControl1
             // 
             documentControl1.Dock = DockStyle.Fill;
             documentControl1.Location = new Point(0, 0);
-            documentControl1.Margin = new Padding(3, 2, 3, 2);
             documentControl1.Name = "documentControl1";
-            documentControl1.Size = new Size(610, 410);
+            documentControl1.Size = new Size(696, 547);
             documentControl1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -83,23 +81,25 @@
             tableLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 23F));
             tableLayoutPanel1.Controls.Add(addNoteButton, 0, 0);
             tableLayoutPanel1.Controls.Add(notesListView, 0, 1);
-            tableLayoutPanel1.Location = new Point(2, 3);
+            tableLayoutPanel1.Location = new Point(2, 4);
+            tableLayoutPanel1.Margin = new Padding(3, 4, 3, 4);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 6.68316841F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 93.31683F));
-            tableLayoutPanel1.Size = new Size(271, 404);
+            tableLayoutPanel1.Size = new Size(310, 539);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // addNoteButton
             // 
             addNoteButton.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            addNoteButton.Location = new Point(3, 3);
+            addNoteButton.Location = new Point(3, 4);
+            addNoteButton.Margin = new Padding(3, 4, 3, 4);
             addNoteButton.Name = "addNoteButton";
-            addNoteButton.Size = new Size(265, 21);
+            addNoteButton.Size = new Size(304, 28);
             addNoteButton.TabIndex = 0;
             addNoteButton.Text = "Add Note";
             addNoteButton.UseVisualStyleBackColor = true;
@@ -108,10 +108,11 @@
             // notesListView
             // 
             notesListView.Dock = DockStyle.Fill;
-            notesListView.Location = new Point(3, 30);
+            notesListView.Location = new Point(3, 40);
+            notesListView.Margin = new Padding(3, 4, 3, 4);
             notesListView.MultiSelect = false;
             notesListView.Name = "notesListView";
-            notesListView.Size = new Size(265, 371);
+            notesListView.Size = new Size(304, 495);
             notesListView.TabIndex = 1;
             notesListView.UseCompatibleStateImageBehavior = false;
             notesListView.View = System.Windows.Forms.View.List;
@@ -119,11 +120,10 @@
             // 
             // SourceForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(892, 410);
+            ClientSize = new Size(1019, 547);
             Controls.Add(splitContainer1);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "SourceForm";
             Text = "SourceForm";
             splitContainer1.Panel1.ResumeLayout(false);

@@ -58,7 +58,7 @@ public partial class DocumentControl : UserControl
         using var document = PdfDocument.Load(this.filePath);
         for (int pageIndex = 0; pageIndex < document.PageCount; pageIndex++)
         {
-            var image = document.Render(pageIndex, (int)(300 * zoomFactor), (int)(300 * zoomFactor), PdfRenderFlags.ForPrinting);
+            var image = document.Render(pageIndex, (int)(1000), (int)(1000), PdfRenderFlags.ForPrinting);
             var pictureBox = new PictureBox
             {
                 Image = image,

@@ -1,4 +1,5 @@
-﻿using StudyDesk.Controller;
+﻿using System.Text.RegularExpressions;
+using StudyDesk.Controller;
 
 namespace StudyDesk.View;
 
@@ -9,6 +10,7 @@ public partial class UserRegistrationForm : Form
 {
     private const string? InvalidEmailAddress = "Invalid email address.";
     private const string? InvalidEmail = "Invalid Email";
+    private const string PasswordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\\W_]).{6,}$";
 
     #region Constructors
 
@@ -20,6 +22,7 @@ public partial class UserRegistrationForm : Form
         this.InitializeComponent();
         this.centerForm();
         this.emailTextBox.LostFocus += this.emailTextBox_FocusChanges;
+        this.FormClosing += this.onClosing;
     }
 
     #endregion
@@ -33,9 +36,14 @@ public partial class UserRegistrationForm : Form
 
     private void createUserButton_Click(object sender, EventArgs e)
     {
-        if (!this.passwordTextBox.Text.Equals(this.passwordConfirmationTextBox.Text))
+        if (!this.doPasswordsMatch())
         {
             MessageBox.Show("Password must match. Please try again.", "Password Mismatch", MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+        else if (this.isValidPassword())
+        {
+            MessageBox.Show("Password is invalid. Please try again.", "Invalid Password", MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
         else if (!this.isValidEmail(this.emailTextBox.Text))
@@ -61,6 +69,22 @@ public partial class UserRegistrationForm : Form
                 MessageBox.Show("User registration failed!", "Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+    }
+
+    private bool isValidPassword()
+    {
+        var regex = new Regex(PasswordRegex);
+        return !regex.IsMatch(this.passwordTextBox.Text);
+    }
+
+    private bool doPasswordsMatch()
+    {
+        return this.passwordTextBox.Text.Equals(this.passwordConfirmationTextBox.Text);
+    }
+
+    private void onClosing(object? sender, FormClosingEventArgs e)
+    {
+        this.emailTextBox.LostFocus -= this.emailTextBox_FocusChanges;
     }
 
     private void emailTextBox_FocusChanges(object? sender, EventArgs e)
