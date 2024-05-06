@@ -58,13 +58,13 @@ public partial class DocumentControl : UserControl
         using var document = PdfDocument.Load(this.filePath);
         for (int pageIndex = 0; pageIndex < document.PageCount; pageIndex++)
         {
-            var image = document.Render(pageIndex, (int)(300 * zoomFactor), (int)(300 * zoomFactor), true);
+            var image = document.Render(pageIndex, (int)(300 * zoomFactor), (int)(300 * zoomFactor), PdfRenderFlags.ForPrinting);
             var pictureBox = new PictureBox
             {
                 Image = image,
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Width = flowLayoutPanel1.ClientSize.Width,
-                Height = (int)(image.Height * ((double)flowLayoutPanel1.ClientSize.Width / image.Width)),
+                Width = (int)(this.flowLayoutPanel1.Width * zoomFactor),
+                Height = (int)(image.Height * (this.flowLayoutPanel1.Width * zoomFactor / image.Width)), 
                 Margin = new Padding(0)
             };
             flowLayoutPanel1.AutoScroll = true;
@@ -117,6 +117,7 @@ public partial class DocumentControl : UserControl
         {
             RenderPdf();
         }
+
     }
 
     /// <summary>
@@ -124,7 +125,13 @@ public partial class DocumentControl : UserControl
     /// </summary>
     public void ZoomOut()
     {
-        zoomFactor /= 1.1;
+        if (this.zoomFactor / 1.5 < 0.002)
+        {
+            return;
+        }
+
+        this.zoomFactor /= 1.5;
+
         if (flowLayoutPanel1.Controls.Count > 0)
         {
             RenderPdf();
