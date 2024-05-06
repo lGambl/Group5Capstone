@@ -37,6 +37,7 @@ public partial class AddSourceForm : Form
         this.CenterToScreen();
         this.controller = new AddSourceController(authService);
         this.populateSourceTypeBox();
+        this.sourceTypeComboBox.SelectedIndexChanged += this.SourceType_SelectionChanged;
     }
 
     #endregion
