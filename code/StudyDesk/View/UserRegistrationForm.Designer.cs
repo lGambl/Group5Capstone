@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserRegistrationForm));
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
@@ -36,6 +37,7 @@
             passwordTextBox = new TextBox();
             passwordConfirmationTextBox = new TextBox();
             createUserButton = new Button();
+            label5 = new Label();
             SuspendLayout();
             // 
             // label1
@@ -100,7 +102,7 @@
             // 
             // createUserButton
             // 
-            createUserButton.Location = new Point(115, 232);
+            createUserButton.Location = new Point(115, 319);
             createUserButton.Name = "createUserButton";
             createUserButton.Size = new Size(102, 46);
             createUserButton.TabIndex = 11;
@@ -108,11 +110,21 @@
             createUserButton.UseVisualStyleBackColor = true;
             createUserButton.Click += createUserButton_Click;
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(2, 226);
+            label5.Name = "label5";
+            label5.Size = new Size(335, 90);
+            label5.TabIndex = 12;
+            label5.Text = resources.GetString("label5.Text");
+            // 
             // UserRegistrationForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(347, 302);
+            ClientSize = new Size(349, 404);
+            Controls.Add(label5);
             Controls.Add(createUserButton);
             Controls.Add(passwordConfirmationTextBox);
             Controls.Add(passwordTextBox);
@@ -138,5 +150,6 @@
         private TextBox passwordTextBox;
         private TextBox passwordConfirmationTextBox;
         private Button createUserButton;
+        private Label label5;
     }
 }

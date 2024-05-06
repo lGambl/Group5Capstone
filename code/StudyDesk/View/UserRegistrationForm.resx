@@ -117,4 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Password Requirements:
+* At least 6 characters
+* At least one lowercase character ('a'-'z')
+* At least one uppercase character ('A'-'Z')
+* At least one digit ('0'-'9')
+* At least one non-alphanumeric character (e.g., '!', '$', '#', '%')</value>
+  </data>
 </root>

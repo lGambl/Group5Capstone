@@ -68,7 +68,6 @@ public partial class UserRegistrationForm : Form
         if (!this.isValidEmail(this.emailTextBox.Text))
         {
             MessageBox.Show(InvalidEmailAddress, InvalidEmail, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            this.emailTextBox.BackColor = Color.Red;
         }
         else
         {
