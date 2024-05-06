@@ -6,18 +6,13 @@
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <label class="form-label" asp-for="Title"> Title</label>
-    <input class="form-control" maxlength="50" asp-for="Title" />
+    <input required class="form-control" maxlength="50" asp-for="Title" />
     
     <label class="form-label" asp-for="Type" id="typeSelect"> Type</label>
-    <select class="form-control" asp-for="Type">
+    <select required class="form-control" asp-for="Type">
         <option value="2">Video Link</option>
-        <option value="4">Pdf Link</option>
-        <option value="1">Video</option>
         <option value="3">Pdf</option>
-        <option value="5">Image</option>
-        <option value="6">Image Link</option>
     </select>
-    
     
     <div id="linkInput" style="display:none;">
         <label asp-for="Link" class="form-label"> Link</label>
@@ -31,7 +26,7 @@
 
     <div id="pdfInput"  style="display:none;">
         <label class="form-label">PDF</label>
-        <input class="form-control" type="file" name="pdfUpload" accept=".pdf" />
+        <input class="form-control" type="file" name="pdfUpload" accept=".pdf" onchange="checkFileType(this)" />
     </div>
     
     <div id="imageInput" style="display: none">
