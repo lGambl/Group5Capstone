@@ -35,17 +35,18 @@
             // 
             // flowLayoutPanel1
             // 
-            flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flowLayoutPanel1.Location = new Point(0, 26);
+            flowLayoutPanel1.Location = new Point(0, 35);
+            flowLayoutPanel1.Margin = new Padding(3, 4, 3, 4);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(511, 224);
+            flowLayoutPanel1.Size = new Size(584, 299);
             flowLayoutPanel1.TabIndex = 1;
             // 
             // zoomInButton
             // 
             zoomInButton.Location = new Point(3, 0);
+            zoomInButton.Margin = new Padding(3, 4, 3, 4);
             zoomInButton.Name = "zoomInButton";
-            zoomInButton.Size = new Size(75, 23);
+            zoomInButton.Size = new Size(86, 31);
             zoomInButton.TabIndex = 2;
             zoomInButton.Text = "Zoom In";
             zoomInButton.UseVisualStyleBackColor = true;
@@ -53,9 +54,10 @@
             // 
             // zoomOutButton
             // 
-            zoomOutButton.Location = new Point(436, 0);
+            zoomOutButton.Location = new Point(498, 0);
+            zoomOutButton.Margin = new Padding(3, 4, 3, 4);
             zoomOutButton.Name = "zoomOutButton";
-            zoomOutButton.Size = new Size(75, 23);
+            zoomOutButton.Size = new Size(86, 31);
             zoomOutButton.TabIndex = 3;
             zoomOutButton.Text = "Zoom Out";
             zoomOutButton.UseVisualStyleBackColor = true;
@@ -63,14 +65,13 @@
             // 
             // DocumentControl
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(zoomOutButton);
             Controls.Add(zoomInButton);
             Controls.Add(flowLayoutPanel1);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "DocumentControl";
-            Size = new Size(511, 250);
+            Size = new Size(584, 333);
             ResumeLayout(false);
         }
 
