@@ -247,7 +247,7 @@
 
             $('form').submit(function (e) {
                 e.preventDefault(); 
-                var formData = new FormData(this); 
+                var formData = new FormData(this);
 
                 $.ajax({
                     url: $(this).attr('action'), 
@@ -261,10 +261,19 @@
                         window.location.reload();
                     },
                     error: function (response) {
-                        alert('An error occurred. Please try again.');
+                        alert(response.responseJSON.message);
                     }
                 });
             });
         }
-    
+
+    function checkFileType(input) {
+        if (input.files && input.files[0]) {
+            var file = input.files[0];
+            if (file.type !== 'application/pdf') {
+                alert('Only PDF files are allowed. Please select a PDF file.');
+                input.value = ''; 
+            }
+        }
+    }
 </script>

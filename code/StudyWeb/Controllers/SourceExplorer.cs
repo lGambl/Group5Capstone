@@ -228,10 +228,18 @@ public class SourceExplorer : Controller
     {
         var user = User.Claims.FirstOrDefault();
         var owner = user?.Value;
+        
 
         if (owner == null || title == null || type == null)
         {
-            return BadRequest();
+            return BadRequest(new {success = false, message = "Title is required."});
+        }
+
+        title = title?.Trim();
+
+        if (title.Length == 0)
+        {
+            return BadRequest(new {success = false, message = "Title is required."});
         }
 
         switch (type)
@@ -239,64 +247,72 @@ public class SourceExplorer : Controller
             case SourceTypes.Pdf:
                 if (pdfUpload == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "PDF is required" });
                 }
 
                 if (!await this.saveFile(pdfUpload, title, owner, type))
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "Failed to upload PDF" });
                 }
 
                 break;
             case SourceTypes.Video:
                 if (videoUpload == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "Video is required." });
                 }
 
                 if (!await this.saveFile(videoUpload, title, owner, type))
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "Failed to upload Video" });
                 }
 
                 break;
             case SourceTypes.Image:
                 if (imageUpload == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "Image is required." });
                 }
 
                 if (!await this.saveFile(imageUpload, title, owner, type))
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "Failed to upload Image" });
                 }
 
                 break;
             case SourceTypes.ImageLink:
                 if (link == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "Image Link is required." });
                 }
 
                 if (!await this.addLink(title, owner, link, type))
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "Failed to upload Image Link" });
                 }
 
                 break;
             case SourceTypes.PdfLink:
-                await this.addLink(title, owner, link, type);
+                if (link == null)
+                {
+                    return BadRequest(new { success = false, message = "PDF Link is required" });
+                }
+
+                if (!await this.addLink(title, owner, link, type))
+                {
+                    return BadRequest(new { success = false, message = "Failed to upload PDF Link" });
+                }
                 break;
             case SourceTypes.VideoLink:
                 if (link == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new {success = false, message = "Video Link is required"} );
                 }
 
                 link = fixYoutubeLink(link);
                 if (!await this.addLink(title, owner, link, type))
                 {
-                    return BadRequest();
+                    return BadRequest(new { success = false, message = "Failed to upload Video Link" });
                 }
 
                 break;
